@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Wheel 4U | Admin Dashboard</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #050505;
+      --panel: #0d0d0d;
+      --panel-2: #131313;
+      --border: rgba(255,255,255,0.09);
+      --text: #f5f5f5;
+      --muted: #777;
+      --red: #e00000;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* =========================
+       BACKGROUND
+    ========================== */
+
+    .ambient {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .ambient::before,
+    .ambient::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.12;
+    }
+
+    .ambient::before {
+      width: 400px;
+      height: 400px;
+      background: #e00000;
+      top: -180px;
+      right: -120px;
+    }
+
+    .ambient::after {
+      width: 350px;
+      height: 350px;
+      background: #e00000;
+      bottom: -180px;
+      left: -120px;
+    }
+
+    /* =========================
+       LAYOUT
+    ========================== */
+
+    .app {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+    }
+
+    /* =========================
+       SIDEBAR
+    ========================== */
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 250px;
+      padding: 25px 18px;
+      background: rgba(8,8,8,0.92);
+      border-right: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      z-index: 50;
+    }
+
+    .logo-wrap {
+      padding: 8px 10px 28px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .logo {
+      width: 125px;
+      max-width: 100%;
+    }
+
+    .admin-label {
+      margin-top: 10px;
+      color: #555;
+      font-size: 8px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      margin-top: 25px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .nav button {
+      width: 100%;
+      padding: 13px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #888;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      text-align: left;
+      transition: 0.25s ease;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      color: white;
+      background: rgba(255,255,255,0.05);
+      border-color: var(--border);
+    }
+
+    .nav button.active {
+      box-shadow: inset 3px 0 0 var(--red);
+    }
+
+    .nav-icon {
+      width: 22px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .nav-text {
+      font-size: 10px;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+    }
+
+    .sidebar-bottom {
+      position: absolute;
+      bottom: 25px;
+      left: 18px;
+      right: 18px;
+    }
+
+    .logout {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      color: #999;
+      background: transparent;
+      border: 1px solid var(--border);
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: 0.25s;
+    }
+
+    .logout:hover {
+      color: white;
+      border-color: var(--red);
+    }
+
+    /* =========================
+       MAIN
+    ========================== */
+
+    .main {
+      grid-column: 2;
+      padding: 35px 40px;
+      min-width: 0;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 35px;
+    }
+
+    .page-kicker {
+      color: var(--red);
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 9px;
+    }
+
+    .page-title {
+      font-size: clamp(28px, 4vw, 48px);
+      letter-spacing: -2px;
+      text-transform: uppercase;
+    }
+
+    .admin-status {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      color: #888;
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #32d74b;
+      box-shadow: 0 0 12px rgba(50,215,75,0.7);
+    }
+
+    /* =========================
+       STATS
+    ========================== */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .stat {
+      padding: 22px;
+      min-height: 125px;
+      background: linear-gradient(
+        145deg,
+        rgba(255,255,255,0.055),
+        rgba(255,255,255,0.018)
+      );
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      transition: 0.3s;
+    }
+
+    .stat:hover {
+      transform: translateY(-4px);
+      border-color: rgba(224,0,0,0.35);
+    }
+
+    .stat-label {
+      color: #666;
+      font-size: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .stat-number {
+      margin-top: 15px;
+      font-size: 34px;
+      letter-spacing: -2px;
+    }
+
+    .stat-number.red {
+      color: var(--red);
+    }
+
+    /* =========================
+       CONTENT PANEL
+    ========================== */
+
+    .panel {
+      background: rgba(12,12,12,0.86);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .panel-title {
+      font-size: 15px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .panel-subtitle {
+      margin-top: 5px;
+      color: #555;
+      font-size: 10px;
+    }
+
+    .add-btn {
+      padding: 12px 17px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--red);
+      color: white;
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: 0.25s;
+    }
+
+    .add-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(224,0,0,0.22);
+    }
+
+    /* =========================
+       INVENTORY TABLE
+    ========================== */
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+    }
+
+    th {
+      padding: 12px 10px;
+      color: #555;
+      border-bottom: 1px solid var(--border);
+      font-size: 8px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-align: left;
+    }
+
+    td {
+      padding: 16px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: #aaa;
+      font-size: 10px;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .vehicle-name {
+      color: white;
+      font-weight: bold;
+    }
+
+    .vehicle-type {
+      color: #666;
+      font-size: 8px;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    .badge {
+      display: inline-flex;
+      padding: 6px 9px;
+      border-radius: 20px;
+      font-size: 7px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .available {
+      color: #4ade80;
+      background: rgba(74,222,128,0.08);
+    }
+
+    .reserved {
+      color: #facc15;
+      background: rgba(250,204,21,0.08);
+    }
+
+    .sold {
+      color: #ff5c5c;
+      background: rgba(255,92,92,0.08);
+    }
+
+    .actions {
+      display: flex;
+      gap: 7px;
+    }
+
+    .action-btn {
+      padding: 7px 9px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: transparent;
+      color: #777;
+      font-size: 8px;
+      transition: 0.2s;
+    }
+
+    .action-btn:hover {
+      color: white;
+      border-color: #555;
+    }
+
+    /* =========================
+       ADD FORM
+    ========================== */
+
+    .form-panel {
+      display: none;
+    }
+
+    .form-panel.show {
+      display: block;
+      animation: formIn 0.4s ease;
+    }
+
+    @keyframes formIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      color: #777;
+      font-size: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 13px 14px;
+      color: white;
+      background: #090909;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      font-size: 11px;
+    }
+
+    .field textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: rgba(224,0,0,0.6);
+    }
+
+    .form-actions {
+      margin-top: 22px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .cancel-btn {
+      padding: 12px 17px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: transparent;
+      color: #888;
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* =========================
+       QUICK MODULES
+    ========================== */
+
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .module {
+      min-height: 150px;
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.02);
+      transition: 0.3s;
+    }
+
+    .module:hover {
+      transform: translateY(-5px);
+      border-color: rgba(224,0,0,0.3);
+    }
+
+    .module-icon {
+      font-size: 25px;
+      margin-bottom: 18px;
+    }
+
+    .module h3 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .module p {
+      margin-top: 7px;
+      color: #666;
+      font-size: 9px;
+      line-height: 1.6;
+    }
+
+    /* =========================
+       TOAST
+    ========================== */
+
+    .toast {
+      position: fixed;
+      right: 25px;
+      bottom: 25px;
+      z-index: 100;
+      padding: 14px 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(74,222,128,0.25);
+      background: rgba(15,25,18,0.95);
+      color: #8cf0a7;
+      font-size: 10px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: 0.35s ease;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* =========================
+       MOBILE
+    ========================== */
+
+    @media (max-width: 1000px) {
+
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        bottom: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .nav {
+        display: flex;
+        overflow-x: auto;
+        padding-bottom: 5px;
+      }
+
+      .nav button {
+        min-width: max-content;
+      }
+
+      .sidebar-bottom {
+        position: relative;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        margin-top: 15px;
+      }
+
+      .main {
+        grid-column: 1;
+        padding: 25px 5%;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 650px) {
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field.full {
+        grid-column: auto;
+      }
+
+      .module-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="ambient"></div>
+
+  <div class="app">
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+      <div class="logo-wrap">
+
+        <img
+          src="../wheel4u-logo.png"
+          alt="Wheel 4U"
+          class="logo"
+        >
+
+        <div class="admin-label">
+          Management Portal
+        </div>
+
+      </div>
+
+
+      <div class="nav">
+
+        <button class="active" data-section="overview">
+          <span class="nav-icon">⌂</span>
+          <span class="nav-text">Overview</span>
+        </button>
+
+        <button data-section="cars">
+          <span class="nav-icon">🚗</span>
+          <span class="nav-text">Cars</span>
+        </button>
+
+        <button data-section="bikes">
+          <span class="nav-icon">🏍️</span>
+          <span class="nav-text">Bikes</span>
+        </button>
+
+        <button data-section="properties">
+          <span class="nav-icon">⌂</span>
+          <span class="nav-text">Properties</span>
+        </button>
+
+        <button data-section="enquiries">
+          <span class="nav-icon">✉</span>
+          <span class="nav-text">Enquiries</span>
+        </button>
+
+      </div>
+
+
+      <div class="sidebar-bottom">
+
+        <button
+          class="logout"
+          id="logoutBtn"
+        >
+          Logout
+        </button>
+
+      </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="main">
+
+      <div class="topbar">
+
+        <div>
+
+          <div class="page-kicker">
+            Wheel 4U / Admin
+          </div>
+
+          <h1 class="page-title">
+            Dashboard
+          </h1>
+
+        </div>
+
+
+        <div class="admin-status">
+
+          <span class="status-dot"></span>
+
+          Admin Session Active
+
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           STATS
+      ========================== -->
+
+      <section class="stats">
+
+        <div class="stat">
+          <div class="stat-label">Total Cars</div>
+          <div class="stat-number" id="carCount">0</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Total Bikes</div>
+          <div class="stat-number" id="bikeCount">0</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Properties</div>
+          <div class="stat-number" id="propertyCount">0</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Available</div>
+          <div class="stat-number red" id="availableCount">0</div>
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           INVENTORY
+      ========================== -->
+
+      <section class="panel">
+
+        <div class="panel-head">
+
+          <div>
+
+            <div class="panel-title">
+              Vehicle Inventory
+            </div>
+
+            <div class="panel-subtitle">
+              Manage your current vehicle listings
+            </div>
+
+          </div>
+
+          <button
+            class="add-btn"
+            id="showFormBtn"
+          >
+            + Add Vehicle
+          </button>
+
+        </div>
+
+
+        <!-- ADD VEHICLE FORM -->
+
+        <div
+          class="form-panel"
+          id="formPanel"
+        >
+
+          <div class="form-grid">
+
+            <div class="field">
+
+              <label>Vehicle Type</label>
+
+              <select id="vehicleType">
+
+                <option value="Car">
+                  Car
+                </option>
+
+                <option value="Bike">
+                  Bike
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <div class="field">
+
+              <label>Company / Brand</label>
+
+              <input
+                type="text"
+                id="brand"
+                placeholder="BMW"
+              >
+
+            </div>
+
+
+            <div class="field">
+
+              <label>Model</label>
+
+              <input
+                type="text"
+                id="model"
+                placeholder="X5"
+              >
+
+            </div>
+
+
+            <div class="field">
+
+              <label>Variant</label>
+
+              <input
+                type="text"
+                id="variant"
+                placeholder="xDrive40i"
+              >
+
+            </div>
+
+
+            <div class="field">
+
+              <label>Year</label>
+
+              <input
+                type="number"
+                id="year"
+                placeholder="2025"
+              >
+
+            </div>
+
+
+            <div class="field">
+
+              <label>Price</label>
+
+              <input
+                type="text"
+                id="price"
+                placeholder="₹ 85,00,000"
+              >
+
+            </div>
+
+
+            <div class="field">
+
+              <label>Kilometres</label>
+
+              <input
+                type="text"
+                id="km"
+                placeholder="25,000 KM"
+              >
+
+            </div>
+
+
+            <div class="field">
+
+              <label>Fuel</label>
+
+              <select id="fuel">
+
+                <option>Petrol</option>
+                <option>Diesel</option>
+                <option>Electric</option>
+                <option>Hybrid</option>
+
+              </select>
+
+            </div>
+
+
+            <div class="field">
+
+              <label>Transmission</label>
+
+              <select id="transmission">
+
+                <option>Automatic</option>
+                <option>Manual</option>
+
+              </select>
+
+            </div>
+
+
+            <div class="field">
+
+              <label>Availability</label>
+
+              <select id="availability">
+
+                <option value="Available">
+                  Available
+                </option>
+
+                <option value="Reserved">
+                  Reserved
+                </option>
+
+                <option value="Sold">
+                  Sold
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <div class="field full">
+
+              <label>Vehicle Image URL</label>
+
+              <input
+                type="text"
+                id="image"
+                placeholder="Image path / URL"
+              >
+
+            </div>
+
+
+            <div class="field full">
+
+              <label>Description</label>
+
+              <textarea
+                id="description"
+                placeholder="Write complete vehicle details..."
+              ></textarea>
+
+            </div>
+
+          </div>
+
+
+          <div class="form-actions">
+
+            <button
+              class="cancel-btn"
+              id="cancelFormBtn"
+            >
+              Cancel
+            </button>
+
+            <button
+              class="add-btn"
+              id="saveVehicleBtn"
+            >
+              Save Vehicle
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- TABLE -->
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>Vehicle</th>
+                <th>Brand</th>
+                <th>Year</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+
+            </thead>
+
+            <tbody id="inventoryBody">
+
+              <tr id="emptyRow">
+
+                <td
+                  colspan="6"
+                  style="
+                    text-align:center;
+                    padding:45px 10px;
+                    color:#555;
+                  "
+                >
+                  No vehicles added yet.
+                  <br><br>
+                  Use <strong>+ Add Vehicle</strong>
+                  to create the first listing.
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           MANAGEMENT MODULES
+      ========================== -->
+
+      <section class="panel">
+
+        <div class="panel-head">
+
+          <div>
+
+            <div class="panel-title">
+              Management Modules
+            </div>
+
+            <div class="panel-subtitle">
+              Everything the Wheel 4U admin can control
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="module-grid">
+
+          <div class="module">
+
+            <div class="module-icon">
+              🚗
+            </div>
+
+            <h3>
+              Cars
+            </h3>
+
+            <p>
+              Add brands, models, variants, photos,
+              specifications, pricing and availability.
+            </p>
+
+          </div>
+
+
+          <div class="module">
+
+            <div class="module-icon">
+              🏍️
+            </div>
+
+            <h3>
+              Bikes
+            </h3>
+
+            <p>
+              Manage motorcycle inventory and
+              individual vehicle information.
+            </p>
+
+          </div>
+
+
+          <div class="module">
+
+            <div class="module-icon">
+              🏠
+            </div>
+
+            <h3>
+              Properties
+            </h3>
+
+            <p>
+              Add property listings, locations,
+              prices, photos and descriptions.
+            </p>
+
+          </div>
+
+
+          <div class="module">
+
+            <div class="module-icon">
+              🏷️
+            </div>
+
+            <h3>
+              Brands
+            </h3>
+
+            <p>
+              Organize manufacturers and models
+              for customer discovery.
+            </p>
+
+          </div>
+
+
+          <div class="module">
+
+            <div class="module-icon">
+              📸
+            </div>
+
+            <h3>
+              Media
+            </h3>
+
+            <p>
+              Manage vehicle and property photos
+              used throughout the website.
+            </p>
+
+          </div>
+
+
+          <div class="module">
+
+            <div class="module-icon">
+              ✉
+            </div>
+
+            <h3>
+              Enquiries
+            </h3>
+
+            <p>
+              Review customer enquiries and
+              follow up with interested buyers.
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+
+  <div
+    class="toast"
+    id="toast"
+  >
+    Vehicle saved successfully.
+  </div>
+
+
+  <script>
+
+    /*
+      FRONTEND ADMIN DASHBOARD
+
+      Temporary local demo storage is used here.
+
+      Production version will use:
+      - Secure authentication
+      - Database
+      - Server-side authorization
+      - Secure image storage
+    */
+
+
+    const STORAGE_KEY =
+      "wheel4u_vehicle_inventory_demo";
+
+
+    let vehicles =
+      JSON.parse(
+        localStorage.getItem(STORAGE_KEY) || "[]"
+      );
+
+
+    const inventoryBody =
+      document.getElementById("inventoryBody");
+
+    const formPanel =
+      document.getElementById("formPanel");
+
+    const showFormBtn =
+      document.getElementById("showFormBtn");
+
+    const cancelFormBtn =
+      document.getElementById("cancelFormBtn");
+
+    const saveVehicleBtn =
+      document.getElementById("saveVehicleBtn");
+
+    const toast =
+      document.getElementById("toast");
+
+
+    /* =========================
+       SESSION CHECK
+    ========================== */
+
+    if (
+      sessionStorage.getItem("wheel4uAdminDemo")
+      !== "true"
+    ) {
+
+      window.location.href =
+        "login.html";
+
+    }
+
+
+    /* =========================
+       FORM OPEN
+    ========================== */
+
+    showFormBtn.addEventListener(
+      "click",
+      function () {
+
+        formPanel.classList.add("show");
+
+        showFormBtn.style.display =
+          "none";
+
+      }
+    );
+
+
+    /* =========================
+       FORM CLOSE
+    ========================== */
+
+    cancelFormBtn.addEventListener(
+      "click",
+      function () {
+
+        formPanel.classList.remove("show");
+
+        showFormBtn.style.display =
+          "block";
+
+      }
+    );
+
+
+    /* =========================
+       SAVE VEHICLE
+    ========================== */
+
+    saveVehicleBtn.addEventListener(
+      "click",
+      function () {
+
+        const vehicle = {
+
+          id:
+            Date.now(),
+
+          type:
+            document.getElementById(
+              "vehicleType"
+            ).value,
+
+          brand:
+            document.getElementById(
+              "brand"
+            ).value.trim(),
+
+          model:
+            document.getElementById(
+              "model"
+            ).value.trim(),
+
+          variant:
+            document.getElementById(
+              "variant"
+            ).value.trim(),
+
+          year:
+            document.getElementById(
+              "year"
+            ).value,
+
+          price:
+            document.getElementById(
+              "price"
+            ).value.trim(),
+
+          km:
+            document.getElementById(
+              "km"
+            ).value.trim(),
+
+          fuel:
+            document.getElementById(
+              "fuel"
+            ).value,
+
+          transmission:
+            document.getElementById(
+              "transmission"
+            ).value,
+
+          status:
+            document.getElementById(
+              "availability"
+            ).value,
+
+          image:
+            document.getElementById(
+              "image"
+            ).value.trim(),
+
+          description:
+            document.getElementById(
+              "description"
+            ).value.trim()
+
+        };
+
+
+        if (
+          !vehicle.brand ||
+          !vehicle.model ||
+          !vehicle.year ||
+          !vehicle.price
+        ) {
+
+          alert(
+            "Please fill Brand, Model, Year and Price."
+          );
+
+          return;
+
+        }
+
+
+        vehicles.push(vehicle);
+
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(vehicles)
+        );
+
+
+        renderInventory();
+
+        updateStats();
+
+        formPanel.classList.remove("show");
+
+        showFormBtn.style.display =
+          "block";
+
+        document
+          .querySelectorAll(
+            "#formPanel input, #formPanel textarea"
+          )
+          .forEach(function (field) {
+
+            field.value = "";
+
+          });
+
+
+        showToast();
+
+      }
+    );
+
+
+    /* =========================
+       RENDER INVENTORY
+    ========================== */
+
+    function renderInventory() {
+
+      inventoryBody.innerHTML = "";
+
+
+      if (vehicles.length === 0) {
+
+        inventoryBody.innerHTML = `
+          <tr>
+            <td
+              colspan="6"
+              style="
+                text-align:center;
+                padding:45px 10px;
+                color:#555;
+              "
+            >
+              No vehicles added yet.
+              <br><br>
+              Use <strong>+ Add Vehicle</strong>
+              to create the first listing.
+            </td>
+          </tr>
+        `;
+
+        return;
+
+      }
+
+
+      vehicles.forEach(function (vehicle) {
+
+        const row =
+          document.createElement("tr");
+
+
+        let badgeClass =
+          "available";
+
+        if (
+          vehicle.status === "Reserved"
+        ) {
+          badgeClass = "reserved";
+        }
+
+        if (
+          vehicle.status === "Sold"
+        ) {
+          badgeClass = "sold";
+        }
+
+
+        row.innerHTML = `
+
+          <td>
+
+            <div class="vehicle-name">
+              ${escapeHTML(
+                vehicle.model
+              )}
+            </div>
+
+            <div class="vehicle-type">
+              ${escapeHTML(
+                vehicle.type
+              )}
+              ${vehicle.variant
+                ? " • " +
+                  escapeHTML(
+                    vehicle.variant
+                  )
+                : ""
+              }
+            </div>
+
+          </td>
+
+
+          <td>
+            ${escapeHTML(
+              vehicle.brand
+            )}
+          </td>
+
+
+          <td>
+            ${escapeHTML(
+              vehicle.year
+            )}
+          </td>
+
+
+          <td>
+            ${escapeHTML(
+              vehicle.price
+            )}
+          </td>
+
+
+          <td>
+
+            <span
+              class="badge ${badgeClass}"
+            >
+              ${escapeHTML(
+                vehicle.status
+              )}
+            </span>
+
+          </td>
+
+
+          <td>
+
+            <div class="actions">
+
+              <button
+                class="action-btn"
+                onclick="editVehicle(${vehicle.id})"
+              >
+                Edit
+              </button>
+
+              <button
+                class="action-btn"
+                onclick="deleteVehicle(${vehicle.id})"
+              >
+                Delete
+              </button>
+
+            </div>
+
+          </td>
+
+        `;
+
+
+        inventoryBody.appendChild(row);
+
+      });
+
+    }
+
+
+    /* =========================
+       DELETE
+    ========================== */
+
+    function deleteVehicle(id) {
+
+      const confirmed =
+        confirm(
+          "Delete this vehicle?"
+        );
+
+      if (!confirmed) return;
+
+
+      vehicles =
+        vehicles.filter(function(vehicle) {
+
+          return vehicle.id !== id;
+
+        });
+
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(vehicles)
+      );
+
+
+      renderInventory();
+
+      updateStats();
+
+    }
+
+
+    /* =========================
+       EDIT
+    ========================== */
+
+    function editVehicle(id) {
+
+      const vehicle =
+        vehicles.find(function(item) {
+
+          return item.id === id;
+
+        });
+
+
+      if (!vehicle) return;
+
+
+      formPanel.classList.add("show");
+
+      showFormBtn.style.display =
+        "none";
+
+
+      document.getElementById(
+        "vehicleType"
+      ).value =
+        vehicle.type;
+
+      document.getElementById(
+        "brand"
+      ).value =
+        vehicle.brand;
+
+      document.getElementById(
+        "model"
+      ).value =
+        vehicle.model;
+
+      document.getElementById(
+        "variant"
+      ).value =
+        vehicle.variant;
+
+      document.getElementById(
+        "year"
+      ).value =
+        vehicle.year;
+
+      document.getElementById(
+        "price"
+      ).value =
+        vehicle.price;
+
+      document.getElementById(
+        "km"
+      ).value =
+        vehicle.km;
+
+      document.getElementById(
+        "fuel"
+      ).value =
+        vehicle.fuel;
+
+      document.getElementById(
+        "transmission"
+      ).value =
+        vehicle.transmission;
+
+      document.getElementById(
+        "availability"
+      ).value =
+        vehicle.status;
+
+      document.getElementById(
+        "image"
+      ).value =
+        vehicle.image;
+
+      document.getElementById(
+        "description"
+      ).value =
+        vehicle.description;
+
+
+      vehicles =
+        vehicles.filter(function(item) {
+
+          return item.id !== id;
+
+        });
+
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(vehicles)
+      );
+
+
+      updateStats();
+
+    }
+
+
+    /* =========================
+       STATS
+    ========================== */
+
+    function updateStats() {
+
+      const cars =
+        vehicles.filter(function(vehicle) {
+
+          return vehicle.type === "Car";
+
+        }).length;
+
+
+      const bikes =
+        vehicles.filter(function(vehicle) {
+
+          return vehicle.type === "Bike";
+
+        }).length;
+
+
+      const available =
+        vehicles.filter(function(vehicle) {
+
+          return vehicle.status === "Available";
+
+        }).length;
+
+
+      document.getElementById(
+        "carCount"
+      ).textContent =
+        cars;
+
+
+      document.getElementById(
+        "bikeCount"
+      ).textContent =
+        bikes;
+
+
+      document.getElementById(
+        "propertyCount"
+      ).textContent =
+        "0";
+
+
+      document.getElementById(
+        "availableCount"
+      ).textContent =
+        available;
+
+    }
+
+
+    /* =========================
+       TOAST
+    ========================== */
+
+    function showToast() {
+
+      toast.classList.add("show");
+
+      setTimeout(function () {
+
+        toast.classList.remove("show");
+
+      }, 2500);
+
+    }
+
+
+    /* =========================
+       HTML SAFETY
+    ========================== */
+
+    function escapeHTML(value) {
+
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+    }
+
+
+    /* =========================
+       NAVIGATION
+    ========================== */
+
+    document
+      .querySelectorAll(".nav button")
+      .forEach(function(button) {
+
+        button.addEventListener(
+          "click",
+          function() {
+
+            document
+              .querySelectorAll(
+                ".nav button"
+              )
+              .forEach(function(btn) {
+
+                btn.classList.remove(
+                  "active"
+                );
+
+              });
+
+
+            button.classList.add(
+              "active"
+            );
+
+
+            const section =
+              button.dataset.section;
+
+
+            if (
+              section !== "overview"
+            ) {
+
+              alert(
+                section.charAt(0).toUpperCase()
+                + section.slice(1)
+                + " management module will be connected to the database in the next development phase."
+              );
+
+            }
+
+          }
+        );
+
+      });
+
+
+    /* =========================
+       LOGOUT
+    ========================== */
+
+    document
+      .getElementById("logoutBtn")
+      .addEventListener(
+        "click",
+        function() {
+
+          sessionStorage.removeItem(
+            "wheel4uAdminDemo"
+          );
+
+          window.location.href =
+            "login.html";
+
+        }
+      );
+
+
+    /* =========================
+       INITIALIZE
+    ========================== */
+
+    renderInventory();
+
+    updateStats();
+
+  </script>
+
+</body>
+</html>
