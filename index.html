@@ -1,1 +1,1694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>WHEEL 4U | More Than Vehicles</title>
+
+  <meta
+    name="description"
+    content="WHEEL 4U — Buy, Sell and Exchange premium pre-owned cars, bikes and properties in Mangalore and Dakshina Kannada."
+  >
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: #050505;
+      color: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    /* =========================
+       LOADER
+    ========================== */
+
+    .loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #050505;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    .loader.hide {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loader-inner {
+      text-align: center;
+    }
+
+    .loader-logo {
+      width: 150px;
+      animation: logoPulse 1.8s infinite ease-in-out;
+    }
+
+    .loader-line {
+      width: 140px;
+      height: 2px;
+      background: #e00000;
+      margin: 25px auto 12px;
+      transform-origin: left;
+      animation: loadingLine 1.8s infinite ease-in-out;
+    }
+
+    .loader-text {
+      color: #888;
+      font-size: 10px;
+      letter-spacing: 5px;
+    }
+
+    @keyframes logoPulse {
+      0%, 100% {
+        transform: scale(0.96);
+        opacity: 0.65;
+      }
+
+      50% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes loadingLine {
+      0% {
+        transform: scaleX(0);
+      }
+
+      50% {
+        transform: scaleX(1);
+      }
+
+      100% {
+        transform: scaleX(0);
+      }
+    }
+
+    /* =========================
+       CUSTOM CURSOR
+    ========================== */
+
+    .cursor {
+      position: fixed;
+      width: 18px;
+      height: 18px;
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s ease, height 0.2s ease;
+    }
+
+    .cursor-dot {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      background: #e00000;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
+
+    body.cursor-hover .cursor {
+      width: 45px;
+      height: 45px;
+      border-color: #e00000;
+    }
+
+    /* =========================
+       HEADER
+    ========================== */
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 20px 4%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.85),
+        rgba(0,0,0,0)
+      );
+      transition: 0.4s ease;
+    }
+
+    header.scrolled {
+      background: rgba(5,5,5,0.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .brand-logo {
+      width: 105px;
+      height: auto;
+      display: block;
+    }
+
+    nav {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    nav a {
+      position: relative;
+      color: rgba(255,255,255,0.85);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: 0.3s ease;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -7px;
+      width: 0;
+      height: 1px;
+      background: #e00000;
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #fff;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    .header-btn {
+      padding: 12px 20px;
+      border: 1px solid rgba(255,255,255,0.55);
+      border-radius: 30px;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: 0.3s ease;
+    }
+
+    .header-btn:hover {
+      background: #e00000;
+      border-color: #e00000;
+      transform: translateY(-2px);
+    }
+
+    .menu-btn {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(0,0,0,0.4);
+      border-radius: 50%;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* =========================
+       HERO
+    ========================== */
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      height: 100vh;
+      overflow: hidden;
+      background: #050505;
+      perspective: 1200px;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: -4%;
+      background-image:
+        linear-gradient(
+          90deg,
+          rgba(0,0,0,0.45),
+          rgba(0,0,0,0.05) 50%,
+          rgba(0,0,0,0.25)
+        ),
+        url("wheel4u-home-bg.png");
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.04);
+      transition: transform 1.2s cubic-bezier(.2,.8,.2,1);
+      will-change: transform;
+    }
+
+    .hero:hover .hero-bg {
+      transform: scale(1.08);
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(0,0,0,0.28),
+          transparent 30%,
+          rgba(0,0,0,0.2) 65%,
+          #050505 100%
+        );
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: linear-gradient(to bottom, black, transparent);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 5;
+      min-height: 100vh;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 20px 40px;
+    }
+
+    .hero-center {
+      max-width: 900px;
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out;
+    }
+
+    .eyebrow {
+      font-size: 10px;
+      letter-spacing: 7px;
+      color: rgba(255,255,255,0.7);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .hero-title {
+      font-size: clamp(52px, 9vw, 130px);
+      font-weight: 800;
+      letter-spacing: -5px;
+      line-height: 0.9;
+      text-transform: uppercase;
+      text-shadow:
+        0 15px 50px rgba(0,0,0,0.8),
+        0 0 40px rgba(255,0,0,0.08);
+    }
+
+    .hero-title span {
+      color: #e00000;
+    }
+
+    .hero-subtitle {
+      margin-top: 25px;
+      font-size: 13px;
+      line-height: 1.8;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.72);
+      text-transform: uppercase;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 35px;
+      flex-wrap: wrap;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+      padding: 15px 28px;
+      border-radius: 40px;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: 0.35s ease;
+    }
+
+    .primary-btn {
+      background: #e00000;
+      border: 1px solid #e00000;
+      color: white;
+      box-shadow: 0 10px 35px rgba(224,0,0,0.25);
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 15px 45px rgba(224,0,0,0.4);
+    }
+
+    .secondary-btn {
+      border: 1px solid rgba(255,255,255,0.45);
+      background: rgba(0,0,0,0.25);
+      backdrop-filter: blur(8px);
+    }
+
+    .secondary-btn:hover {
+      background: white;
+      color: #050505;
+      transform: translateY(-4px);
+    }
+
+    /* =========================
+       FLOATING INFO
+    ========================== */
+
+    .hero-side {
+      position: absolute;
+      z-index: 7;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 9px;
+      letter-spacing: 4px;
+      color: rgba(255,255,255,0.5);
+      writing-mode: vertical-rl;
+      text-transform: uppercase;
+    }
+
+    .hero-side.left {
+      left: 25px;
+    }
+
+    .hero-side.right {
+      right: 25px;
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 8;
+      text-align: center;
+    }
+
+    .scroll-circle {
+      width: 48px;
+      height: 48px;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: auto;
+      animation: scrollPulse 2s infinite;
+    }
+
+    .scroll-circle::after {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-right: 1px solid white;
+      border-bottom: 1px solid white;
+      transform: rotate(45deg) translate(-2px,-2px);
+    }
+
+    .scroll-text {
+      margin-top: 10px;
+      font-size: 8px;
+      letter-spacing: 4px;
+      color: rgba(255,255,255,0.55);
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(224,0,0,0);
+      }
+
+      50% {
+        box-shadow: 0 0 0 10px rgba(224,0,0,0.08);
+      }
+    }
+
+    /* =========================
+       QUICK SERVICES
+    ========================== */
+
+    .quick-section {
+      position: relative;
+      z-index: 10;
+      margin-top: -70px;
+      padding: 0 5% 100px;
+    }
+
+    .quick-grid {
+      max-width: 1250px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    .quick-card {
+      position: relative;
+      min-height: 190px;
+      padding: 25px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 20px;
+      background: linear-gradient(
+        145deg,
+        rgba(35,35,35,0.78),
+        rgba(8,8,8,0.92)
+      );
+      backdrop-filter: blur(16px);
+      transform-style: preserve-3d;
+      transition:
+        transform 0.45s cubic-bezier(.2,.8,.2,1),
+        border-color 0.3s ease;
+    }
+
+    .quick-card:hover {
+      transform: translateY(-10px) rotateX(3deg) rotateY(-3deg);
+      border-color: rgba(224,0,0,0.6);
+    }
+
+    .quick-number {
+      font-size: 9px;
+      color: #e00000;
+      letter-spacing: 3px;
+    }
+
+    .quick-icon {
+      font-size: 30px;
+      margin: 25px 0 15px;
+    }
+
+    .quick-card h3 {
+      font-size: 17px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .quick-card p {
+      margin-top: 8px;
+      color: #888;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .quick-arrow {
+      position: absolute;
+      right: 22px;
+      bottom: 22px;
+      color: #e00000;
+      font-size: 18px;
+    }
+
+    /* =========================
+       SECTION COMMON
+    ========================== */
+
+    section {
+      position: relative;
+    }
+
+    .section {
+      padding: 120px 7%;
+      background: #050505;
+    }
+
+    .section-label {
+      color: #e00000;
+      font-size: 9px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(38px, 6vw, 78px);
+      line-height: 0.95;
+      letter-spacing: -3px;
+      text-transform: uppercase;
+    }
+
+    .section-description {
+      max-width: 570px;
+      color: #888;
+      line-height: 1.8;
+      font-size: 13px;
+      margin-top: 25px;
+    }
+
+    /* =========================
+       EXPERIENCE
+    ========================== */
+
+    .experience {
+      min-height: 700px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 70px;
+      align-items: center;
+      background:
+        radial-gradient(
+          circle at 75% 50%,
+          rgba(224,0,0,0.08),
+          transparent 35%
+        ),
+        #050505;
+    }
+
+    .experience-visual {
+      position: relative;
+      min-height: 500px;
+      border-radius: 30px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255,255,255,0.06),
+          rgba(0,0,0,0.9)
+        );
+      transform-style: preserve-3d;
+    }
+
+    .experience-visual::before {
+      content: "W4";
+      position: absolute;
+      font-size: 220px;
+      font-weight: 900;
+      color: rgba(255,255,255,0.025);
+      right: -30px;
+      bottom: -20px;
+    }
+
+    .ring {
+      position: absolute;
+      width: 310px;
+      height: 310px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      animation: ringRotate 18s linear infinite;
+    }
+
+    .ring::before {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #e00000;
+      border-radius: 50%;
+      top: -5px;
+      left: 50%;
+      box-shadow: 0 0 25px #e00000;
+    }
+
+    .ring.two {
+      width: 230px;
+      height: 230px;
+      border-style: dashed;
+      animation-direction: reverse;
+      animation-duration: 12s;
+    }
+
+    .ring.three {
+      width: 390px;
+      height: 390px;
+      opacity: 0.25;
+      animation-duration: 25s;
+    }
+
+    @keyframes ringRotate {
+      from {
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+
+      to {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    .visual-center {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 2;
+    }
+
+    .visual-center strong {
+      display: block;
+      font-size: 60px;
+      letter-spacing: -4px;
+    }
+
+    .visual-center span {
+      color: #888;
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    .experience-points {
+      margin-top: 35px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .point {
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+    }
+
+    .point-number {
+      color: #e00000;
+      font-size: 10px;
+      letter-spacing: 2px;
+      padding-top: 3px;
+    }
+
+    .point h4 {
+      font-size: 14px;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+
+    .point p {
+      color: #777;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    /* =========================
+       CTA
+    ========================== */
+
+    .cta {
+      padding: 130px 7%;
+      text-align: center;
+      overflow: hidden;
+      background:
+        radial-gradient(
+          circle at center,
+          rgba(224,0,0,0.14),
+          transparent 45%
+        ),
+        #070707;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .cta h2 {
+      font-size: clamp(45px, 8vw, 105px);
+      letter-spacing: -5px;
+      line-height: 0.9;
+      text-transform: uppercase;
+    }
+
+    .cta h2 span {
+      color: #e00000;
+    }
+
+    .cta p {
+      color: #888;
+      margin: 25px auto 35px;
+      max-width: 550px;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    /* =========================
+       FOOTER
+    ========================== */
+
+    footer {
+      padding: 55px 7% 30px;
+      background: #030303;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 40px;
+      align-items: flex-start;
+      padding-bottom: 50px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .footer-logo {
+      width: 130px;
+    }
+
+    .footer-tagline {
+      margin-top: 15px;
+      color: #666;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 45px;
+    }
+
+    .footer-links a {
+      color: #777;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: 0.3s;
+    }
+
+    .footer-links a:hover {
+      color: #fff;
+    }
+
+    .footer-bottom {
+      padding-top: 25px;
+      display: flex;
+      justify-content: space-between;
+      color: #444;
+      font-size: 9px;
+      letter-spacing: 1px;
+    }
+
+    /* =========================
+       REVEAL ANIMATION
+    ========================== */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition:
+        opacity 0.9s ease,
+        transform 0.9s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* =========================
+       MOBILE
+    ========================== */
+
+    @media (max-width: 900px) {
+
+      nav,
+      .header-btn {
+        display: none;
+      }
+
+      .menu-btn {
+        display: block;
+      }
+
+      header {
+        padding: 16px 5%;
+      }
+
+      .brand-logo {
+        width: 90px;
+      }
+
+      .hero {
+        height: 90vh;
+        min-height: 680px;
+      }
+
+      .hero-bg {
+        background-position: 50% center;
+      }
+
+      .hero-title {
+        font-size: clamp(50px, 15vw, 90px);
+        letter-spacing: -3px;
+      }
+
+      .hero-subtitle {
+        font-size: 10px;
+        letter-spacing: 1.5px;
+      }
+
+      .hero-side {
+        display: none;
+      }
+
+      .quick-section {
+        margin-top: -40px;
+        padding: 0 5% 70px;
+      }
+
+      .quick-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .quick-card {
+        min-height: 170px;
+      }
+
+      .section {
+        padding: 85px 5%;
+      }
+
+      .experience {
+        grid-template-columns: 1fr;
+        gap: 50px;
+      }
+
+      .experience-visual {
+        min-height: 420px;
+      }
+
+      .footer-top {
+        flex-direction: column;
+      }
+
+      .footer-links {
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .cursor,
+      .cursor-dot {
+        display: none;
+      }
+    }
+
+    @media (max-width: 520px) {
+
+      .quick-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .primary-btn,
+      .secondary-btn {
+        width: 220px;
+      }
+
+      .ring {
+        width: 240px;
+        height: 240px;
+      }
+
+      .ring.two {
+        width: 175px;
+        height: 175px;
+      }
+
+      .ring.three {
+        width: 300px;
+        height: 300px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       LOADER
+  ========================== -->
+
+  <div class="loader" id="loader">
+    <div class="loader-inner">
+      <img
+        src="wheel4u-logo.png"
+        alt="Wheel 4U"
+        class="loader-logo"
+      >
+
+      <div class="loader-line"></div>
+
+      <div class="loader-text">
+        ENTER THE EXPERIENCE
+      </div>
+    </div>
+  </div>
+
+
+  <!-- CUSTOM CURSOR -->
+
+  <div class="cursor"></div>
+  <div class="cursor-dot"></div>
+
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+
+  <header id="header">
+
+    <a href="#home">
+      <img
+        src="wheel4u-logo.png"
+        alt="Wheel 4U Logo"
+        class="brand-logo"
+      >
+    </a>
+
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#cars">Cars</a>
+      <a href="#bikes">Bikes</a>
+      <a href="#exchange">Sell / Exchange</a>
+      <a href="#properties">Properties</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <a href="#contact" class="header-btn">
+      Get In Touch
+    </a>
+
+    <button class="menu-btn" aria-label="Open Menu">
+      ☰
+    </button>
+
+  </header>
+
+
+  <!-- =========================
+       HERO
+  ========================== -->
+
+  <main>
+
+    <section class="hero" id="home">
+
+      <div class="hero-bg" id="heroBg"></div>
+
+      <div class="hero-overlay"></div>
+
+      <div class="hero-grid"></div>
+
+      <div class="hero-side left">
+        Mangalore • Dakshina Kannada
+      </div>
+
+      <div class="hero-side right">
+        Drive • Exchange • Invest
+      </div>
+
+      <div class="hero-content">
+
+        <div class="hero-center" id="heroCenter">
+
+          <div class="eyebrow">
+            Premium Pre-Owned Mobility
+          </div>
+
+          <h1 class="hero-title">
+            WHEEL <span>4</span>U
+          </h1>
+
+          <p class="hero-subtitle">
+            Cars • Bikes • Sell • Exchange • Properties
+          </p>
+
+          <div class="hero-actions">
+
+            <a href="#cars" class="primary-btn">
+              Explore Vehicles →
+            </a>
+
+            <a href="#exchange" class="secondary-btn">
+              Sell / Exchange
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="scroll-indicator">
+        <div class="scroll-circle"></div>
+        <div class="scroll-text">
+          Scroll
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         QUICK SERVICES
+    ========================== -->
+
+    <section class="quick-section">
+
+      <div class="quick-grid">
+
+        <a href="#cars" class="quick-card reveal">
+          <div class="quick-number">01</div>
+          <div class="quick-icon">🚗</div>
+
+          <h3>Cars</h3>
+
+          <p>
+            Discover available pre-owned cars by brand, model and year.
+          </p>
+
+          <div class="quick-arrow">↗</div>
+        </a>
+
+
+        <a href="#bikes" class="quick-card reveal">
+          <div class="quick-number">02</div>
+          <div class="quick-icon">🏍️</div>
+
+          <h3>Bikes</h3>
+
+          <p>
+            Explore quality pre-owned bikes from trusted brands.
+          </p>
+
+          <div class="quick-arrow">↗</div>
+        </a>
+
+
+        <a href="#exchange" class="quick-card reveal">
+          <div class="quick-number">03</div>
+          <div class="quick-icon">↔</div>
+
+          <h3>Sell / Exchange</h3>
+
+          <p>
+            Sell or exchange your vehicle with Wheel 4U.
+          </p>
+
+          <div class="quick-arrow">↗</div>
+        </a>
+
+
+        <a href="#properties" class="quick-card reveal">
+          <div class="quick-number">04</div>
+          <div class="quick-icon">⌂</div>
+
+          <h3>Properties</h3>
+
+          <p>
+            Explore selected property opportunities around the region.
+          </p>
+
+          <div class="quick-arrow">↗</div>
+        </a>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         CARS PLACEHOLDER
+    ========================== -->
+
+    <section class="section experience" id="cars">
+
+      <div class="experience-visual reveal">
+
+        <div class="ring three"></div>
+        <div class="ring"></div>
+        <div class="ring two"></div>
+
+        <div class="visual-center">
+          <strong>CARS</strong>
+          <span>Brand → Model → Vehicle</span>
+        </div>
+
+      </div>
+
+
+      <div class="reveal">
+
+        <div class="section-label">
+          Explore
+        </div>
+
+        <h2 class="section-title">
+          Find Your<br>
+          Next Drive.
+        </h2>
+
+        <p class="section-description">
+          Browse vehicles through a simple journey:
+          choose your preferred brand, discover available
+          models and open the complete vehicle details.
+        </p>
+
+        <div class="experience-points">
+
+          <div class="point">
+            <div class="point-number">01</div>
+
+            <div>
+              <h4>Choose Brand</h4>
+
+              <p>
+                BMW, Audi, Mercedes-Benz, Toyota, Hyundai,
+                Kia, Tata, Mahindra and more.
+              </p>
+            </div>
+          </div>
+
+
+          <div class="point">
+            <div class="point-number">02</div>
+
+            <div>
+              <h4>Choose Model</h4>
+
+              <p>
+                See the models currently available from
+                your selected brand.
+              </p>
+            </div>
+          </div>
+
+
+          <div class="point">
+            <div class="point-number">03</div>
+
+            <div>
+              <h4>View Vehicle</h4>
+
+              <p>
+                Check year, kilometres, fuel, transmission,
+                price, photos and complete details.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         BIKES
+    ========================== -->
+
+    <section class="section" id="bikes">
+
+      <div class="reveal">
+
+        <div class="section-label">
+          Two Wheels
+        </div>
+
+        <h2 class="section-title">
+          Built For<br>
+          The Ride.
+        </h2>
+
+        <p class="section-description">
+          A dedicated bike experience with brand-based
+          discovery and detailed vehicle listings.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         SELL / EXCHANGE
+    ========================== -->
+
+    <section class="section" id="exchange">
+
+      <div class="reveal">
+
+        <div class="section-label">
+          Sell • Exchange
+        </div>
+
+        <h2 class="section-title">
+          Your Vehicle.<br>
+          Your Next Move.
+        </h2>
+
+        <p class="section-description">
+          Looking to sell or exchange your vehicle?
+          Wheel 4U will make the process simple and direct.
+        </p>
+
+        <div class="hero-actions" style="justify-content:flex-start;">
+
+          <a href="#contact" class="primary-btn">
+            Start Enquiry →
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         PROPERTIES
+    ========================== -->
+
+    <section class="section" id="properties">
+
+      <div class="reveal">
+
+        <div class="section-label">
+          Beyond Vehicles
+        </div>
+
+        <h2 class="section-title">
+          Drive.<br>
+          Invest.<br>
+          Grow.
+        </h2>
+
+        <p class="section-description">
+          Wheel 4U also connects customers with selected
+          real-estate opportunities around Mangalore and
+          Dakshina Kannada.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         ABOUT
+    ========================== -->
+
+    <section class="section" id="about">
+
+      <div class="reveal">
+
+        <div class="section-label">
+          Wheel 4U
+        </div>
+
+        <h2 class="section-title">
+          More Than<br>
+          Vehicles.
+        </h2>
+
+        <p class="section-description">
+          A premium local platform designed to connect
+          customers with vehicles, exchanges and property
+          opportunities through a modern digital experience.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         CTA
+    ========================== -->
+
+    <section class="cta" id="contact">
+
+      <div class="reveal">
+
+        <div class="section-label">
+          Start Your Journey
+        </div>
+
+        <h2>
+          Let's Find<br>
+          <span>Your 4U.</span>
+        </h2>
+
+        <p>
+          Have a vehicle in mind, want to sell or exchange,
+          or looking for a property? Get in touch with Wheel 4U.
+        </p>
+
+        <div class="hero-actions">
+
+          <a
+            href="tel:7349090793"
+            class="primary-btn"
+          >
+            Call Wheel 4U
+          </a>
+
+          <a
+            href="https://wa.me/917349090793"
+            class="secondary-btn"
+            target="_blank"
+            rel="noopener"
+          >
+            WhatsApp
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================
+       FOOTER
+  ========================== -->
+
+  <footer>
+
+    <div class="footer-top">
+
+      <div>
+
+        <img
+          src="wheel4u-logo.png"
+          alt="Wheel 4U"
+          class="footer-logo"
+        >
+
+        <div class="footer-tagline">
+          More Than Vehicles
+        </div>
+
+      </div>
+
+      <div class="footer-links">
+        <a href="#cars">Cars</a>
+        <a href="#bikes">Bikes</a>
+        <a href="#exchange">Exchange</a>
+        <a href="#properties">Properties</a>
+        <a href="#contact">Contact</a>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+
+      <div>
+        © 2026 WHEEL 4U. All Rights Reserved.
+      </div>
+
+      <div>
+        MANGALORE • DAKSHINA KANNADA
+      </div>
+
+    </div>
+
+  </footer>
+
+
+  <!-- =========================
+       JAVASCRIPT
+  ========================== -->
+
+  <script>
+
+    /* =========================
+       LOADER
+    ========================== */
+
+    window.addEventListener("load", function () {
+
+      setTimeout(function () {
+
+        document
+          .getElementById("loader")
+          .classList.add("hide");
+
+      }, 1200);
+
+    });
+
+
+    /* =========================
+       HEADER SCROLL
+    ========================== */
+
+    const header = document.getElementById("header");
+
+    window.addEventListener("scroll", function () {
+
+      if (window.scrollY > 50) {
+        header.classList.add("scrolled");
+      } else {
+        header.classList.remove("scrolled");
+      }
+
+    });
+
+
+    /* =========================
+       HERO 3D MOUSE MOVEMENT
+    ========================== */
+
+    const hero = document.querySelector(".hero");
+    const heroBg = document.getElementById("heroBg");
+    const heroCenter = document.getElementById("heroCenter");
+
+    if (window.innerWidth > 900) {
+
+      hero.addEventListener("mousemove", function (event) {
+
+        const rect = hero.getBoundingClientRect();
+
+        const x =
+          (event.clientX - rect.left) /
+          rect.width -
+          0.5;
+
+        const y =
+          (event.clientY - rect.top) /
+          rect.height -
+          0.5;
+
+        heroBg.style.transform =
+          `scale(1.08) translate(${x * -10}px, ${y * -8}px)`;
+
+        heroCenter.style.transform =
+          `rotateX(${y * -4}deg) rotateY(${x * 5}deg)`;
+
+      });
+
+
+      hero.addEventListener("mouseleave", function () {
+
+        heroBg.style.transform = "scale(1.04)";
+
+        heroCenter.style.transform =
+          "rotateX(0deg) rotateY(0deg)";
+
+      });
+
+    }
+
+
+    /* =========================
+       SCROLL REVEAL
+    ========================== */
+
+    const reveals =
+      document.querySelectorAll(".reveal");
+
+    const revealObserver =
+      new IntersectionObserver(
+
+        function (entries) {
+
+          entries.forEach(function (entry) {
+
+            if (entry.isIntersecting) {
+
+              entry.target.classList.add("visible");
+
+              revealObserver.unobserve(entry.target);
+
+            }
+
+          });
+
+        },
+
+        {
+          threshold: 0.12
+        }
+
+      );
+
+    reveals.forEach(function (element) {
+
+      revealObserver.observe(element);
+
+    });
+
+
+    /* =========================
+       CARD TILT
+    ========================== */
+
+    const cards =
+      document.querySelectorAll(".quick-card");
+
+    cards.forEach(function (card) {
+
+      card.addEventListener("mousemove", function (event) {
+
+        if (window.innerWidth <= 900) return;
+
+        const rect =
+          card.getBoundingClientRect();
+
+        const x =
+          event.clientX - rect.left;
+
+        const y =
+          event.clientY - rect.top;
+
+        const rotateY =
+          ((x / rect.width) - 0.5) * 8;
+
+        const rotateX =
+          ((y / rect.height) - 0.5) * -8;
+
+        card.style.transform =
+          `translateY(-10px)
+           rotateX(${rotateX}deg)
+           rotateY(${rotateY}deg)`;
+
+      });
+
+
+      card.addEventListener("mouseleave", function () {
+
+        card.style.transform = "";
+
+      });
+
+    });
+
+
+    /* =========================
+       CUSTOM CURSOR
+    ========================== */
+
+    const cursor =
+      document.querySelector(".cursor");
+
+    const cursorDot =
+      document.querySelector(".cursor-dot");
+
+    if (window.innerWidth > 900) {
+
+      document.addEventListener("mousemove", function (event) {
+
+        cursor.style.left =
+          event.clientX + "px";
+
+        cursor.style.top =
+          event.clientY + "px";
+
+        cursorDot.style.left =
+          event.clientX + "px";
+
+        cursorDot.style.top =
+          event.clientY + "px";
+
+      });
+
+
+      document
+        .querySelectorAll("a, button")
+        .forEach(function (element) {
+
+          element.addEventListener("mouseenter", function () {
+
+            document.body.classList.add("cursor-hover");
+
+          });
+
+          element.addEventListener("mouseleave", function () {
+
+            document.body.classList.remove("cursor-hover");
+
+          });
+
+        });
+
+    }
+
+
+    /* =========================
+       PARALLAX SCROLL
+    ========================== */
+
+    window.addEventListener("scroll", function () {
+
+      const scrollY =
+        window.scrollY;
+
+      if (scrollY < window.innerHeight) {
+
+        heroBg.style.backgroundPosition =
+          `center ${50 + scrollY * 0.025}%`;
+
+      }
+
+    });
+
+  </script>
+
+</body>
+</html>
