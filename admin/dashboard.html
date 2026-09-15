@@ -1,1912 +1,2163 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Wheel 4U | Admin Dashboard</title>
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --bg: #050505;
-      --panel: #0d0d0d;
-      --panel-2: #131313;
-      --border: rgba(255,255,255,0.09);
-      --text: #f5f5f5;
-      --muted: #777;
-      --red: #e00000;
-    }
-
-    body {
-      min-height: 100vh;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Arial, Helvetica, sans-serif;
-      overflow-x: hidden;
-    }
-
-    button,
-    input,
-    select,
-    textarea {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    /* =========================
-       BACKGROUND
-    ========================== */
-
-    .ambient {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
-    }
-
-    .ambient::before,
-    .ambient::after {
-      content: "";
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(100px);
-      opacity: 0.12;
-    }
-
-    .ambient::before {
-      width: 400px;
-      height: 400px;
-      background: #e00000;
-      top: -180px;
-      right: -120px;
-    }
-
-    .ambient::after {
-      width: 350px;
-      height: 350px;
-      background: #e00000;
-      bottom: -180px;
-      left: -120px;
-    }
-
-    /* =========================
-       LAYOUT
-    ========================== */
-
-    .app {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 250px 1fr;
-    }
-
-    /* =========================
-       SIDEBAR
-    ========================== */
-
-    .sidebar {
-      position: fixed;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 250px;
-      padding: 25px 18px;
-      background: rgba(8,8,8,0.92);
-      border-right: 1px solid var(--border);
-      backdrop-filter: blur(20px);
-      z-index: 50;
-    }
-
-    .logo-wrap {
-      padding: 8px 10px 28px;
-      border-bottom: 1px solid var(--border);
-      text-align: center;
-    }
-
-    .logo {
-      width: 125px;
-      max-width: 100%;
-    }
-
-    .admin-label {
-      margin-top: 10px;
-      color: #555;
-      font-size: 8px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-
-    .nav {
-      margin-top: 25px;
-      display: grid;
-      gap: 7px;
-    }
-
-    .nav button {
-      width: 100%;
-      padding: 13px 14px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: #888;
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: 12px;
-      text-align: left;
-      transition: 0.25s ease;
-    }
-
-    .nav button:hover,
-    .nav button.active {
-      color: white;
-      background: rgba(255,255,255,0.05);
-      border-color: var(--border);
-    }
-
-    .nav button.active {
-      box-shadow: inset 3px 0 0 var(--red);
-    }
-
-    .nav-icon {
-      width: 22px;
-      text-align: center;
-      font-size: 16px;
-    }
-
-    .nav-text {
-      font-size: 10px;
-      letter-spacing: 1.3px;
-      text-transform: uppercase;
-    }
-
-    .sidebar-bottom {
-      position: absolute;
-      bottom: 25px;
-      left: 18px;
-      right: 18px;
-    }
-
-    .logout {
-      width: 100%;
-      padding: 12px;
-      border-radius: 12px;
-      color: #999;
-      background: transparent;
-      border: 1px solid var(--border);
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      transition: 0.25s;
-    }
-
-    .logout:hover {
-      color: white;
-      border-color: var(--red);
-    }
-
-    /* =========================
-       MAIN
-    ========================== */
-
-    .main {
-      grid-column: 2;
-      padding: 35px 40px;
-      min-width: 0;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-      margin-bottom: 35px;
-    }
-
-    .page-kicker {
-      color: var(--red);
-      font-size: 9px;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      margin-bottom: 9px;
-    }
-
-    .page-title {
-      font-size: clamp(28px, 4vw, 48px);
-      letter-spacing: -2px;
-      text-transform: uppercase;
-    }
-
-    .admin-status {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      border-radius: 30px;
-      color: #888;
-      font-size: 9px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #32d74b;
-      box-shadow: 0 0 12px rgba(50,215,75,0.7);
-    }
-
-    /* =========================
-       STATS
-    ========================== */
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 15px;
-      margin-bottom: 25px;
-    }
-
-    .stat {
-      padding: 22px;
-      min-height: 125px;
-      background: linear-gradient(
-        145deg,
-        rgba(255,255,255,0.055),
-        rgba(255,255,255,0.018)
-      );
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      transition: 0.3s;
-    }
-
-    .stat:hover {
-      transform: translateY(-4px);
-      border-color: rgba(224,0,0,0.35);
-    }
-
-    .stat-label {
-      color: #666;
-      font-size: 8px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .stat-number {
-      margin-top: 15px;
-      font-size: 34px;
-      letter-spacing: -2px;
-    }
-
-    .stat-number.red {
-      color: var(--red);
-    }
-
-    /* =========================
-       CONTENT PANEL
-    ========================== */
-
-    .panel {
-      background: rgba(12,12,12,0.86);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 25px;
-      margin-bottom: 25px;
-    }
-
-    .panel-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 25px;
-    }
-
-    .panel-title {
-      font-size: 15px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .panel-subtitle {
-      margin-top: 5px;
-      color: #555;
-      font-size: 10px;
-    }
-
-    .add-btn {
-      padding: 12px 17px;
-      border: 0;
-      border-radius: 10px;
-      background: var(--red);
-      color: white;
-      font-size: 9px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      transition: 0.25s;
-    }
-
-    .add-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(224,0,0,0.22);
-    }
-
-    /* =========================
-       INVENTORY TABLE
-    ========================== */
-
-    .table-wrap {
-      width: 100%;
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      min-width: 760px;
-      border-collapse: collapse;
-    }
-
-    th {
-      padding: 12px 10px;
-      color: #555;
-      border-bottom: 1px solid var(--border);
-      font-size: 8px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      text-align: left;
-    }
-
-    td {
-      padding: 16px 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      color: #aaa;
-      font-size: 10px;
-    }
-
-    tr:last-child td {
-      border-bottom: 0;
-    }
-
-    .vehicle-name {
-      color: white;
-      font-weight: bold;
-    }
-
-    .vehicle-type {
-      color: #666;
-      font-size: 8px;
-      margin-top: 4px;
-      text-transform: uppercase;
-    }
-
-    .badge {
-      display: inline-flex;
-      padding: 6px 9px;
-      border-radius: 20px;
-      font-size: 7px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .available {
-      color: #4ade80;
-      background: rgba(74,222,128,0.08);
-    }
-
-    .reserved {
-      color: #facc15;
-      background: rgba(250,204,21,0.08);
-    }
-
-    .sold {
-      color: #ff5c5c;
-      background: rgba(255,92,92,0.08);
-    }
-
-    .actions {
-      display: flex;
-      gap: 7px;
-    }
-
-    .action-btn {
-      padding: 7px 9px;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      background: transparent;
-      color: #777;
-      font-size: 8px;
-      transition: 0.2s;
-    }
-
-    .action-btn:hover {
-      color: white;
-      border-color: #555;
-    }
-
-    /* =========================
-       ADD FORM
-    ========================== */
-
-    .form-panel {
-      display: none;
-    }
-
-    .form-panel.show {
-      display: block;
-      animation: formIn 0.4s ease;
-    }
-
-    @keyframes formIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 18px;
-    }
-
-    .field.full {
-      grid-column: 1 / -1;
-    }
-
-    .field label {
-      display: block;
-      margin-bottom: 8px;
-      color: #777;
-      font-size: 8px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      padding: 13px 14px;
-      color: white;
-      background: #090909;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      outline: none;
-      font-size: 11px;
-    }
-
-    .field textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
-
-    .field input:focus,
-    .field select:focus,
-    .field textarea:focus {
-      border-color: rgba(224,0,0,0.6);
-    }
-
-    .form-actions {
-      margin-top: 22px;
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-    }
-
-    .cancel-btn {
-      padding: 12px 17px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: transparent;
-      color: #888;
-      font-size: 9px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    /* =========================
-       QUICK MODULES
-    ========================== */
-
-    .module-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-    }
-
-    .module {
-      min-height: 150px;
-      padding: 22px;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: rgba(255,255,255,0.02);
-      transition: 0.3s;
-    }
-
-    .module:hover {
-      transform: translateY(-5px);
-      border-color: rgba(224,0,0,0.3);
-    }
-
-    .module-icon {
-      font-size: 25px;
-      margin-bottom: 18px;
-    }
-
-    .module h3 {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .module p {
-      margin-top: 7px;
-      color: #666;
-      font-size: 9px;
-      line-height: 1.6;
-    }
-
-    /* =========================
-       TOAST
-    ========================== */
-
-    .toast {
-      position: fixed;
-      right: 25px;
-      bottom: 25px;
-      z-index: 100;
-      padding: 14px 18px;
-      border-radius: 12px;
-      border: 1px solid rgba(74,222,128,0.25);
-      background: rgba(15,25,18,0.95);
-      color: #8cf0a7;
-      font-size: 10px;
-      transform: translateY(100px);
-      opacity: 0;
-      transition: 0.35s ease;
-    }
-
-    .toast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    /* =========================
-       MOBILE
-    ========================== */
-
-    @media (max-width: 1000px) {
-
-      .app {
-        grid-template-columns: 1fr;
-      }
-
-      .sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
-        bottom: auto;
-        border-right: 0;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .nav {
-        display: flex;
-        overflow-x: auto;
-        padding-bottom: 5px;
-      }
-
-      .nav button {
-        min-width: max-content;
-      }
-
-      .sidebar-bottom {
-        position: relative;
-        left: auto;
-        right: auto;
-        bottom: auto;
-        margin-top: 15px;
-      }
-
-      .main {
-        grid-column: 1;
-        padding: 25px 5%;
-      }
-
-      .stats {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 650px) {
-
-      .topbar {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .stats {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .field.full {
-        grid-column: auto;
-      }
-
-      .module-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .panel {
-        padding: 18px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Wheel 4U | Admin Dashboard</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --bg:#070707;
+    --panel:#101010;
+    --panel2:#151515;
+    --border:rgba(255,255,255,.10);
+    --text:#f5f5f5;
+    --muted:#8d8d8d;
+    --red:#ff3b20;
+    --green:#20d66b;
+    --yellow:#ffc107;
+}
+
+body{
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+/* =========================
+   LAYOUT
+========================= */
+
+.app{
+    display:flex;
+    min-height:100vh;
+}
+
+.sidebar{
+    width:245px;
+    background:#0b0b0b;
+    border-right:1px solid var(--border);
+    padding:25px 15px;
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    z-index:100;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:8px 10px 30px;
+}
+
+.logo img{
+    width:55px;
+    height:55px;
+    object-fit:contain;
+    border-radius:50%;
+}
+
+.logo-text{
+    font-size:20px;
+    font-weight:800;
+}
+
+.logo-text span{
+    color:var(--red);
+}
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.nav button{
+    width:100%;
+    border:0;
+    background:transparent;
+    color:#aaa;
+    text-align:left;
+    padding:14px 15px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:14px;
+    transition:.25s;
+}
+
+.nav button:hover{
+    background:#171717;
+    color:white;
+}
+
+.nav button.active{
+    background:#1b1b1b;
+    color:white;
+    border-left:3px solid var(--red);
+}
+
+.nav-icon{
+    width:25px;
+    display:inline-block;
+}
+
+.logout{
+    position:absolute;
+    bottom:25px;
+    left:15px;
+    right:15px;
+}
+
+.logout button{
+    width:100%;
+    padding:13px;
+    border:1px solid rgba(255,255,255,.1);
+    background:#121212;
+    color:#aaa;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.logout button:hover{
+    color:white;
+    border-color:var(--red);
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main{
+    margin-left:245px;
+    width:calc(100% - 245px);
+    padding:30px;
+}
+
+.topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.heading small{
+    color:var(--red);
+    letter-spacing:4px;
+    font-size:10px;
+}
+
+.heading h1{
+    margin-top:7px;
+    font-size:32px;
+}
+
+.admin-status{
+    border:1px solid rgba(32,214,107,.25);
+    background:rgba(32,214,107,.05);
+    color:var(--green);
+    padding:9px 14px;
+    border-radius:30px;
+    font-size:12px;
+}
+
+/* =========================
+   SECTIONS
+========================= */
+
+.section{
+    display:none;
+}
+
+.section.active{
+    display:block;
+}
+
+/* =========================
+   STAT CARDS
+========================= */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.stat{
+    background:linear-gradient(145deg,#141414,#0d0d0d);
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:22px;
+}
+
+.stat-label{
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:15px;
+}
+
+.stat-value{
+    font-size:30px;
+    font-weight:800;
+}
+
+.stat.red .stat-value{
+    color:var(--red);
+}
+
+.stat.green .stat-value{
+    color:var(--green);
+}
+
+.stat.yellow .stat-value{
+    color:var(--yellow);
+}
+
+/* =========================
+   PANEL
+========================= */
+
+.panel{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:24px;
+    margin-bottom:20px;
+}
+
+.panel-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.panel-header h2{
+    font-size:19px;
+}
+
+.muted{
+    color:var(--muted);
+    font-size:13px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn{
+    border:0;
+    padding:12px 17px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:700;
+    font-size:13px;
+}
+
+.btn-red{
+    background:var(--red);
+    color:white;
+}
+
+.btn-red:hover{
+    filter:brightness(1.1);
+}
+
+.btn-dark{
+    background:#202020;
+    color:white;
+    border:1px solid var(--border);
+}
+
+.btn-green{
+    background:var(--green);
+    color:#000;
+}
+
+.btn-danger{
+    background:#30100d;
+    color:#ff6b59;
+    border:1px solid rgba(255,59,32,.2);
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.toolbar{
+    display:flex;
+    gap:12px;
+    margin-bottom:20px;
+}
+
+.search{
+    flex:1;
+    background:#0a0a0a;
+    border:1px solid var(--border);
+    color:white;
+    padding:13px 15px;
+    border-radius:9px;
+    outline:none;
+}
+
+.search:focus{
+    border-color:var(--red);
+}
+
+/* =========================
+   CAR GRID
+========================= */
+
+.car-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+.car-card{
+    background:#0c0c0c;
+    border:1px solid var(--border);
+    border-radius:14px;
+    overflow:hidden;
+}
+
+.car-image{
+    width:100%;
+    height:190px;
+    background:#171717;
+    object-fit:cover;
+    display:block;
+}
+
+.car-info{
+    padding:17px;
+}
+
+.car-title{
+    font-size:18px;
+    font-weight:800;
+    margin-bottom:5px;
+}
+
+.car-sub{
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:15px;
+}
+
+.car-details{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-bottom:15px;
+}
+
+.detail{
+    background:#141414;
+    border-radius:7px;
+    padding:8px;
+    font-size:11px;
+    color:#aaa;
+}
+
+.detail strong{
+    display:block;
+    color:white;
+    margin-top:3px;
+}
+
+.price{
+    font-size:20px;
+    font-weight:800;
+    margin-bottom:13px;
+}
+
+.status{
+    display:inline-flex;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:10px;
+    font-weight:800;
+    margin-bottom:15px;
+}
+
+.status.available{
+    color:var(--green);
+    background:rgba(32,214,107,.10);
+}
+
+.status.reserved{
+    color:var(--yellow);
+    background:rgba(255,193,7,.10);
+}
+
+.status.sold{
+    color:#ff4d4d;
+    background:rgba(255,59,32,.10);
+}
+
+.card-actions{
+    display:flex;
+    gap:8px;
+}
+
+.card-actions button{
+    flex:1;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.78);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:500;
+    padding:20px;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:min(700px,100%);
+    max-height:90vh;
+    overflow:auto;
+    background:#111;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:25px;
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.close{
+    border:0;
+    background:#222;
+    color:white;
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:18px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.form-group.full{
+    grid-column:1/-1;
+}
+
+.form-group label{
+    color:#aaa;
+    font-size:12px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    background:#080808;
+    color:white;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:12px;
+    outline:none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+    border-color:var(--red);
+}
+
+.form-group textarea{
+    min-height:90px;
+    resize:vertical;
+}
+
+.form-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:22px;
+}
+
+/* =========================
+   EMPTY
+========================= */
+
+.empty{
+    padding:50px 20px;
+    text-align:center;
+    color:#777;
+}
+
+.empty-icon{
+    font-size:40px;
+    margin-bottom:12px;
+}
+
+/* =========================
+   MODULE CARDS
+========================= */
+
+.modules{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+.module{
+    background:#101010;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:25px;
+    min-height:150px;
+}
+
+.module-icon{
+    font-size:30px;
+    margin-bottom:15px;
+}
+
+.module h3{
+    margin-bottom:7px;
+}
+
+.module p{
+    color:#888;
+    font-size:12px;
+    line-height:1.6;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.table-wrap{
+    overflow:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:14px 10px;
+    border-bottom:1px solid var(--border);
+    text-align:left;
+    font-size:12px;
+}
+
+th{
+    color:#777;
+    font-weight:600;
+}
+
+td{
+    color:#ddd;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+.mobile-menu{
+    display:none;
+}
+
+@media(max-width:1000px){
+
+    .stats{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .car-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .modules{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+@media(max-width:700px){
+
+    .sidebar{
+        transform:translateX(-100%);
+        transition:.3s;
+    }
+
+    .sidebar.open{
+        transform:translateX(0);
+    }
+
+    .main{
+        margin-left:0;
+        width:100%;
+        padding:18px;
+    }
+
+    .mobile-menu{
+        display:block;
+        border:0;
+        background:#171717;
+        color:white;
+        padding:10px 13px;
+        border-radius:8px;
+        cursor:pointer;
+    }
+
+    .topbar{
+        align-items:flex-start;
+    }
+
+    .heading h1{
+        font-size:25px;
+    }
+
+    .stats{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .car-grid,
+    .modules{
+        grid-template-columns:1fr;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .form-group.full{
+        grid-column:auto;
+    }
+
+    .toolbar{
+        flex-direction:column;
+    }
+}
+</style>
 </head>
 
 <body>
 
-  <div class="ambient"></div>
+<div class="app">
 
-  <div class="app">
+<!-- =========================
+     SIDEBAR
+========================= -->
 
-    <!-- =========================
-         SIDEBAR
-    ========================== -->
+<aside class="sidebar" id="sidebar">
 
-    <aside class="sidebar">
+    <div class="logo">
 
-      <div class="logo-wrap">
+        <img src="../wheel4u-logo.png" alt="Wheel 4U">
 
-        <img
-          src="../wheel4u-logo.png"
-          alt="Wheel 4U"
-          class="logo"
-        >
-
-        <div class="admin-label">
-          Management Portal
+        <div class="logo-text">
+            WHEEL <span>4U</span>
         </div>
 
-      </div>
+    </div>
 
-
-      <div class="nav">
+    <nav class="nav">
 
         <button class="active" data-section="overview">
-          <span class="nav-icon">⌂</span>
-          <span class="nav-text">Overview</span>
+            <span class="nav-icon">◉</span>
+            Overview
         </button>
 
         <button data-section="cars">
-          <span class="nav-icon">🚗</span>
-          <span class="nav-text">Cars</span>
+            <span class="nav-icon">🚗</span>
+            Cars
         </button>
 
         <button data-section="bikes">
-          <span class="nav-icon">🏍️</span>
-          <span class="nav-text">Bikes</span>
+            <span class="nav-icon">🏍️</span>
+            Bikes
         </button>
 
         <button data-section="properties">
-          <span class="nav-icon">⌂</span>
-          <span class="nav-text">Properties</span>
+            <span class="nav-icon">🏠</span>
+            Properties
+        </button>
+
+        <button data-section="media">
+            <span class="nav-icon">📸</span>
+            Media
         </button>
 
         <button data-section="enquiries">
-          <span class="nav-icon">✉</span>
-          <span class="nav-text">Enquiries</span>
+            <span class="nav-icon">📋</span>
+            Enquiries
         </button>
 
-      </div>
+    </nav>
+
+    <div class="logout">
+        <button onclick="logout()">↪ Logout</button>
+    </div>
+
+</aside>
 
 
-      <div class="sidebar-bottom">
+<!-- =========================
+     MAIN
+========================= -->
 
-        <button
-          class="logout"
-          id="logoutBtn"
-        >
-          Logout
-        </button>
+<main class="main">
 
-      </div>
+    <div class="topbar">
 
-    </aside>
+        <div style="display:flex;align-items:center;gap:12px;">
+
+            <button class="mobile-menu" onclick="toggleSidebar()">
+                ☰
+            </button>
+
+            <div class="heading">
+
+                <small>WHEEL 4U</small>
+
+                <h1 id="pageTitle">
+                    Dashboard
+                </h1>
+
+            </div>
+
+        </div>
+
+        <div class="admin-status">
+            ● ADMIN SESSION ACTIVE
+        </div>
+
+    </div>
 
 
     <!-- =========================
-         MAIN
-    ========================== -->
+         OVERVIEW
+    ========================= -->
 
-    <main class="main">
+    <section class="section active" id="overview">
 
-      <div class="topbar">
+        <div class="stats">
 
-        <div>
+            <div class="stat">
+                <div class="stat-label">TOTAL CARS</div>
+                <div class="stat-value" id="totalCars">0</div>
+            </div>
 
-          <div class="page-kicker">
-            Wheel 4U / Admin
-          </div>
+            <div class="stat green">
+                <div class="stat-label">AVAILABLE</div>
+                <div class="stat-value" id="availableCars">0</div>
+            </div>
 
-          <h1 class="page-title">
-            Dashboard
-          </h1>
+            <div class="stat yellow">
+                <div class="stat-label">RESERVED</div>
+                <div class="stat-value" id="reservedCars">0</div>
+            </div>
+
+            <div class="stat red">
+                <div class="stat-label">SOLD</div>
+                <div class="stat-value" id="soldCars">0</div>
+            </div>
 
         </div>
 
 
-        <div class="admin-status">
+        <div class="panel">
 
-          <span class="status-dot"></span>
+            <div class="panel-header">
 
-          Admin Session Active
+                <div>
+                    <h2>Vehicle Inventory</h2>
+                    <p class="muted">
+                        Manage Wheel 4U vehicle listings.
+                    </p>
+                </div>
 
-        </div>
+                <button class="btn btn-red" onclick="openCarModal()">
+                    + Add Vehicle
+                </button>
 
-      </div>
-
-
-      <!-- =========================
-           STATS
-      ========================== -->
-
-      <section class="stats">
-
-        <div class="stat">
-          <div class="stat-label">Total Cars</div>
-          <div class="stat-number" id="carCount">0</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">Total Bikes</div>
-          <div class="stat-number" id="bikeCount">0</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">Properties</div>
-          <div class="stat-number" id="propertyCount">0</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">Available</div>
-          <div class="stat-number red" id="availableCount">0</div>
-        </div>
-
-      </section>
-
-
-      <!-- =========================
-           INVENTORY
-      ========================== -->
-
-      <section class="panel">
-
-        <div class="panel-head">
-
-          <div>
-
-            <div class="panel-title">
-              Vehicle Inventory
             </div>
 
-            <div class="panel-subtitle">
-              Manage your current vehicle listings
-            </div>
-
-          </div>
-
-          <button
-            class="add-btn"
-            id="showFormBtn"
-          >
-            + Add Vehicle
-          </button>
+            <div id="overviewCars"></div>
 
         </div>
 
 
-        <!-- ADD VEHICLE FORM -->
+        <div class="panel">
 
-        <div
-          class="form-panel"
-          id="formPanel"
-        >
+            <div class="panel-header">
+                <div>
+                    <h2>Management Modules</h2>
+                    <p class="muted">
+                        Wheel 4U admin controls.
+                    </p>
+                </div>
+            </div>
 
-          <div class="form-grid">
+            <div class="modules">
 
-            <div class="field">
+                <div class="module">
+                    <div class="module-icon">🚗</div>
+                    <h3>Cars</h3>
+                    <p>
+                        Manage car inventory, pricing, specifications,
+                        photos and availability.
+                    </p>
+                </div>
 
-              <label>Vehicle Type</label>
+                <div class="module">
+                    <div class="module-icon">🏍️</div>
+                    <h3>Bikes</h3>
+                    <p>
+                        Motorcycle inventory management will be connected
+                        to the database in the next phase.
+                    </p>
+                </div>
 
-              <select id="vehicleType">
+                <div class="module">
+                    <div class="module-icon">🏠</div>
+                    <h3>Properties</h3>
+                    <p>
+                        Manage property listings, locations and pricing.
+                    </p>
+                </div>
 
-                <option value="Car">
-                  Car
-                </option>
+                <div class="module">
+                    <div class="module-icon">📸</div>
+                    <h3>Media</h3>
+                    <p>
+                        Manage vehicle and property photos.
+                    </p>
+                </div>
 
-                <option value="Bike">
-                  Bike
-                </option>
+                <div class="module">
+                    <div class="module-icon">📋</div>
+                    <h3>Enquiries</h3>
+                    <p>
+                        Review customer enquiries and follow-ups.
+                    </p>
+                </div>
 
-              </select>
+                <div class="module">
+                    <div class="module-icon">🏷️</div>
+                    <h3>Brands</h3>
+                    <p>
+                        Organize vehicle brands, models and variants.
+                    </p>
+                </div>
 
             </div>
 
+        </div>
 
-            <div class="field">
+    </section>
 
-              <label>Company / Brand</label>
 
-              <input
-                type="text"
-                id="brand"
-                placeholder="BMW"
-              >
+    <!-- =========================
+         CARS
+    ========================= -->
 
+    <section class="section" id="cars">
+
+        <div class="stats">
+
+            <div class="stat">
+                <div class="stat-label">TOTAL CARS</div>
+                <div class="stat-value" id="carsTotal">0</div>
             </div>
 
-
-            <div class="field">
-
-              <label>Model</label>
-
-              <input
-                type="text"
-                id="model"
-                placeholder="X5"
-              >
-
+            <div class="stat green">
+                <div class="stat-label">AVAILABLE</div>
+                <div class="stat-value" id="carsAvailable">0</div>
             </div>
 
-
-            <div class="field">
-
-              <label>Variant</label>
-
-              <input
-                type="text"
-                id="variant"
-                placeholder="xDrive40i"
-              >
-
+            <div class="stat yellow">
+                <div class="stat-label">RESERVED</div>
+                <div class="stat-value" id="carsReserved">0</div>
             </div>
 
-
-            <div class="field">
-
-              <label>Year</label>
-
-              <input
-                type="number"
-                id="year"
-                placeholder="2025"
-              >
-
+            <div class="stat red">
+                <div class="stat-label">SOLD</div>
+                <div class="stat-value" id="carsSold">0</div>
             </div>
-
-
-            <div class="field">
-
-              <label>Price</label>
-
-              <input
-                type="text"
-                id="price"
-                placeholder="₹ 85,00,000"
-              >
-
-            </div>
-
-
-            <div class="field">
-
-              <label>Kilometres</label>
-
-              <input
-                type="text"
-                id="km"
-                placeholder="25,000 KM"
-              >
-
-            </div>
-
-
-            <div class="field">
-
-              <label>Fuel</label>
-
-              <select id="fuel">
-
-                <option>Petrol</option>
-                <option>Diesel</option>
-                <option>Electric</option>
-                <option>Hybrid</option>
-
-              </select>
-
-            </div>
-
-
-            <div class="field">
-
-              <label>Transmission</label>
-
-              <select id="transmission">
-
-                <option>Automatic</option>
-                <option>Manual</option>
-
-              </select>
-
-            </div>
-
-
-            <div class="field">
-
-              <label>Availability</label>
-
-              <select id="availability">
-
-                <option value="Available">
-                  Available
-                </option>
-
-                <option value="Reserved">
-                  Reserved
-                </option>
-
-                <option value="Sold">
-                  Sold
-                </option>
-
-              </select>
-
-            </div>
-
-
-            <div class="field full">
-
-              <label>Vehicle Image URL</label>
-
-              <input
-                type="text"
-                id="image"
-                placeholder="Image path / URL"
-              >
-
-            </div>
-
-
-            <div class="field full">
-
-              <label>Description</label>
-
-              <textarea
-                id="description"
-                placeholder="Write complete vehicle details..."
-              ></textarea>
-
-            </div>
-
-          </div>
-
-
-          <div class="form-actions">
-
-            <button
-              class="cancel-btn"
-              id="cancelFormBtn"
-            >
-              Cancel
-            </button>
-
-            <button
-              class="add-btn"
-              id="saveVehicleBtn"
-            >
-              Save Vehicle
-            </button>
-
-          </div>
 
         </div>
 
 
-        <!-- TABLE -->
+        <div class="panel">
 
-        <div class="table-wrap">
+            <div class="panel-header">
 
-          <table>
+                <div>
+                    <h2>Cars Management</h2>
+                    <p class="muted">
+                        Add and manage Wheel 4U cars.
+                    </p>
+                </div>
 
-            <thead>
+                <button class="btn btn-red" onclick="openCarModal()">
+                    + Add Car
+                </button>
 
-              <tr>
-                <th>Vehicle</th>
-                <th>Brand</th>
-                <th>Year</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
+            </div>
 
-            </thead>
+            <div class="toolbar">
 
-            <tbody id="inventoryBody">
-
-              <tr id="emptyRow">
-
-                <td
-                  colspan="6"
-                  style="
-                    text-align:center;
-                    padding:45px 10px;
-                    color:#555;
-                  "
+                <input
+                    class="search"
+                    id="carSearch"
+                    placeholder="Search brand, model, year or location..."
+                    oninput="renderCars()"
                 >
-                  No vehicles added yet.
-                  <br><br>
-                  Use <strong>+ Add Vehicle</strong>
-                  to create the first listing.
-                </td>
 
-              </tr>
+                <select
+                    class="search"
+                    id="statusFilter"
+                    onchange="renderCars()"
+                    style="flex:0 0 180px;"
+                >
+                    <option value="all">All Status</option>
+                    <option value="Available">Available</option>
+                    <option value="Reserved">Reserved</option>
+                    <option value="Sold">Sold</option>
+                </select>
 
-            </tbody>
+            </div>
 
-          </table>
+            <div class="car-grid" id="carGrid"></div>
 
         </div>
 
-      </section>
+    </section>
 
 
-      <!-- =========================
-           MANAGEMENT MODULES
-      ========================== -->
+    <!-- =========================
+         BIKES
+    ========================= -->
 
-      <section class="panel">
+    <section class="section" id="bikes">
 
-        <div class="panel-head">
+        <div class="panel">
 
-          <div>
-
-            <div class="panel-title">
-              Management Modules
+            <div class="panel-header">
+                <div>
+                    <h2>🏍️ Bikes Management</h2>
+                    <p class="muted">
+                        Motorcycle inventory management.
+                    </p>
+                </div>
             </div>
 
-            <div class="panel-subtitle">
-              Everything the Wheel 4U admin can control
+            <div class="empty">
+
+                <div class="empty-icon">🏍️</div>
+
+                <h3>Bikes module ready</h3>
+
+                <p style="margin-top:8px;">
+                    Database connection will be added in the next
+                    development phase.
+                </p>
+
             </div>
 
-          </div>
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         PROPERTIES
+    ========================= -->
+
+    <section class="section" id="properties">
+
+        <div class="panel">
+
+            <div class="panel-header">
+                <div>
+                    <h2>🏠 Properties Management</h2>
+                    <p class="muted">
+                        Manage property listings.
+                    </p>
+                </div>
+            </div>
+
+            <div class="empty">
+
+                <div class="empty-icon">🏠</div>
+
+                <h3>Properties module ready</h3>
+
+                <p style="margin-top:8px;">
+                    Property database functionality will be added next.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         MEDIA
+    ========================= -->
+
+    <section class="section" id="media">
+
+        <div class="panel">
+
+            <div class="panel-header">
+                <div>
+                    <h2>📸 Media Management</h2>
+                    <p class="muted">
+                        Vehicle and property photos.
+                    </p>
+                </div>
+            </div>
+
+            <div class="empty">
+
+                <div class="empty-icon">📸</div>
+
+                <h3>Media manager</h3>
+
+                <p style="margin-top:8px;">
+                    Image storage and uploads will be connected later.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         ENQUIRIES
+    ========================= -->
+
+    <section class="section" id="enquiries">
+
+        <div class="panel">
+
+            <div class="panel-header">
+                <div>
+                    <h2>📋 Customer Enquiries</h2>
+                    <p class="muted">
+                        Review customer enquiries.
+                    </p>
+                </div>
+            </div>
+
+            <div class="empty">
+
+                <div class="empty-icon">📋</div>
+
+                <h3>No enquiries yet</h3>
+
+                <p style="margin-top:8px;">
+                    Customer enquiry integration will be added later.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+</div>
+
+
+<!-- =========================
+     ADD / EDIT CAR MODAL
+========================= -->
+
+<div class="modal" id="carModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <div>
+                <h2 id="modalTitle">Add Vehicle</h2>
+                <p class="muted">
+                    Enter vehicle information.
+                </p>
+            </div>
+
+            <button class="close" onclick="closeCarModal()">
+                ×
+            </button>
 
         </div>
 
 
-        <div class="module-grid">
+        <form id="carForm">
 
-          <div class="module">
+            <input type="hidden" id="editId">
 
-            <div class="module-icon">
-              🚗
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Brand *</label>
+
+                    <input
+                        id="brand"
+                        required
+                        placeholder="Example: BMW"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Model *</label>
+
+                    <input
+                        id="model"
+                        required
+                        placeholder="Example: 3 Series"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Variant</label>
+
+                    <input
+                        id="variant"
+                        placeholder="Example: 320d M Sport"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Year *</label>
+
+                    <input
+                        id="year"
+                        type="number"
+                        min="1900"
+                        max="2100"
+                        required
+                        placeholder="2023"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Fuel</label>
+
+                    <select id="fuel">
+
+                        <option value="Petrol">
+                            Petrol
+                        </option>
+
+                        <option value="Diesel">
+                            Diesel
+                        </option>
+
+                        <option value="Electric">
+                            Electric
+                        </option>
+
+                        <option value="Hybrid">
+                            Hybrid
+                        </option>
+
+                        <option value="CNG">
+                            CNG
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+                    <label>Transmission</label>
+
+                    <select id="transmission">
+
+                        <option value="Automatic">
+                            Automatic
+                        </option>
+
+                        <option value="Manual">
+                            Manual
+                        </option>
+
+                        <option value="AMT">
+                            AMT
+                        </option>
+
+                        <option value="CVT">
+                            CVT
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+                    <label>Kilometres Driven</label>
+
+                    <input
+                        id="km"
+                        type="number"
+                        placeholder="25000"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Price (₹)</label>
+
+                    <input
+                        id="price"
+                        type="number"
+                        placeholder="1250000"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Location</label>
+
+                    <input
+                        id="location"
+                        placeholder="Mangalore"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Status</label>
+
+                    <select id="status">
+
+                        <option value="Available">
+                            Available
+                        </option>
+
+                        <option value="Reserved">
+                            Reserved
+                        </option>
+
+                        <option value="Sold">
+                            Sold
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group full">
+                    <label>Vehicle Image URL</label>
+
+                    <input
+                        id="image"
+                        placeholder="https://example.com/car.jpg"
+                    >
+                </div>
+
+
+                <div class="form-group full">
+                    <label>Description</label>
+
+                    <textarea
+                        id="description"
+                        placeholder="Enter vehicle description..."
+                    ></textarea>
+                </div>
+
             </div>
 
-            <h3>
-              Cars
-            </h3>
 
-            <p>
-              Add brands, models, variants, photos,
-              specifications, pricing and availability.
-            </p>
+            <div class="form-actions">
 
-          </div>
+                <button
+                    type="button"
+                    class="btn btn-dark"
+                    onclick="closeCarModal()"
+                >
+                    Cancel
+                </button>
 
+                <button
+                    type="submit"
+                    class="btn btn-red"
+                >
+                    Save Vehicle
+                </button>
 
-          <div class="module">
-
-            <div class="module-icon">
-              🏍️
             </div>
 
-            <h3>
-              Bikes
-            </h3>
+        </form>
 
-            <p>
-              Manage motorcycle inventory and
-              individual vehicle information.
-            </p>
+    </div>
 
-          </div>
+</div>
 
 
-          <div class="module">
+<script>
 
-            <div class="module-icon">
-              🏠
-            </div>
+/* =========================
+   DATA
+========================= */
 
-            <h3>
-              Properties
-            </h3>
-
-            <p>
-              Add property listings, locations,
-              prices, photos and descriptions.
-            </p>
-
-          </div>
+let cars = JSON.parse(
+    localStorage.getItem("wheel4u_cars") || "[]"
+);
 
 
-          <div class="module">
+/* =========================
+   SAVE DATA
+========================= */
 
-            <div class="module-icon">
-              🏷️
-            </div>
+function saveCars(){
 
-            <h3>
-              Brands
-            </h3>
+    localStorage.setItem(
+        "wheel4u_cars",
+        JSON.stringify(cars)
+    );
 
-            <p>
-              Organize manufacturers and models
-              for customer discovery.
-            </p>
-
-          </div>
+}
 
 
-          <div class="module">
+/* =========================
+   NAVIGATION
+========================= */
 
-            <div class="module-icon">
-              📸
-            </div>
+const navButtons =
+    document.querySelectorAll(".nav button");
 
-            <h3>
-              Media
-            </h3>
+const sections =
+    document.querySelectorAll(".section");
 
-            <p>
-              Manage vehicle and property photos
-              used throughout the website.
-            </p>
-
-          </div>
+const pageTitle =
+    document.getElementById("pageTitle");
 
 
-          <div class="module">
+navButtons.forEach(button => {
 
-            <div class="module-icon">
-              ✉
-            </div>
+    button.addEventListener("click", () => {
 
-            <h3>
-              Enquiries
-            </h3>
+        const sectionName =
+            button.dataset.section;
 
-            <p>
-              Review customer enquiries and
-              follow up with interested buyers.
-            </p>
+        navButtons.forEach(btn =>
+            btn.classList.remove("active")
+        );
 
-          </div>
+        button.classList.add("active");
 
-        </div>
+        sections.forEach(section =>
+            section.classList.remove("active")
+        );
 
-      </section>
+        const target =
+            document.getElementById(sectionName);
 
-    </main>
+        if(target){
+            target.classList.add("active");
+        }
 
-  </div>
+        const titles = {
 
+            overview:"Dashboard",
 
-  <div
-    class="toast"
-    id="toast"
-  >
-    Vehicle saved successfully.
-  </div>
+            cars:"Cars Management",
 
+            bikes:"Bikes Management",
 
-  <script>
+            properties:"Properties Management",
 
-    /*
-      FRONTEND ADMIN DASHBOARD
+            media:"Media Management",
 
-      Temporary local demo storage is used here.
+            enquiries:"Customer Enquiries"
 
-      Production version will use:
-      - Secure authentication
-      - Database
-      - Server-side authorization
-      - Secure image storage
-    */
+        };
 
+        pageTitle.textContent =
+            titles[sectionName] || "Dashboard";
 
-    const STORAGE_KEY =
-      "wheel4u_vehicle_inventory_demo";
+        document
+            .getElementById("sidebar")
+            .classList.remove("open");
 
+        window.scrollTo({
+            top:0,
+            behavior:"smooth"
+        });
 
-    let vehicles =
-      JSON.parse(
-        localStorage.getItem(STORAGE_KEY) || "[]"
-      );
+    });
+
+});
 
 
-    const inventoryBody =
-      document.getElementById("inventoryBody");
+/* =========================
+   MOBILE SIDEBAR
+========================= */
 
-    const formPanel =
-      document.getElementById("formPanel");
+function toggleSidebar(){
 
-    const showFormBtn =
-      document.getElementById("showFormBtn");
+    document
+        .getElementById("sidebar")
+        .classList.toggle("open");
 
-    const cancelFormBtn =
-      document.getElementById("cancelFormBtn");
-
-    const saveVehicleBtn =
-      document.getElementById("saveVehicleBtn");
-
-    const toast =
-      document.getElementById("toast");
+}
 
 
-    /* =========================
-       SESSION CHECK
-    ========================== */
+/* =========================
+   MODAL
+========================= */
 
-    if (
-      sessionStorage.getItem("wheel4uAdminDemo")
-      !== "true"
-    ) {
+function openCarModal(id = null){
 
-      window.location.href =
-        "login.html";
+    const modal =
+        document.getElementById("carModal");
+
+    const form =
+        document.getElementById("carForm");
+
+    form.reset();
+
+    document.getElementById("editId").value = "";
+
+    document.getElementById("modalTitle")
+        .textContent = id
+        ? "Edit Vehicle"
+        : "Add Vehicle";
+
+
+    if(id){
+
+        const car =
+            cars.find(item =>
+                String(item.id) === String(id)
+            );
+
+        if(!car) return;
+
+        document.getElementById("editId").value =
+            car.id;
+
+        document.getElementById("brand").value =
+            car.brand || "";
+
+        document.getElementById("model").value =
+            car.model || "";
+
+        document.getElementById("variant").value =
+            car.variant || "";
+
+        document.getElementById("year").value =
+            car.year || "";
+
+        document.getElementById("fuel").value =
+            car.fuel || "Petrol";
+
+        document.getElementById("transmission").value =
+            car.transmission || "Automatic";
+
+        document.getElementById("km").value =
+            car.km || "";
+
+        document.getElementById("price").value =
+            car.price || "";
+
+        document.getElementById("location").value =
+            car.location || "";
+
+        document.getElementById("status").value =
+            car.status || "Available";
+
+        document.getElementById("image").value =
+            car.image || "";
+
+        document.getElementById("description").value =
+            car.description || "";
 
     }
 
+    modal.classList.add("show");
 
-    /* =========================
-       FORM OPEN
-    ========================== */
-
-    showFormBtn.addEventListener(
-      "click",
-      function () {
-
-        formPanel.classList.add("show");
-
-        showFormBtn.style.display =
-          "none";
-
-      }
-    );
+}
 
 
-    /* =========================
-       FORM CLOSE
-    ========================== */
+function closeCarModal(){
 
-    cancelFormBtn.addEventListener(
-      "click",
-      function () {
+    document
+        .getElementById("carModal")
+        .classList.remove("show");
 
-        formPanel.classList.remove("show");
-
-        showFormBtn.style.display =
-          "block";
-
-      }
-    );
+}
 
 
-    /* =========================
-       SAVE VEHICLE
-    ========================== */
+document
+    .getElementById("carModal")
+    .addEventListener("click", function(event){
 
-    saveVehicleBtn.addEventListener(
-      "click",
-      function () {
+        if(event.target === this){
+            closeCarModal();
+        }
 
-        const vehicle = {
+    });
 
-          id:
-            Date.now(),
 
-          type:
-            document.getElementById(
-              "vehicleType"
-            ).value,
+/* =========================
+   FORM SUBMIT
+========================= */
 
-          brand:
-            document.getElementById(
-              "brand"
-            ).value.trim(),
+document
+    .getElementById("carForm")
+    .addEventListener("submit", function(event){
 
-          model:
-            document.getElementById(
-              "model"
-            ).value.trim(),
+        event.preventDefault();
 
-          variant:
-            document.getElementById(
-              "variant"
-            ).value.trim(),
 
-          year:
-            document.getElementById(
-              "year"
-            ).value,
+        const editId =
+            document.getElementById("editId").value;
 
-          price:
-            document.getElementById(
-              "price"
-            ).value.trim(),
 
-          km:
-            document.getElementById(
-              "km"
-            ).value.trim(),
+        const carData = {
 
-          fuel:
-            document.getElementById(
-              "fuel"
-            ).value,
+            id: editId
+                ? Number(editId)
+                : Date.now(),
 
-          transmission:
-            document.getElementById(
-              "transmission"
-            ).value,
+            brand:
+                document.getElementById("brand").value.trim(),
 
-          status:
-            document.getElementById(
-              "availability"
-            ).value,
+            model:
+                document.getElementById("model").value.trim(),
 
-          image:
-            document.getElementById(
-              "image"
-            ).value.trim(),
+            variant:
+                document.getElementById("variant").value.trim(),
 
-          description:
-            document.getElementById(
-              "description"
-            ).value.trim()
+            year:
+                document.getElementById("year").value,
+
+            fuel:
+                document.getElementById("fuel").value,
+
+            transmission:
+                document.getElementById("transmission").value,
+
+            km:
+                document.getElementById("km").value,
+
+            price:
+                document.getElementById("price").value,
+
+            location:
+                document.getElementById("location").value.trim(),
+
+            status:
+                document.getElementById("status").value,
+
+            image:
+                document.getElementById("image").value.trim(),
+
+            description:
+                document.getElementById("description").value.trim(),
+
+            updatedAt:
+                new Date().toISOString()
 
         };
 
 
-        if (
-          !vehicle.brand ||
-          !vehicle.model ||
-          !vehicle.year ||
-          !vehicle.price
-        ) {
-
-          alert(
-            "Please fill Brand, Model, Year and Price."
-          );
-
-          return;
-
-        }
-
-
-        vehicles.push(vehicle);
-
-        localStorage.setItem(
-          STORAGE_KEY,
-          JSON.stringify(vehicles)
-        );
-
-
-        renderInventory();
-
-        updateStats();
-
-        formPanel.classList.remove("show");
-
-        showFormBtn.style.display =
-          "block";
-
-        document
-          .querySelectorAll(
-            "#formPanel input, #formPanel textarea"
-          )
-          .forEach(function (field) {
-
-            field.value = "";
-
-          });
-
-
-        showToast();
-
-      }
-    );
-
-
-    /* =========================
-       RENDER INVENTORY
-    ========================== */
-
-    function renderInventory() {
-
-      inventoryBody.innerHTML = "";
-
-
-      if (vehicles.length === 0) {
-
-        inventoryBody.innerHTML = `
-          <tr>
-            <td
-              colspan="6"
-              style="
-                text-align:center;
-                padding:45px 10px;
-                color:#555;
-              "
-            >
-              No vehicles added yet.
-              <br><br>
-              Use <strong>+ Add Vehicle</strong>
-              to create the first listing.
-            </td>
-          </tr>
-        `;
-
-        return;
-
-      }
-
-
-      vehicles.forEach(function (vehicle) {
-
-        const row =
-          document.createElement("tr");
-
-
-        let badgeClass =
-          "available";
-
-        if (
-          vehicle.status === "Reserved"
-        ) {
-          badgeClass = "reserved";
-        }
-
-        if (
-          vehicle.status === "Sold"
-        ) {
-          badgeClass = "sold";
-        }
-
-
-        row.innerHTML = `
-
-          <td>
-
-            <div class="vehicle-name">
-              ${escapeHTML(
-                vehicle.model
-              )}
-            </div>
-
-            <div class="vehicle-type">
-              ${escapeHTML(
-                vehicle.type
-              )}
-              ${vehicle.variant
-                ? " • " +
-                  escapeHTML(
-                    vehicle.variant
-                  )
-                : ""
-              }
-            </div>
-
-          </td>
-
-
-          <td>
-            ${escapeHTML(
-              vehicle.brand
-            )}
-          </td>
-
-
-          <td>
-            ${escapeHTML(
-              vehicle.year
-            )}
-          </td>
-
-
-          <td>
-            ${escapeHTML(
-              vehicle.price
-            )}
-          </td>
-
-
-          <td>
-
-            <span
-              class="badge ${badgeClass}"
-            >
-              ${escapeHTML(
-                vehicle.status
-              )}
-            </span>
-
-          </td>
-
-
-          <td>
-
-            <div class="actions">
-
-              <button
-                class="action-btn"
-                onclick="editVehicle(${vehicle.id})"
-              >
-                Edit
-              </button>
-
-              <button
-                class="action-btn"
-                onclick="deleteVehicle(${vehicle.id})"
-              >
-                Delete
-              </button>
-
-            </div>
-
-          </td>
-
-        `;
-
-
-        inventoryBody.appendChild(row);
-
-      });
-
-    }
-
-
-    /* =========================
-       DELETE
-    ========================== */
-
-    function deleteVehicle(id) {
-
-      const confirmed =
-        confirm(
-          "Delete this vehicle?"
-        );
-
-      if (!confirmed) return;
-
-
-      vehicles =
-        vehicles.filter(function(vehicle) {
-
-          return vehicle.id !== id;
-
-        });
-
-
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(vehicles)
-      );
-
-
-      renderInventory();
-
-      updateStats();
-
-    }
-
-
-    /* =========================
-       EDIT
-    ========================== */
-
-    function editVehicle(id) {
-
-      const vehicle =
-        vehicles.find(function(item) {
-
-          return item.id === id;
-
-        });
-
-
-      if (!vehicle) return;
-
-
-      formPanel.classList.add("show");
-
-      showFormBtn.style.display =
-        "none";
-
-
-      document.getElementById(
-        "vehicleType"
-      ).value =
-        vehicle.type;
-
-      document.getElementById(
-        "brand"
-      ).value =
-        vehicle.brand;
-
-      document.getElementById(
-        "model"
-      ).value =
-        vehicle.model;
-
-      document.getElementById(
-        "variant"
-      ).value =
-        vehicle.variant;
-
-      document.getElementById(
-        "year"
-      ).value =
-        vehicle.year;
-
-      document.getElementById(
-        "price"
-      ).value =
-        vehicle.price;
-
-      document.getElementById(
-        "km"
-      ).value =
-        vehicle.km;
-
-      document.getElementById(
-        "fuel"
-      ).value =
-        vehicle.fuel;
-
-      document.getElementById(
-        "transmission"
-      ).value =
-        vehicle.transmission;
-
-      document.getElementById(
-        "availability"
-      ).value =
-        vehicle.status;
-
-      document.getElementById(
-        "image"
-      ).value =
-        vehicle.image;
-
-      document.getElementById(
-        "description"
-      ).value =
-        vehicle.description;
-
-
-      vehicles =
-        vehicles.filter(function(item) {
-
-          return item.id !== id;
-
-        });
-
-
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(vehicles)
-      );
-
-
-      updateStats();
-
-    }
-
-
-    /* =========================
-       STATS
-    ========================== */
-
-    function updateStats() {
-
-      const cars =
-        vehicles.filter(function(vehicle) {
-
-          return vehicle.type === "Car";
-
-        }).length;
-
-
-      const bikes =
-        vehicles.filter(function(vehicle) {
-
-          return vehicle.type === "Bike";
-
-        }).length;
-
-
-      const available =
-        vehicles.filter(function(vehicle) {
-
-          return vehicle.status === "Available";
-
-        }).length;
-
-
-      document.getElementById(
-        "carCount"
-      ).textContent =
-        cars;
-
-
-      document.getElementById(
-        "bikeCount"
-      ).textContent =
-        bikes;
-
-
-      document.getElementById(
-        "propertyCount"
-      ).textContent =
-        "0";
-
-
-      document.getElementById(
-        "availableCount"
-      ).textContent =
-        available;
-
-    }
-
-
-    /* =========================
-       TOAST
-    ========================== */
-
-    function showToast() {
-
-      toast.classList.add("show");
-
-      setTimeout(function () {
-
-        toast.classList.remove("show");
-
-      }, 2500);
-
-    }
-
-
-    /* =========================
-       HTML SAFETY
-    ========================== */
-
-    function escapeHTML(value) {
-
-      return String(value || "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-
-    }
-
-
-    /* =========================
-       NAVIGATION
-    ========================== */
-
-    document
-      .querySelectorAll(".nav button")
-      .forEach(function(button) {
-
-        button.addEventListener(
-          "click",
-          function() {
-
-            document
-              .querySelectorAll(
-                ".nav button"
-              )
-              .forEach(function(btn) {
-
-                btn.classList.remove(
-                  "active"
+        if(editId){
+
+            const index =
+                cars.findIndex(item =>
+                    String(item.id) === String(editId)
                 );
 
-              });
+            if(index !== -1){
 
-
-            button.classList.add(
-              "active"
-            );
-
-
-            const section =
-              button.dataset.section;
-
-
-            if (
-              section !== "overview"
-            ) {
-
-              alert(
-                section.charAt(0).toUpperCase()
-                + section.slice(1)
-                + " management module will be connected to the database in the next development phase."
-              );
+                cars[index] = carData;
 
             }
 
-          }
-        );
+        }else{
 
-      });
-
-
-    /* =========================
-       LOGOUT
-    ========================== */
-
-    document
-      .getElementById("logoutBtn")
-      .addEventListener(
-        "click",
-        function() {
-
-          sessionStorage.removeItem(
-            "wheel4uAdminDemo"
-          );
-
-          window.location.href =
-            "login.html";
+            cars.unshift(carData);
 
         }
-      );
 
 
-    /* =========================
-       INITIALIZE
-    ========================== */
+        saveCars();
 
-    renderInventory();
+        renderCars();
+
+        updateStats();
+
+        closeCarModal();
+
+
+        alert(
+            editId
+                ? "Vehicle updated successfully."
+                : "Vehicle added successfully."
+        );
+
+    });
+
+
+/* =========================
+   DELETE CAR
+========================= */
+
+function deleteCar(id){
+
+    const car =
+        cars.find(item =>
+            String(item.id) === String(id)
+        );
+
+    if(!car) return;
+
+
+    const confirmed =
+        confirm(
+            `Delete ${car.brand} ${car.model}?`
+        );
+
+
+    if(!confirmed) return;
+
+
+    cars =
+        cars.filter(item =>
+            String(item.id) !== String(id)
+        );
+
+
+    saveCars();
+
+    renderCars();
 
     updateStats();
 
-  </script>
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+function changeStatus(id, newStatus){
+
+    const car =
+        cars.find(item =>
+            String(item.id) === String(id)
+        );
+
+    if(!car) return;
+
+    car.status = newStatus;
+
+    saveCars();
+
+    renderCars();
+
+    updateStats();
+
+}
+
+
+/* =========================
+   FORMAT PRICE
+========================= */
+
+function formatPrice(value){
+
+    if(!value) return "Price on request";
+
+    const number =
+        Number(value);
+
+    if(Number.isNaN(number)){
+        return value;
+    }
+
+    return "₹" +
+        number.toLocaleString("en-IN");
+
+}
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHTML(value){
+
+    return String(value || "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================
+   RENDER CARS
+========================= */
+
+function renderCars(){
+
+    const grid =
+        document.getElementById("carGrid");
+
+    const overview =
+        document.getElementById("overviewCars");
+
+
+    const search =
+        (
+            document.getElementById("carSearch")?.value
+            || ""
+        )
+        .toLowerCase()
+        .trim();
+
+
+    const filter =
+        document.getElementById("statusFilter")?.value
+        || "all";
+
+
+    const filtered =
+        cars.filter(car => {
+
+            const text = [
+
+                car.brand,
+                car.model,
+                car.variant,
+                car.year,
+                car.location
+
+            ]
+            .join(" ")
+            .toLowerCase();
+
+
+            const matchesSearch =
+                !search ||
+                text.includes(search);
+
+
+            const matchesStatus =
+                filter === "all" ||
+                car.status === filter;
+
+
+            return matchesSearch &&
+                   matchesStatus;
+
+        });
+
+
+    if(filtered.length === 0){
+
+        grid.innerHTML = `
+
+            <div class="empty"
+                 style="grid-column:1/-1;">
+
+                <div class="empty-icon">🚗</div>
+
+                <h3>
+                    No vehicles found
+                </h3>
+
+                <p style="margin-top:8px;">
+                    Add your first vehicle to begin.
+                </p>
+
+                <button
+                    class="btn btn-red"
+                    style="margin-top:18px;"
+                    onclick="openCarModal()"
+                >
+                    + Add Vehicle
+                </button>
+
+            </div>
+
+        `;
+
+    }else{
+
+        grid.innerHTML =
+            filtered
+            .map(car => carCard(car))
+            .join("");
+
+    }
+
+
+    /* Overview: latest 6 */
+
+    const latest =
+        cars.slice(0,6);
+
+
+    if(latest.length === 0){
+
+        overview.innerHTML = `
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    🚗
+                </div>
+
+                <h3>
+                    No vehicles yet
+                </h3>
+
+                <p style="margin-top:8px;">
+                    Click Add Vehicle to create your
+                    first listing.
+                </p>
+
+            </div>
+
+        `;
+
+    }else{
+
+        overview.innerHTML = `
+
+            <div class="car-grid">
+
+                ${
+                    latest
+                    .map(car => carCard(car))
+                    .join("")
+                }
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================
+   CAR CARD
+========================= */
+
+function carCard(car){
+
+    const image =
+        car.image ||
+        "../wheel4u-home-bg.png";
+
+
+    const statusClass =
+        String(car.status || "Available")
+            .toLowerCase();
+
+
+    return `
+
+        <article class="car-card">
+
+            <img
+                class="car-image"
+                src="${escapeHTML(image)}"
+                alt="${escapeHTML(car.brand)} ${escapeHTML(car.model)}"
+                onerror="this.src='../wheel4u-home-bg.png'"
+            >
+
+            <div class="car-info">
+
+                <div class="car-title">
+
+                    ${escapeHTML(car.brand)}
+                    ${escapeHTML(car.model)}
+
+                </div>
+
+                <div class="car-sub">
+
+                    ${escapeHTML(car.variant || "Premium Pre-Owned")}
+
+                </div>
+
+
+                <span class="status ${statusClass}">
+
+                    ${escapeHTML(car.status || "Available")}
+
+                </span>
+
+
+                <div class="price">
+
+                    ${formatPrice(car.price)}
+
+                </div>
+
+
+                <div class="car-details">
+
+                    <div class="detail">
+
+                        YEAR
+
+                        <strong>
+                            ${escapeHTML(car.year || "-")}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        KM
+
+                        <strong>
+                            ${
+                                car.km
+                                ? Number(car.km).toLocaleString("en-IN")
+                                : "-"
+                            }
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        FUEL
+
+                        <strong>
+                            ${escapeHTML(car.fuel || "-")}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        TRANSMISSION
+
+                        <strong>
+                            ${escapeHTML(car.transmission || "-")}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail"
+                         style="grid-column:1/-1;">
+
+                        LOCATION
+
+                        <strong>
+                            ${escapeHTML(car.location || "-")}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card-actions">
+
+                    <button
+                        class="btn btn-dark"
+                        onclick="openCarModal(${car.id})"
+                    >
+                        Edit
+                    </button>
+
+                    <button
+                        class="btn btn-danger"
+                        onclick="deleteCar(${car.id})"
+                    >
+                        Delete
+                    </button>
+
+                </div>
+
+
+                <select
+                    class="search"
+                    style="width:100%;margin-top:9px;"
+                    onchange="changeStatus(${car.id},this.value)"
+                >
+
+                    <option
+                        value="Available"
+                        ${car.status === "Available" ? "selected" : ""}
+                    >
+                        🟢 Available
+                    </option>
+
+                    <option
+                        value="Reserved"
+                        ${car.status === "Reserved" ? "selected" : ""}
+                    >
+                        🟡 Reserved
+                    </option>
+
+                    <option
+                        value="Sold"
+                        ${car.status === "Sold" ? "selected" : ""}
+                    >
+                        🔴 Sold
+                    </option>
+
+                </select>
+
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+
+/* =========================
+   STATISTICS
+========================= */
+
+function updateStats(){
+
+    const total =
+        cars.length;
+
+
+    const available =
+        cars.filter(car =>
+            car.status === "Available"
+        ).length;
+
+
+    const reserved =
+        cars.filter(car =>
+            car.status === "Reserved"
+        ).length;
+
+
+    const sold =
+        cars.filter(car =>
+            car.status === "Sold"
+        ).length;
+
+
+    document.getElementById("totalCars")
+        .textContent = total;
+
+    document.getElementById("availableCars")
+        .textContent = available;
+
+    document.getElementById("reservedCars")
+        .textContent = reserved;
+
+    document.getElementById("soldCars")
+        .textContent = sold;
+
+
+    document.getElementById("carsTotal")
+        .textContent = total;
+
+    document.getElementById("carsAvailable")
+        .textContent = available;
+
+    document.getElementById("carsReserved")
+        .textContent = reserved;
+
+    document.getElementById("carsSold")
+        .textContent = sold;
+
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+function logout(){
+
+    const confirmed =
+        confirm("Are you sure you want to logout?");
+
+    if(!confirmed) return;
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+/* =========================
+   INITIALIZE
+========================= */
+
+renderCars();
+
+updateStats();
+
+</script>
 
 </body>
 </html>
