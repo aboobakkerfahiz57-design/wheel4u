@@ -179,6 +179,13 @@
       box-shadow: 0 18px 40px rgba(224,0,0,0.35);
     }
 
+    .login-btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
     .error {
       min-height: 18px;
       margin-top: 14px;
@@ -204,6 +211,7 @@
       font-size: 9px;
       letter-spacing: 2px;
       text-transform: uppercase;
+      text-decoration: none;
       transition: 0.3s;
     }
 
@@ -263,15 +271,15 @@
         <div class="field">
 
           <label for="adminId">
-            Admin ID
+            Admin Email
           </label>
 
           <div class="input-wrap">
 
             <input
-              type="text"
+              type="email"
               id="adminId"
-              placeholder="Enter admin ID"
+              placeholder="Enter admin email"
               autocomplete="username"
               required
             >
@@ -279,7 +287,6 @@
           </div>
 
         </div>
-
 
         <div class="field">
 
@@ -301,10 +308,10 @@
 
         </div>
 
-
         <button
           type="submit"
           class="login-btn"
+          id="loginButton"
         >
           Enter Dashboard →
         </button>
@@ -312,10 +319,10 @@
         <div
           class="error"
           id="error"
+          aria-live="polite"
         ></div>
 
       </form>
-
 
       <div class="security">
         🔒 AUTHORIZED ADMINISTRATORS ONLY
@@ -333,63 +340,163 @@
   </main>
 
 
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Wheel 4U Supabase Configuration -->
+  <script src="supabase-config.js"></script>
+
   <script>
 
-    /*
-      TEMPORARY FRONTEND DEMO
+    /* =========================================
+       SUPABASE CLIENT
+    ========================================= */
 
-      IMPORTANT:
-      This is NOT production security.
-      Real authentication will be connected
-      to the backend/database later.
-    */
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
 
-    const ADMIN_ID = "wheel 4u";
-    const ADMIN_PASSWORD = "wheel4u@123";
 
-    const form =
-      document.getElementById("loginForm");
+    /* =========================================
+       ELEMENTS
+    ========================================= */
 
-    const error =
-      document.getElementById("error");
+    const form = document.getElementById("loginForm");
+    const errorBox = document.getElementById("error");
+    const loginButton = document.getElementById("loginButton");
 
-    form.addEventListener("submit", function(event) {
+
+    /* =========================================
+       CHECK EXISTING SESSION
+    ========================================= */
+
+    async function checkExistingSession() {
+
+      const {
+        data: {
+          session
+        }
+      } = await supabaseClient.auth.getSession();
+
+      if (session) {
+        window.location.href = "dashboard.html";
+      }
+
+    }
+
+    checkExistingSession();
+
+
+    /* =========================================
+       LOGIN
+    ========================================= */
+
+    form.addEventListener("submit", async function(event) {
 
       event.preventDefault();
 
-      const id =
-        document
-          .getElementById("adminId")
-          .value
-          .trim()
-          .toLowerCase();
+      errorBox.textContent = "";
 
-      const password =
-        document
-          .getElementById("password")
-          .value;
+      const email = document
+        .getElementById("adminId")
+        .value
+        .trim();
 
-      if (
-        id === ADMIN_ID &&
-        password === ADMIN_PASSWORD
-      ) {
+      const password = document
+        .getElementById("password")
+        .value;
 
-        sessionStorage.setItem(
-          "wheel4uAdminDemo",
-          "true"
+
+      if (!email || !password) {
+
+        errorBox.textContent =
+          "Please enter your email and password.";
+
+        return;
+      }
+
+
+      /* Loading state */
+
+      loginButton.disabled = true;
+
+      loginButton.textContent =
+        "Signing In...";
+
+
+      try {
+
+        const {
+          data,
+          error: loginError
+        } = await supabaseClient.auth.signInWithPassword({
+
+          email: email,
+
+          password: password
+
+        });
+
+
+        /* Login failed */
+
+        if (loginError) {
+
+          console.error(
+            "Wheel 4U login error:",
+            loginError
+          );
+
+          errorBox.textContent =
+            "Invalid email or password.";
+
+          loginButton.disabled = false;
+
+          loginButton.textContent =
+            "Enter Dashboard →";
+
+          return;
+        }
+
+
+        /* Login successful */
+
+        if (data && data.session) {
+
+          window.location.href =
+            "dashboard.html";
+
+          return;
+        }
+
+
+        /* Unexpected result */
+
+        errorBox.textContent =
+          "Login could not be completed. Please try again.";
+
+        loginButton.disabled = false;
+
+        loginButton.textContent =
+          "Enter Dashboard →";
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Unexpected Wheel 4U login error:",
+          error
         );
 
-        /*
-          Dashboard will be created next.
-        */
+        errorBox.textContent =
+          "Something went wrong. Please try again.";
 
-        window.location.href =
-          "dashboard.html";
+        loginButton.disabled = false;
 
-      } else {
-
-        error.textContent =
-          "Invalid admin ID or password.";
+        loginButton.textContent =
+          "Enter Dashboard →";
 
       }
 
