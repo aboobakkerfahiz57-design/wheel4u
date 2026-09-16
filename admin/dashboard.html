@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -20,12 +20,18 @@
     --bg:#070707;
     --panel:#101010;
     --panel2:#151515;
+    --panel3:#1b1b1b;
     --border:rgba(255,255,255,.10);
     --text:#f5f5f5;
     --muted:#8d8d8d;
     --red:#ff3b20;
     --green:#20d66b;
     --yellow:#ffc107;
+    --blue:#4da3ff;
+}
+
+html{
+    scroll-behavior:smooth;
 }
 
 body{
@@ -46,6 +52,11 @@ button{
     cursor:pointer;
 }
 
+button:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
 .app{
     min-height:100vh;
 }
@@ -59,7 +70,7 @@ button{
     top:0;
     bottom:0;
     left:0;
-    z-index:100;
+    z-index:1000;
 }
 
 .logo{
@@ -88,7 +99,7 @@ button{
 .nav{
     display:flex;
     flex-direction:column;
-    gap:8px;
+    gap:7px;
 }
 
 .nav button{
@@ -143,6 +154,7 @@ button{
 .main{
     margin-left:245px;
     padding:30px;
+    min-height:100vh;
 }
 
 .topbar{
@@ -164,6 +176,18 @@ button{
     font-size:32px;
 }
 
+.heading p{
+    margin-top:6px;
+    color:var(--muted);
+    font-size:13px;
+}
+
+.top-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
 .admin-status{
     border:1px solid rgba(32,214,107,.25);
     background:rgba(32,214,107,.05);
@@ -172,6 +196,17 @@ button{
     border-radius:30px;
     font-size:12px;
 }
+
+.mobile-menu{
+    display:none;
+    border:0;
+    background:#171717;
+    color:white;
+    padding:10px 13px;
+    border-radius:8px;
+}
+
+/* NOTICE */
 
 .notice{
     padding:14px 16px;
@@ -195,6 +230,15 @@ button{
     color:#ff7564;
 }
 
+.notice.info{
+    display:block;
+    background:rgba(77,163,255,.08);
+    border:1px solid rgba(77,163,255,.25);
+    color:var(--blue);
+}
+
+/* SECTIONS */
+
 .section{
     display:none;
 }
@@ -203,10 +247,12 @@ button{
     display:block;
 }
 
+/* STATS */
+
 .stats{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:15px;
+    grid-template-columns:repeat(6,1fr);
+    gap:13px;
     margin-bottom:25px;
 }
 
@@ -214,17 +260,17 @@ button{
     background:linear-gradient(145deg,#141414,#0d0d0d);
     border:1px solid var(--border);
     border-radius:15px;
-    padding:22px;
+    padding:20px;
 }
 
 .stat-label{
     color:var(--muted);
-    font-size:12px;
-    margin-bottom:15px;
+    font-size:11px;
+    margin-bottom:12px;
 }
 
 .stat-value{
-    font-size:30px;
+    font-size:27px;
     font-weight:800;
 }
 
@@ -240,11 +286,18 @@ button{
     color:var(--red);
 }
 
+.stat.blue .stat-value{
+    color:var(--blue);
+}
+
+/* PANELS */
+
 .panel{
     background:var(--panel);
     border:1px solid var(--border);
     border-radius:15px;
     padding:24px;
+    margin-bottom:20px;
 }
 
 .panel-header{
@@ -265,9 +318,11 @@ button{
     margin-top:5px;
 }
 
+/* BUTTONS */
+
 .btn{
     border:0;
-    padding:12px 17px;
+    padding:11px 16px;
     border-radius:8px;
     font-weight:700;
     font-size:13px;
@@ -299,6 +354,14 @@ button{
     border:1px solid rgba(255,59,32,.2);
 }
 
+.btn-blue{
+    background:#12304d;
+    color:#6bb5ff;
+    border:1px solid rgba(77,163,255,.2);
+}
+
+/* TOOLBAR */
+
 .toolbar{
     display:flex;
     gap:12px;
@@ -320,28 +383,31 @@ button{
 }
 
 .filter{
-    min-width:150px;
+    min-width:160px;
     background:#0a0a0a;
     color:white;
     border:1px solid var(--border);
     padding:13px;
     border-radius:9px;
+    outline:none;
 }
 
-.car-grid{
+/* CARDS */
+
+.item-grid{
     display:grid;
     grid-template-columns:repeat(3,1fr);
     gap:18px;
 }
 
-.car-card{
+.item-card{
     background:#0c0c0c;
     border:1px solid var(--border);
     border-radius:14px;
     overflow:hidden;
 }
 
-.car-image{
+.item-image{
     width:100%;
     height:190px;
     background:#171717;
@@ -349,23 +415,30 @@ button{
     display:block;
 }
 
-.car-info{
+.item-image.placeholder{
+    object-fit:contain;
+    padding:55px;
+    opacity:.8;
+}
+
+.item-info{
     padding:17px;
 }
 
-.car-title{
+.item-title{
     font-size:18px;
     font-weight:800;
     margin-bottom:5px;
+    text-transform:uppercase;
 }
 
-.car-sub{
+.item-sub{
     color:var(--muted);
     font-size:12px;
     margin-bottom:15px;
 }
 
-.car-details{
+.item-details{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:8px;
@@ -416,6 +489,27 @@ button{
     background:rgba(255,59,32,.10);
 }
 
+.status.new{
+    color:var(--blue);
+    background:rgba(77,163,255,.10);
+}
+
+.status.contacted{
+    color:var(--yellow);
+    background:rgba(255,193,7,.10);
+}
+
+.status.resolved,
+.status.completed{
+    color:var(--green);
+    background:rgba(32,214,107,.10);
+}
+
+.status.cancelled{
+    color:#ff4d4d;
+    background:rgba(255,59,32,.10);
+}
+
 .card-actions{
     display:flex;
     gap:8px;
@@ -443,7 +537,42 @@ button{
     margin-bottom:12px;
 }
 
-.modules{
+.loading{
+    padding:50px;
+    text-align:center;
+    color:#777;
+}
+
+/* OVERVIEW */
+
+.welcome{
+    background:
+        radial-gradient(circle at top right,rgba(255,59,32,.15),transparent 35%),
+        linear-gradient(145deg,#151515,#0d0d0d);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:35px;
+    margin-bottom:22px;
+}
+
+.welcome small{
+    color:var(--red);
+    letter-spacing:3px;
+    font-size:10px;
+}
+
+.welcome h2{
+    font-size:28px;
+    margin:10px 0;
+}
+
+.welcome p{
+    color:#999;
+    line-height:1.7;
+    max-width:700px;
+}
+
+.module-grid{
     display:grid;
     grid-template-columns:repeat(3,1fr);
     gap:18px;
@@ -454,7 +583,14 @@ button{
     border:1px solid var(--border);
     border-radius:14px;
     padding:25px;
-    min-height:150px;
+    min-height:160px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.module:hover{
+    transform:translateY(-3px);
+    border-color:rgba(255,59,32,.35);
 }
 
 .module-icon{
@@ -472,6 +608,50 @@ button{
     line-height:1.6;
 }
 
+/* TABLE */
+
+.table-wrap{
+    overflow-x:auto;
+}
+
+.data-table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:750px;
+}
+
+.data-table th{
+    text-align:left;
+    color:#777;
+    font-size:11px;
+    padding:12px;
+    border-bottom:1px solid var(--border);
+}
+
+.data-table td{
+    padding:14px 12px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+    font-size:12px;
+}
+
+.data-table tr:hover{
+    background:#151515;
+}
+
+.table-actions{
+    display:flex;
+    gap:6px;
+}
+
+.table-actions button{
+    border:1px solid var(--border);
+    background:#191919;
+    color:white;
+    padding:7px 9px;
+    border-radius:6px;
+    font-size:11px;
+}
+
 /* MODAL */
 
 .modal{
@@ -481,7 +661,7 @@ button{
     display:none;
     align-items:center;
     justify-content:center;
-    z-index:500;
+    z-index:2000;
     padding:20px;
 }
 
@@ -490,7 +670,7 @@ button{
 }
 
 .modal-box{
-    width:min(760px,100%);
+    width:min(820px,100%);
     max-height:92vh;
     overflow:auto;
     background:#111;
@@ -519,6 +699,8 @@ button{
     border-radius:50%;
     font-size:18px;
 }
+
+/* FORMS */
 
 .form-grid{
     display:grid;
@@ -560,7 +742,7 @@ button{
 }
 
 .form-group textarea{
-    min-height:100px;
+    min-height:110px;
     resize:vertical;
 }
 
@@ -576,7 +758,7 @@ button{
 
 .preview-grid{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:repeat(5,1fr);
     gap:8px;
     margin-top:10px;
 }
@@ -596,6 +778,12 @@ button{
     object-fit:cover;
 }
 
+.existing-label{
+    color:#777;
+    font-size:11px;
+    margin-top:10px;
+}
+
 .form-actions{
     display:flex;
     justify-content:flex-end;
@@ -603,37 +791,118 @@ button{
     margin-top:22px;
 }
 
-.loading{
-    text-align:center;
-    padding:40px;
+/* MEDIA */
+
+.media-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.media-card{
+    background:#0c0c0c;
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+}
+
+.media-card img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+    display:block;
+}
+
+.media-info{
+    padding:12px;
+}
+
+.media-title{
+    font-size:13px;
+    font-weight:bold;
+}
+
+.media-meta{
     color:#777;
+    font-size:10px;
+    margin-top:5px;
 }
 
-.mobile-menu{
-    display:none;
-    border:0;
-    background:#171717;
-    color:white;
-    padding:10px 13px;
+.media-actions{
+    display:flex;
+    gap:7px;
+    margin-top:10px;
+}
+
+.media-actions button{
+    flex:1;
+}
+
+/* DETAIL VIEW */
+
+.detail-box{
+    background:#0c0c0c;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px;
+    margin-bottom:15px;
+}
+
+.detail-box h3{
+    margin-bottom:12px;
+    font-size:15px;
+}
+
+.detail-list{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.detail-row{
+    background:#151515;
+    padding:11px;
+    border-radius:7px;
+}
+
+.detail-row span{
+    display:block;
+    color:#777;
+    font-size:10px;
+    margin-bottom:4px;
+}
+
+.detail-row strong{
+    font-size:12px;
+}
+
+.message-box{
+    background:#151515;
     border-radius:8px;
+    padding:14px;
+    color:#bbb;
+    line-height:1.6;
+    font-size:12px;
 }
 
-@media(max-width:1100px){
+/* MOBILE */
+
+@media(max-width:1250px){
 
     .stats{
-        grid-template-columns:1fr 1fr;
+        grid-template-columns:repeat(3,1fr);
     }
 
-    .car-grid{
-        grid-template-columns:1fr 1fr;
+    .item-grid{
+        grid-template-columns:repeat(2,1fr);
     }
 
-    .modules{
-        grid-template-columns:1fr 1fr;
+    .media-grid{
+        grid-template-columns:repeat(3,1fr);
     }
 }
 
-@media(max-width:700px){
+@media(max-width:900px){
 
     .sidebar{
         transform:translateX(-100%);
@@ -653,22 +922,32 @@ button{
         display:block;
     }
 
-    .heading h1{
-        font-size:25px;
+    .topbar{
+        align-items:flex-start;
     }
 
-    .admin-status{
-        font-size:9px;
-        padding:8px;
+    .top-actions{
+        flex-direction:column;
     }
+
+    .module-grid{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+@media(max-width:650px){
 
     .stats{
         grid-template-columns:1fr 1fr;
     }
 
-    .car-grid,
-    .modules{
+    .item-grid,
+    .module-grid{
         grid-template-columns:1fr;
+    }
+
+    .media-grid{
+        grid-template-columns:1fr 1fr;
     }
 
     .form-grid{
@@ -686,6 +965,18 @@ button{
     .preview-grid{
         grid-template-columns:repeat(3,1fr);
     }
+
+    .detail-list{
+        grid-template-columns:1fr;
+    }
+
+    .heading h1{
+        font-size:25px;
+    }
+
+    .heading p{
+        font-size:11px;
+    }
 }
 </style>
 </head>
@@ -693,6 +984,10 @@ button{
 <body>
 
 <div class="app">
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
 
 <aside class="sidebar" id="sidebar">
 
@@ -731,8 +1026,13 @@ button{
         </button>
 
         <button data-section="enquiries">
-            <span class="nav-icon">📋</span>
+            <span class="nav-icon">📩</span>
             Enquiries
+        </button>
+
+        <button data-section="sell-exchange">
+            <span class="nav-icon">🔄</span>
+            Sell / Exchange
         </button>
 
     </nav>
@@ -743,1603 +1043,1085 @@ button{
 
 </aside>
 
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
 <main class="main">
 
     <div class="topbar">
 
-        <div style="display:flex;align-items:center;gap:12px;">
+        <div style="display:flex;align-items:flex-start;gap:12px;">
 
-            <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+            <button class="mobile-menu" id="mobileMenu">
+                ☰
+            </button>
 
             <div class="heading">
-                <small>WHEEL 4U</small>
-                <h1 id="pageTitle">Dashboard</h1>
+                <small>WHEEL 4U ADMIN</small>
+                <h1 id="pageTitle">Overview</h1>
+                <p id="pageSubtitle">
+                    Manage the complete Wheel 4U platform.
+                </p>
             </div>
 
         </div>
 
-        <div class="admin-status">
-            ● ADMIN SESSION ACTIVE
+        <div class="top-actions">
+            <div class="admin-status">
+                ● ADMIN CONNECTED
+            </div>
         </div>
 
     </div>
+
 
     <div id="notice" class="notice"></div>
 
 
-    <!-- OVERVIEW -->
+<!-- =====================================================
+     OVERVIEW
+===================================================== -->
 
-    <section class="section active" id="overview">
+<section class="section active" id="section-overview">
 
-        <div class="stats">
+    <div class="welcome">
 
-            <div class="stat">
-                <div class="stat-label">TOTAL CARS</div>
-                <div class="stat-value" id="totalCars">0</div>
+        <small>MORE THAN VEHICLES</small>
+
+        <h2>Welcome to Wheel 4U.</h2>
+
+        <p>
+            This is your central management system.
+            Add vehicles, bikes, properties, media and manage
+            customer enquiries and sell/exchange requests.
+            Everything is connected to Supabase.
+        </p>
+
+    </div>
+
+
+    <div class="stats">
+
+        <div class="stat">
+            <div class="stat-label">TOTAL CARS</div>
+            <div class="stat-value" id="statCars">0</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">TOTAL BIKES</div>
+            <div class="stat-value" id="statBikes">0</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">PROPERTIES</div>
+            <div class="stat-value" id="statProperties">0</div>
+        </div>
+
+        <div class="stat blue">
+            <div class="stat-label">ENQUIRIES</div>
+            <div class="stat-value" id="statEnquiries">0</div>
+        </div>
+
+        <div class="stat yellow">
+            <div class="stat-label">SELL / EXCHANGE</div>
+            <div class="stat-value" id="statSellExchange">0</div>
+        </div>
+
+        <div class="stat green">
+            <div class="stat-label">MEDIA</div>
+            <div class="stat-value" id="statMedia">0</div>
+        </div>
+
+    </div>
+
+
+    <div class="module-grid">
+
+        <div class="module" onclick="openSection('cars')">
+            <div class="module-icon">🚗</div>
+            <h3>Cars</h3>
+            <p>
+                Add and manage vehicles, photos, prices,
+                specifications and availability.
+            </p>
+        </div>
+
+        <div class="module" onclick="openSection('bikes')">
+            <div class="module-icon">🏍️</div>
+            <h3>Bikes</h3>
+            <p>
+                Manage motorcycles with engine capacity,
+                details, photos and pricing.
+            </p>
+        </div>
+
+        <div class="module" onclick="openSection('properties')">
+            <div class="module-icon">🏠</div>
+            <h3>Properties</h3>
+            <p>
+                Add properties with location, area,
+                bedrooms, bathrooms, price and photos.
+            </p>
+        </div>
+
+        <div class="module" onclick="openSection('media')">
+            <div class="module-icon">📸</div>
+            <h3>Media</h3>
+            <p>
+                Upload and manage the images used throughout
+                the Wheel 4U platform.
+            </p>
+        </div>
+
+        <div class="module" onclick="openSection('enquiries')">
+            <div class="module-icon">📩</div>
+            <h3>Enquiries</h3>
+            <p>
+                View customer enquiries and update their
+                progress.
+            </p>
+        </div>
+
+        <div class="module" onclick="openSection('sell-exchange')">
+            <div class="module-icon">🔄</div>
+            <h3>Sell / Exchange</h3>
+            <p>
+                Manage customers who want to sell or
+                exchange their vehicles.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CARS
+===================================================== -->
+
+<section class="section" id="section-cars">
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <h2>Cars Management</h2>
+                <div class="muted">
+                    Add and manage Wheel 4U cars.
+                </div>
             </div>
 
-            <div class="stat green">
-                <div class="stat-label">AVAILABLE</div>
-                <div class="stat-value" id="availableCars">0</div>
-            </div>
-
-            <div class="stat yellow">
-                <div class="stat-label">RESERVED</div>
-                <div class="stat-value" id="reservedCars">0</div>
-            </div>
-
-            <div class="stat red">
-                <div class="stat-label">SOLD</div>
-                <div class="stat-value" id="soldCars">0</div>
-            </div>
+            <button class="btn btn-red" onclick="openVehicleModal('car')">
+                + Add Car
+            </button>
 
         </div>
 
-        <div class="panel">
 
-            <div class="panel-header">
-                <div>
-                    <h2>Wheel 4U Management</h2>
-                    <div class="muted">
-                        Your central vehicle and property administration system.
-                    </div>
-                </div>
-            </div>
+        <div class="toolbar">
 
-            <div class="modules">
+            <input
+                id="carSearch"
+                class="search"
+                placeholder="Search brand, model, year or location..."
+            >
 
-                <div class="module" onclick="openSection('cars')">
-                    <div class="module-icon">🚗</div>
-                    <h3>Cars</h3>
-                    <p>
-                        Add, edit, search and manage Wheel 4U car listings.
-                    </p>
-                </div>
-
-                <div class="module" onclick="openSection('bikes')">
-                    <div class="module-icon">🏍️</div>
-                    <h3>Bikes</h3>
-                    <p>
-                        Manage bikes and motorcycle listings.
-                    </p>
-                </div>
-
-                <div class="module" onclick="openSection('properties')">
-                    <div class="module-icon">🏠</div>
-                    <h3>Properties</h3>
-                    <p>
-                        Manage property listings connected to Wheel 4U.
-                    </p>
-                </div>
-
-                <div class="module" onclick="openSection('media')">
-                    <div class="module-icon">📸</div>
-                    <h3>Media</h3>
-                    <p>
-                        Vehicle images are stored securely in Supabase Storage.
-                    </p>
-                </div>
-
-                <div class="module" onclick="openSection('enquiries')">
-                    <div class="module-icon">📋</div>
-                    <h3>Enquiries</h3>
-                    <p>
-                        Customer enquiries will be connected to Supabase.
-                    </p>
-                </div>
-
-            </div>
+            <select id="carStatusFilter" class="filter">
+                <option value="">All Status</option>
+                <option value="Available">Available</option>
+                <option value="Reserved">Reserved</option>
+                <option value="Sold">Sold</option>
+            </select>
 
         </div>
 
-    </section>
+
+        <div id="carsGrid" class="item-grid">
+            <div class="loading">Loading cars...</div>
+        </div>
+
+    </div>
+
+</section>
 
 
-    <!-- CARS -->
+<!-- =====================================================
+     BIKES
+===================================================== -->
 
-    <section class="section" id="cars">
+<section class="section" id="section-bikes">
 
-        <div class="panel">
+    <div class="panel">
 
-            <div class="panel-header">
+        <div class="panel-header">
 
-                <div>
-                    <h2>Cars Management</h2>
-                    <div class="muted">
-                        Add and manage Wheel 4U cars.
-                    </div>
+            <div>
+                <h2>Bikes Management</h2>
+                <div class="muted">
+                    Add and manage Wheel 4U bikes.
                 </div>
-
-                <button class="btn btn-red" onclick="openAddCar()">
-                    + Add Car
-                </button>
-
             </div>
 
-            <div class="toolbar">
+            <button class="btn btn-red" onclick="openVehicleModal('bike')">
+                + Add Bike
+            </button>
 
-                <input
-                    type="text"
-                    id="carSearch"
-                    class="search"
-                    placeholder="Search brand, model, year or location..."
-                >
+        </div>
 
-                <select id="carFilter" class="filter">
-                    <option value="all">All Status</option>
+
+        <div class="toolbar">
+
+            <input
+                id="bikeSearch"
+                class="search"
+                placeholder="Search brand, model, year or location..."
+            >
+
+            <select id="bikeStatusFilter" class="filter">
+                <option value="">All Status</option>
+                <option value="Available">Available</option>
+                <option value="Reserved">Reserved</option>
+                <option value="Sold">Sold</option>
+            </select>
+
+        </div>
+
+
+        <div id="bikesGrid" class="item-grid">
+            <div class="loading">Loading bikes...</div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     PROPERTIES
+===================================================== -->
+
+<section class="section" id="section-properties">
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <h2>Properties Management</h2>
+                <div class="muted">
+                    Add and manage Wheel 4U properties.
+                </div>
+            </div>
+
+            <button class="btn btn-red" onclick="openPropertyModal()">
+                + Add Property
+            </button>
+
+        </div>
+
+
+        <div class="toolbar">
+
+            <input
+                id="propertySearch"
+                class="search"
+                placeholder="Search title, location or property type..."
+            >
+
+            <select id="propertyStatusFilter" class="filter">
+                <option value="">All Status</option>
+                <option value="Available">Available</option>
+                <option value="Reserved">Reserved</option>
+                <option value="Sold">Sold</option>
+            </select>
+
+        </div>
+
+
+        <div id="propertiesGrid" class="item-grid">
+            <div class="loading">Loading properties...</div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     MEDIA
+===================================================== -->
+
+<section class="section" id="section-media">
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <h2>Media Management</h2>
+                <div class="muted">
+                    Upload and manage Wheel 4U images.
+                </div>
+            </div>
+
+            <button class="btn btn-red" onclick="openMediaModal()">
+                + Upload Media
+            </button>
+
+        </div>
+
+
+        <div class="toolbar">
+
+            <input
+                id="mediaSearch"
+                class="search"
+                placeholder="Search media title or category..."
+            >
+
+            <select id="mediaCategoryFilter" class="filter">
+                <option value="">All Categories</option>
+                <option value="Cars">Cars</option>
+                <option value="Bikes">Bikes</option>
+                <option value="Properties">Properties</option>
+                <option value="Gallery">Gallery</option>
+                <option value="General">General</option>
+            </select>
+
+        </div>
+
+
+        <div id="mediaGrid" class="media-grid">
+            <div class="loading">Loading media...</div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     ENQUIRIES
+===================================================== -->
+
+<section class="section" id="section-enquiries">
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <h2>Customer Enquiries</h2>
+                <div class="muted">
+                    Manage enquiries submitted through Wheel 4U.
+                </div>
+            </div>
+
+            <button class="btn btn-dark" onclick="loadEnquiries()">
+                ↻ Refresh
+            </button>
+
+        </div>
+
+
+        <div class="toolbar">
+
+            <input
+                id="enquirySearch"
+                class="search"
+                placeholder="Search customer, phone, email or message..."
+            >
+
+            <select id="enquiryStatusFilter" class="filter">
+                <option value="">All Status</option>
+                <option value="New">New</option>
+                <option value="Contacted">Contacted</option>
+                <option value="Resolved">Resolved</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+
+        </div>
+
+
+        <div class="table-wrap">
+
+            <table class="data-table">
+
+                <thead>
+                    <tr>
+                        <th>CUSTOMER</th>
+                        <th>CONTACT</th>
+                        <th>TYPE</th>
+                        <th>VEHICLE</th>
+                        <th>MESSAGE</th>
+                        <th>STATUS</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+
+                <tbody id="enquiriesTable">
+                    <tr>
+                        <td colspan="7" class="loading">
+                            Loading enquiries...
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SELL / EXCHANGE
+===================================================== -->
+
+<section class="section" id="section-sell-exchange">
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <h2>Sell / Exchange Requests</h2>
+                <div class="muted">
+                    Manage customer vehicle selling and exchange requests.
+                </div>
+            </div>
+
+            <button class="btn btn-dark" onclick="loadSellExchange()">
+                ↻ Refresh
+            </button>
+
+        </div>
+
+
+        <div class="toolbar">
+
+            <input
+                id="sellSearch"
+                class="search"
+                placeholder="Search customer, vehicle or phone..."
+            >
+
+            <select id="sellStatusFilter" class="filter">
+                <option value="">All Status</option>
+                <option value="New">New</option>
+                <option value="Contacted">Contacted</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+
+        </div>
+
+
+        <div class="table-wrap">
+
+            <table class="data-table">
+
+                <thead>
+                    <tr>
+                        <th>TYPE</th>
+                        <th>CUSTOMER</th>
+                        <th>CONTACT</th>
+                        <th>VEHICLE</th>
+                        <th>EXPECTED PRICE</th>
+                        <th>EXCHANGE</th>
+                        <th>STATUS</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+
+                <tbody id="sellExchangeTable">
+                    <tr>
+                        <td colspan="8" class="loading">
+                            Loading requests...
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+</div>
+
+
+<!-- =====================================================
+     VEHICLE MODAL
+===================================================== -->
+
+<div class="modal" id="vehicleModal">
+
+<div class="modal-box">
+
+    <div class="modal-header">
+
+        <div>
+            <h2 id="vehicleModalTitle">Add Car</h2>
+            <div class="muted">
+                Add complete vehicle information.
+            </div>
+        </div>
+
+        <button class="close" onclick="closeModal('vehicleModal')">
+            ×
+        </button>
+
+    </div>
+
+
+    <form id="vehicleForm">
+
+        <input type="hidden" id="vehicleId">
+        <input type="hidden" id="vehicleType">
+
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>Brand *</label>
+                <input id="vehicleBrand" required placeholder="BMW">
+            </div>
+
+            <div class="form-group">
+                <label>Model *</label>
+                <input id="vehicleModel" required placeholder="3 Series">
+            </div>
+
+            <div class="form-group">
+                <label>Variant</label>
+                <input id="vehicleVariant" placeholder="320D Sport">
+            </div>
+
+            <div class="form-group">
+                <label>Year</label>
+                <input id="vehicleYear" type="number" placeholder="2023">
+            </div>
+
+            <div class="form-group">
+                <label>Fuel</label>
+                <select id="vehicleFuel">
+                    <option value="">Select Fuel</option>
+                    <option value="Petrol">Petrol</option>
+                    <option value="Diesel">Diesel</option>
+                    <option value="Electric">Electric</option>
+                    <option value="Hybrid">Hybrid</option>
+                    <option value="CNG">CNG</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Transmission</label>
+                <select id="vehicleTransmission">
+                    <option value="">Select Transmission</option>
+                    <option value="Manual">Manual</option>
+                    <option value="Automatic">Automatic</option>
+                    <option value="AMT">AMT</option>
+                    <option value="CVT">CVT</option>
+                    <option value="DCT">DCT</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Kilometres Driven</label>
+                <input id="vehicleKm" type="number" placeholder="25000">
+            </div>
+
+            <div class="form-group" id="engineGroup">
+                <label>Engine CC</label>
+                <input id="vehicleEngine" type="number" placeholder="1500">
+            </div>
+
+            <div class="form-group">
+                <label>Price (₹)</label>
+                <input id="vehiclePrice" type="number" step="0.01" placeholder="250000">
+            </div>
+
+            <div class="form-group">
+                <label>Location</label>
+                <input id="vehicleLocation" placeholder="Krishnapura, Surathkal">
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <select id="vehicleStatus">
                     <option value="Available">Available</option>
                     <option value="Reserved">Reserved</option>
                     <option value="Sold">Sold</option>
                 </select>
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>Vehicle Photos</label>
+
+                <input
+                    id="vehiclePhotos"
+                    class="file-input"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                >
+
+                <div class="file-help">
+                    Select multiple photos at once.
+                    Photos will be uploaded to the Wheel 4U
+                    <b>vehicle-images</b> storage bucket.
+                </div>
+
+                <div id="existingVehiclePhotos"></div>
+
+                <div id="vehiclePreview" class="preview-grid"></div>
 
             </div>
 
-            <div id="carsGrid" class="car-grid">
 
-                <div class="loading">
-                    Loading cars...
-                </div>
+            <div class="form-group full">
+
+                <label>Description</label>
+
+                <textarea
+                    id="vehicleDescription"
+                    placeholder="Enter complete vehicle description..."
+                ></textarea>
 
             </div>
 
         </div>
 
-    </section>
 
+        <div class="form-actions">
 
-    <!-- BIKES -->
+            <button
+                type="button"
+                class="btn btn-dark"
+                onclick="closeModal('vehicleModal')"
+            >
+                Cancel
+            </button>
 
-    <section class="section" id="bikes">
-
-        <div class="panel">
-
-            <div class="panel-header">
-                <div>
-                    <h2>Bikes Management</h2>
-                    <div class="muted">
-                        Bike management module.
-                    </div>
-                </div>
-            </div>
-
-            <div class="empty">
-                <div class="empty-icon">🏍️</div>
-                <h3>Bikes module coming next</h3>
-                <p style="margin-top:8px;">
-                    Supabase bike management will be connected after Cars.
-                </p>
-            </div>
+            <button
+                type="submit"
+                class="btn btn-red"
+                id="vehicleSaveButton"
+            >
+                Save Vehicle
+            </button>
 
         </div>
 
-    </section>
+    </form>
 
-
-    <!-- PROPERTIES -->
-
-    <section class="section" id="properties">
-
-        <div class="panel">
-
-            <div class="panel-header">
-                <div>
-                    <h2>Properties Management</h2>
-                    <div class="muted">
-                        Property management module.
-                    </div>
-                </div>
-            </div>
-
-            <div class="empty">
-                <div class="empty-icon">🏠</div>
-                <h3>Properties module coming next</h3>
-                <p style="margin-top:8px;">
-                    Supabase property management will be connected after Cars.
-                </p>
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- MEDIA -->
-
-    <section class="section" id="media">
-
-        <div class="panel">
-
-            <div class="panel-header">
-                <div>
-                    <h2>Media Management</h2>
-                    <div class="muted">
-                        Vehicle photos are stored in Supabase Storage.
-                    </div>
-                </div>
-            </div>
-
-            <div class="empty">
-                <div class="empty-icon">📸</div>
-                <h3>Vehicle Images Storage</h3>
-                <p style="margin-top:8px;">
-                    Upload images directly while adding or editing a vehicle.
-                </p>
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ENQUIRIES -->
-
-    <section class="section" id="enquiries">
-
-        <div class="panel">
-
-            <div class="panel-header">
-                <div>
-                    <h2>Customer Enquiries</h2>
-                    <div class="muted">
-                        Customer enquiry management.
-                    </div>
-                </div>
-            </div>
-
-            <div class="empty">
-                <div class="empty-icon">📋</div>
-                <h3>Enquiries module coming next</h3>
-                <p style="margin-top:8px;">
-                    The enquiry system will be connected to Supabase next.
-                </p>
-            </div>
-
-        </div>
-
-    </section>
-
-</main>
-
+</div>
 </div>
 
 
-<!-- ADD / EDIT CAR MODAL -->
+<!-- =====================================================
+     PROPERTY MODAL
+===================================================== -->
 
-<div class="modal" id="carModal">
+<div class="modal" id="propertyModal">
 
-    <div class="modal-box">
+<div class="modal-box">
 
-        <div class="modal-header">
+    <div class="modal-header">
 
-            <div>
-                <h2 id="modalTitle">Add Car</h2>
-                <div class="muted">
-                    Save vehicle information to Supabase.
-                </div>
+        <div>
+            <h2 id="propertyModalTitle">Add Property</h2>
+            <div class="muted">
+                Add complete property information.
+            </div>
+        </div>
+
+        <button class="close" onclick="closeModal('propertyModal')">
+            ×
+        </button>
+
+    </div>
+
+
+    <form id="propertyForm">
+
+        <input type="hidden" id="propertyId">
+
+
+        <div class="form-grid">
+
+            <div class="form-group full">
+                <label>Property Title *</label>
+                <input
+                    id="propertyTitle"
+                    required
+                    placeholder="Premium 3BHK House"
+                >
             </div>
 
-            <button class="close" onclick="closeCarModal()">×</button>
+            <div class="form-group">
+                <label>Property Type</label>
+                <select id="propertyType">
+                    <option value="">Select Type</option>
+                    <option value="House">House</option>
+                    <option value="Villa">Villa</option>
+                    <option value="Apartment">Apartment</option>
+                    <option value="Flat">Flat</option>
+                    <option value="Land">Land</option>
+                    <option value="Commercial">Commercial</option>
+                    <option value="Office">Office</option>
+                    <option value="Shop">Shop</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Listing Type</label>
+                <select id="propertyListingType">
+                    <option value="">Select Listing</option>
+                    <option value="For Sale">For Sale</option>
+                    <option value="For Rent">For Rent</option>
+                    <option value="For Lease">For Lease</option>
+                </select>
+            </div>
+
+            <div class="form-group full">
+                <label>Location</label>
+                <input
+                    id="propertyLocation"
+                    placeholder="Mangalore, Karnataka"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Area</label>
+                <input
+                    id="propertyArea"
+                    type="number"
+                    step="0.01"
+                    placeholder="1200"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Bedrooms</label>
+                <input
+                    id="propertyBedrooms"
+                    type="number"
+                    placeholder="3"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Bathrooms</label>
+                <input
+                    id="propertyBathrooms"
+                    type="number"
+                    placeholder="3"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Price (₹)</label>
+                <input
+                    id="propertyPrice"
+                    type="number"
+                    step="0.01"
+                    placeholder="7500000"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <select id="propertyStatus">
+                    <option value="Available">Available</option>
+                    <option value="Reserved">Reserved</option>
+                    <option value="Sold">Sold</option>
+                </select>
+            </div>
+
+            <div class="form-group full">
+
+                <label>Property Photos</label>
+
+                <input
+                    id="propertyPhotos"
+                    class="file-input"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                >
+
+                <div class="file-help">
+                    Select multiple property photos.
+                </div>
+
+                <div id="existingPropertyPhotos"></div>
+
+                <div id="propertyPreview" class="preview-grid"></div>
+
+            </div>
+
+            <div class="form-group full">
+
+                <label>Description</label>
+
+                <textarea
+                    id="propertyDescription"
+                    placeholder="Enter property details..."
+                ></textarea>
+
+            </div>
 
         </div>
 
 
-        <form id="carForm">
+        <div class="form-actions">
 
-            <div class="form-grid">
+            <button
+                type="button"
+                class="btn btn-dark"
+                onclick="closeModal('propertyModal')"
+            >
+                Cancel
+            </button>
 
-                <div class="form-group">
-                    <label>Brand *</label>
-                    <input
-                        id="brand"
-                        type="text"
-                        placeholder="BMW"
-                        required
-                    >
-                </div>
+            <button
+                type="submit"
+                class="btn btn-red"
+                id="propertySaveButton"
+            >
+                Save Property
+            </button>
 
-                <div class="form-group">
-                    <label>Model *</label>
-                    <input
-                        id="model"
-                        type="text"
-                        placeholder="3 Series"
-                        required
-                    >
-                </div>
+        </div>
 
-                <div class="form-group">
-                    <label>Variant</label>
-                    <input
-                        id="variant"
-                        type="text"
-                        placeholder="320d Sport"
-                    >
-                </div>
+    </form>
 
-                <div class="form-group">
-                    <label>Year</label>
-                    <input
-                        id="year"
-                        type="number"
-                        placeholder="2024"
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label>Fuel</label>
-                    <select id="fuel">
-                        <option value="">Select fuel</option>
-                        <option value="Petrol">Petrol</option>
-                        <option value="Diesel">Diesel</option>
-                        <option value="Electric">Electric</option>
-                        <option value="Hybrid">Hybrid</option>
-                        <option value="CNG">CNG</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Transmission</label>
-                    <select id="transmission">
-                        <option value="">Select transmission</option>
-                        <option value="Manual">Manual</option>
-                        <option value="Automatic">Automatic</option>
-                        <option value="AMT">AMT</option>
-                        <option value="DCT">DCT</option>
-                        <option value="CVT">CVT</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Kilometres Driven</label>
-                    <input
-                        id="kilometres"
-                        type="number"
-                        placeholder="25000"
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label>Price (₹)</label>
-                    <input
-                        id="price"
-                        type="number"
-                        placeholder="2500000"
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label>Location</label>
-                    <input
-                        id="location"
-                        type="text"
-                        placeholder="Mangalore"
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label>Status</label>
-                    <select id="status">
-                        <option value="Available">Available</option>
-                        <option value="Reserved">Reserved</option>
-                        <option value="Sold">Sold</option>
-                    </select>
-                </div>
+</div>
+</div>
 
 
-                <!-- IMAGE UPLOAD -->
+<!-- =====================================================
+     MEDIA MODAL
+===================================================== -->
 
-                <div class="form-group full">
+<div class="modal" id="mediaModal">
 
-                    <label>Vehicle Photos</label>
+<div class="modal-box">
 
-                    <input
-                        id="vehicleImages"
-                        class="file-input"
-                        type="file"
-                        accept="image/*"
-                        multiple
-                    >
+    <div class="modal-header">
 
-                    <div class="file-help">
-                        Select one or multiple vehicle photos.
-                        Images will be uploaded to the Wheel 4U
-                        <b>vehicle-images</b> Supabase Storage bucket.
-                    </div>
-
-                    <div id="imagePreview" class="preview-grid"></div>
-
-                </div>
-
-
-                <div class="form-group full">
-
-                    <label>Description</label>
-
-                    <textarea
-                        id="description"
-                        placeholder="Vehicle description..."
-                    ></textarea>
-
-                </div>
-
+        <div>
+            <h2>Upload Media</h2>
+            <div class="muted">
+                Add images to Wheel 4U media library.
             </div>
+        </div>
 
-
-            <div class="form-actions">
-
-                <button
-                    type="button"
-                    class="btn btn-dark"
-                    onclick="closeCarModal()"
-                >
-                    Cancel
-                </button>
-
-                <button
-                    type="submit"
-                    class="btn btn-red"
-                    id="saveCarBtn"
-                >
-                    Save Car
-                </button>
-
-            </div>
-
-        </form>
+        <button class="close" onclick="closeModal('mediaModal')">
+            ×
+        </button>
 
     </div>
 
+
+    <form id="mediaForm">
+
+        <div class="form-grid">
+
+            <div class="form-group full">
+
+                <label>Title *</label>
+
+                <input
+                    id="mediaTitle"
+                    required
+                    placeholder="BMW 3 Series Gallery"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Category</label>
+
+                <select id="mediaCategory">
+
+                    <option value="General">General</option>
+                    <option value="Cars">Cars</option>
+                    <option value="Bikes">Bikes</option>
+                    <option value="Properties">Properties</option>
+                    <option value="Gallery">Gallery</option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Alt Text</label>
+
+                <input
+                    id="mediaAlt"
+                    placeholder="Wheel 4U vehicle"
+                >
+
+            </div>
+
+            <div class="form-group full">
+
+                <label>Select Images *</label>
+
+                <input
+                    id="mediaFiles"
+                    class="file-input"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    required
+                >
+
+                <div class="file-help">
+                    You can select multiple images.
+                </div>
+
+                <div id="mediaPreview" class="preview-grid"></div>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button
+                type="button"
+                class="btn btn-dark"
+                onclick="closeModal('mediaModal')"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="submit"
+                class="btn btn-red"
+                id="mediaSaveButton"
+            >
+                Upload Media
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+</div>
+
+
+<!-- =====================================================
+     ENQUIRY VIEW MODAL
+===================================================== -->
+
+<div class="modal" id="enquiryModal">
+
+<div class="modal-box">
+
+    <div class="modal-header">
+
+        <div>
+            <h2>Enquiry Details</h2>
+            <div class="muted">
+                Customer enquiry information.
+            </div>
+        </div>
+
+        <button class="close" onclick="closeModal('enquiryModal')">
+            ×
+        </button>
+
+    </div>
+
+    <div id="enquiryDetails"></div>
+
+</div>
+</div>
+
+
+<!-- =====================================================
+     SELL EXCHANGE VIEW MODAL
+===================================================== -->
+
+<div class="modal" id="sellModal">
+
+<div class="modal-box">
+
+    <div class="modal-header">
+
+        <div>
+            <h2>Sell / Exchange Details</h2>
+            <div class="muted">
+                Customer vehicle request.
+            </div>
+        </div>
+
+        <button class="close" onclick="closeModal('sellModal')">
+            ×
+        </button>
+
+    </div>
+
+    <div id="sellDetails"></div>
+
+</div>
 </div>
 
 
 <script>
+
+/* =====================================================
+   SUPABASE
+===================================================== */
 
 const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY
 );
 
-const IMAGE_BUCKET = "vehicle-images";
+
+/* =====================================================
+   GLOBAL DATA
+===================================================== */
 
 let cars = [];
-let editingCarId = null;
-let selectedFiles = [];
-
-
-/* ------------------------------
-   AUTH
------------------------------- */
-
-async function checkSession(){
-
-    const {
-        data,
-        error
-    } = await supabaseClient.auth.getSession();
-
-    if(
-        error ||
-        !data ||
-        !data.session
-    ){
-
-        window.location.href = "login.html";
-        return false;
-    }
-
-    return true;
-}
-
-
-/* ------------------------------
-   NOTICE
------------------------------- */
-
-function showNotice(message,type="success"){
-
-    const notice = document.getElementById("notice");
-
-    notice.textContent = message;
-
-    notice.className = "notice " + type;
-
-    clearTimeout(window.noticeTimer);
-
-    window.noticeTimer = setTimeout(() => {
-
-        notice.className = "notice";
-
-    },5000);
-}
-
-
-/* ------------------------------
-   NAVIGATION
------------------------------- */
-
-function openSection(sectionId){
-
-    document.querySelectorAll(".section").forEach(section => {
-
-        section.classList.remove("active");
-
-    });
-
-    const section = document.getElementById(sectionId);
-
-    if(section){
-        section.classList.add("active");
-    }
-
-    document.querySelectorAll(".nav button").forEach(button => {
-
-        button.classList.toggle(
-            "active",
-            button.dataset.section === sectionId
-        );
-
-    });
-
-    const titles = {
-        overview:"Dashboard",
-        cars:"Cars",
-        bikes:"Bikes",
-        properties:"Properties",
-        media:"Media",
-        enquiries:"Enquiries"
-    };
-
-    document.getElementById("pageTitle").textContent =
-        titles[sectionId] || "Dashboard";
-
-    document.getElementById("sidebar").classList.remove("open");
-}
-
-document.querySelectorAll(".nav button").forEach(button => {
-
-    button.addEventListener("click",function(){
-
-        openSection(this.dataset.section);
-
-    });
-
-});
-
-
-function toggleSidebar(){
-
-    document
-        .getElementById("sidebar")
-        .classList.toggle("open");
-
-}
-
-
-/* ------------------------------
-   LOAD CARS
------------------------------- */
-
-async function loadCars(){
-
-    const grid = document.getElementById("carsGrid");
-
-    grid.innerHTML = `
-        <div class="loading">
-            Loading cars...
-        </div>
-    `;
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("cars")
-        .select("*")
-        .order("created_at",{ascending:false});
-
-    if(error){
-
-        console.error(error);
-
-        grid.innerHTML = `
-            <div class="empty">
-                <div class="empty-icon">⚠️</div>
-                <h3>Unable to load cars</h3>
-                <p style="margin-top:8px;">
-                    ${escapeHtml(error.message)}
-                </p>
-            </div>
-        `;
-
-        showNotice(error.message,"error");
-
-        return;
-    }
-
-    cars = data || [];
-
-    updateStats();
-
-    renderCars();
-
-}
-
-
-/* ------------------------------
-   STATS
------------------------------- */
-
-function updateStats(){
-
-    const total = cars.length;
-
-    const available = cars.filter(
-        car => car.status === "Available"
-    ).length;
-
-    const reserved = cars.filter(
-        car => car.status === "Reserved"
-    ).length;
-
-    const sold = cars.filter(
-        car => car.status === "Sold"
-    ).length;
-
-    document.getElementById("totalCars").textContent = total;
-    document.getElementById("availableCars").textContent = available;
-    document.getElementById("reservedCars").textContent = reserved;
-    document.getElementById("soldCars").textContent = sold;
-
-}
-
-
-/* ------------------------------
-   RENDER CARS
------------------------------- */
-
-function renderCars(){
-
-    const grid = document.getElementById("carsGrid");
-
-    const search =
-        document
-            .getElementById("carSearch")
-            .value
-            .toLowerCase()
-            .trim();
-
-    const filter =
-        document.getElementById("carFilter").value;
-
-
-    const filtered = cars.filter(car => {
-
-        const searchable = [
-
-            car.brand,
-            car.model,
-            car.variant,
-            car.year,
-            car.location,
-            car.fuel,
-            car.transmission
-
-        ]
-        .join(" ")
-        .toLowerCase();
-
-        const matchesSearch =
-            !search ||
-            searchable.includes(search);
-
-        const matchesFilter =
-            filter === "all" ||
-            car.status === filter;
-
-        return matchesSearch && matchesFilter;
-
-    });
-
-
-    if(!filtered.length){
-
-        grid.innerHTML = `
-            <div class="empty">
-
-                <div class="empty-icon">🚗</div>
-
-                <h3>No cars found</h3>
-
-                <p style="margin-top:8px;">
-                    Add your first Wheel 4U vehicle.
-                </p>
-
-            </div>
-        `;
-
-        return;
-    }
-
-
-    grid.innerHTML = filtered.map(car => {
-
-        const image =
-            car.image_url ||
-            (
-                Array.isArray(car.image_urls) &&
-                car.image_urls.length
-            ?
-                car.image_urls[0]
-            :
-                ""
-            );
-
-
-        const statusClass =
-            String(car.status || "Available")
-                .toLowerCase();
-
-
-        const price =
-            car.price !== null &&
-            car.price !== undefined
-            ?
-            "₹" +
-            Number(car.price).toLocaleString("en-IN")
-            :
-            "Price on request";
-
-
-        const photoCount =
-            Array.isArray(car.image_urls)
-            ?
-            car.image_urls.length
-            :
-            (car.image_url ? 1 : 0);
-
-
-        return `
-
-            <div class="car-card">
-
-                ${
-                    image
-                    ?
-                    `<img
-                        class="car-image"
-                        src="${escapeHtml(image)}"
-                        alt="${escapeHtml(car.brand)} ${escapeHtml(car.model)}"
-                    >`
-                    :
-                    `
-                    <div
-                        class="car-image"
-                        style="
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            font-size:50px;
-                        "
-                    >
-                        🚗
-                    </div>
-                    `
-                }
-
-                <div class="car-info">
-
-                    <div class="car-title">
-                        ${escapeHtml(
-                            (car.brand || "") +
-                            " " +
-                            (car.model || "")
-                        )}
-                    </div>
-
-                    <div class="car-sub">
-                        ${escapeHtml(car.variant || "Vehicle")}
-                    </div>
-
-                    <div class="car-details">
-
-                        <div class="detail">
-                            Year
-                            <strong>
-                                ${escapeHtml(car.year || "-")}
-                            </strong>
-                        </div>
-
-                        <div class="detail">
-                            Fuel
-                            <strong>
-                                ${escapeHtml(car.fuel || "-")}
-                            </strong>
-                        </div>
-
-                        <div class="detail">
-                            KM
-                            <strong>
-                                ${
-                                    car.kilometres
-                                    ?
-                                    Number(
-                                        car.kilometres
-                                    ).toLocaleString("en-IN")
-                                    :
-                                    "-"
-                                }
-                            </strong>
-                        </div>
-
-                        <div class="detail">
-                            Location
-                            <strong>
-                                ${escapeHtml(car.location || "-")}
-                            </strong>
-                        </div>
-
-                    </div>
-
-                    <div class="price">
-                        ${price}
-                    </div>
-
-                    <div class="status ${statusClass}">
-                        ${escapeHtml(car.status || "Available")}
-                    </div>
-
-                    <div class="photo-count">
-                        📸 ${photoCount} photo${photoCount === 1 ? "" : "s"}
-                    </div>
-
-                    <div class="card-actions">
-
-                        <button
-                            class="btn btn-dark"
-                            onclick="editCar('${car.id}')"
-                        >
-                            Edit
-                        </button>
-
-                        <button
-                            class="btn btn-danger"
-                            onclick="deleteCar('${car.id}')"
-                        >
-                            Delete
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-
-    }).join("");
-
-}
-
-
-/* ------------------------------
-   SEARCH / FILTER
------------------------------- */
-
-document
-    .getElementById("carSearch")
-    .addEventListener("input",renderCars);
-
-document
-    .getElementById("carFilter")
-    .addEventListener("change",renderCars);
-
-
-/* ------------------------------
-   OPEN ADD CAR
------------------------------- */
-
-function openAddCar(){
-
-    editingCarId = null;
-
-    selectedFiles = [];
-
-    document.getElementById("modalTitle").textContent =
-        "Add Car";
-
-    document.getElementById("saveCarBtn").textContent =
-        "Save Car";
-
-    document.getElementById("carForm").reset();
-
-    document.getElementById("imagePreview").innerHTML = "";
-
-    document
-        .getElementById("carModal")
-        .classList.add("show");
-
-}
-
-
-/* ------------------------------
-   EDIT CAR
------------------------------- */
-
-function editCar(id){
-
-    const car = cars.find(
-        item => item.id === id
-    );
-
-    if(!car){
-        return;
-    }
-
-    editingCarId = id;
-
-    selectedFiles = [];
-
-    document.getElementById("modalTitle").textContent =
-        "Edit Car";
-
-    document.getElementById("saveCarBtn").textContent =
-        "Update Car";
-
-
-    document.getElementById("brand").value =
-        car.brand || "";
-
-    document.getElementById("model").value =
-        car.model || "";
-
-    document.getElementById("variant").value =
-        car.variant || "";
-
-    document.getElementById("year").value =
-        car.year || "";
-
-    document.getElementById("fuel").value =
-        car.fuel || "";
-
-    document.getElementById("transmission").value =
-        car.transmission || "";
-
-    document.getElementById("kilometres").value =
-        car.kilometres || "";
-
-    document.getElementById("price").value =
-        car.price || "";
-
-    document.getElementById("location").value =
-        car.location || "";
-
-    document.getElementById("status").value =
-        car.status || "Available";
-
-    document.getElementById("description").value =
-        car.description || "";
-
-
-    renderExistingImages(car);
-
-
-    document
-        .getElementById("carModal")
-        .classList.add("show");
-
-}
-
-
-/* ------------------------------
-   EXISTING IMAGES
------------------------------- */
-
-function renderExistingImages(car){
-
-    const preview =
-        document.getElementById("imagePreview");
-
-    let urls = [];
-
-    if(
-        Array.isArray(car.image_urls) &&
-        car.image_urls.length
-    ){
-
-        urls = car.image_urls;
-
-    }else if(car.image_url){
-
-        urls = [car.image_url];
-
-    }
-
-
-    if(!urls.length){
-
-        preview.innerHTML = "";
-
-        return;
-    }
-
-
-    preview.innerHTML = urls.map(url => `
-
-        <div class="preview-item">
-
-            <img
-                src="${escapeHtml(url)}"
-                alt="Vehicle image"
-            >
-
-        </div>
-
-    `).join("");
-
-}
-
-
-/* ------------------------------
-   FILE PREVIEW
------------------------------- */
-
-document
-    .getElementById("vehicleImages")
-    .addEventListener("change",function(){
-
-        selectedFiles =
-            Array.from(this.files || []);
-
-        const preview =
-            document.getElementById("imagePreview");
-
-        if(!selectedFiles.length){
-
-            preview.innerHTML = "";
-
-            return;
-        }
-
-
-        preview.innerHTML = "";
-
-
-        selectedFiles.forEach(file => {
-
-            if(!file.type.startsWith("image/")){
-                return;
-            }
-
-            const reader =
-                new FileReader();
-
-            reader.onload = function(event){
-
-                const item =
-                    document.createElement("div");
-
-                item.className =
-                    "preview-item";
-
-                item.innerHTML = `
-                    <img
-                        src="${event.target.result}"
-                        alt="Preview"
-                    >
-                `;
-
-                preview.appendChild(item);
-
-            };
-
-            reader.readAsDataURL(file);
-
-        });
-
-    });
-
-
-/* ------------------------------
-   UPLOAD IMAGES
------------------------------- */
-
-async function uploadImages(){
-
-    if(!selectedFiles.length){
-
-        return [];
-
-    }
-
-
-    const uploadedUrls = [];
-
-
-    for(
-        let i = 0;
-        i < selectedFiles.length;
-        i++
-    ){
-
-        const file = selectedFiles[i];
-
-
-        if(!file.type.startsWith("image/")){
-
-            throw new Error(
-                "Only image files are allowed."
-            );
-
-        }
-
-
-        if(file.size > 10 * 1024 * 1024){
-
-            throw new Error(
-                "Each image must be smaller than 10 MB."
-            );
-
-        }
-
-
-        const extension =
-            file.name
-                .split(".")
-                .pop()
-                .toLowerCase();
-
-
-        const safeBrand =
-            document
-                .getElementById("brand")
-                .value
-                .trim()
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g,"-");
-
-
-        const safeModel =
-            document
-                .getElementById("model")
-                .value
-                .trim()
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g,"-");
-
-
-        const fileName =
-            `${Date.now()}-${Math.random()
-                .toString(36)
-                .substring(2,10)}.${extension}`;
-
-
-        const folder =
-            editingCarId
-            ?
-            editingCarId
-            :
-            "new";
-
-
-        const path =
-            `${folder}/${safeBrand}-${safeModel}-${fileName}`;
-
-
-        const {
-            error: uploadError
-        } =
-            await supabaseClient
-                .storage
-                .from(IMAGE_BUCKET)
-                .upload(
-                    path,
-                    file,
-                    {
-                        cacheControl:"3600",
-                        upsert:false
-                    }
-                );
-
-
-        if(uploadError){
-
-            throw uploadError;
-
-        }
-
-
-        const {
-            data
-        } =
-            supabaseClient
-                .storage
-                .from(IMAGE_BUCKET)
-                .getPublicUrl(path);
-
-
-        if(
-            !data ||
-            !data.publicUrl
-        ){
-
-            throw new Error(
-                "Could not create public image URL."
-            );
-
-        }
-
-
-        uploadedUrls.push(
-            data.publicUrl
-        );
-
-    }
-
-
-    return uploadedUrls;
-
-}
-
-
-/* ------------------------------
-   SAVE CAR
------------------------------- */
-
-document
-    .getElementById("carForm")
-    .addEventListener("submit",async function(event){
-
-        event.preventDefault();
-
-
-        const saveButton =
-            document.getElementById("saveCarBtn");
-
-
-        saveButton.disabled = true;
-
-        saveButton.textContent =
-            "Saving...";
-
-
-        try{
-
-            const uploadedUrls =
-                await uploadImages();
-
-
-            let existingUrls = [];
-
-
-            if(editingCarId){
-
-                const existingCar =
-                    cars.find(
-                        car => car.id === editingCarId
-                    );
-
-
-                if(existingCar){
-
-                    if(
-                        Array.isArray(
-                            existingCar.image_urls
-                        )
-                    ){
-
-                        existingUrls =
-                            existingCar.image_urls;
-
-                    }else if(
-                        existingCar.image_url
-                    ){
-
-                        existingUrls = [
-                            existingCar.image_url
-                        ];
-
-                    }
-
-                }
-
-            }
-
-
-            const allImageUrls =
-                [
-                    ...existingUrls,
-                    ...uploadedUrls
-                ];
-
-
-            const carData = {
-
-                brand:
-                    document
-                        .getElementById("brand")
-                        .value
-                        .trim(),
-
-                model:
-                    document
-                        .getElementById("model")
-                        .value
-                        .trim(),
-
-                variant:
-                    document
-                        .getElementById("variant")
-                        .value
-                        .trim() || null,
-
-                year:
-                    numberOrNull(
-                        document
-                            .getElementById("year")
-                            .value
-                    ),
-
-                fuel:
-                    document
-                        .getElementById("fuel")
-                        .value || null,
-
-                transmission:
-                    document
-                        .getElementById("transmission")
-                        .value || null,
-
-                kilometres:
-                    numberOrNull(
-                        document
-                            .getElementById("kilometres")
-                            .value
-                    ),
-
-                price:
-                    numberOrNull(
-                        document
-                            .getElementById("price")
-                            .value
-                    ),
-
-                location:
-                    document
-                        .getElementById("location")
-                        .value
-                        .trim() || null,
-
-                status:
-                    document
-                        .getElementById("status")
-                        .value,
-
-                image_url:
-                    allImageUrls.length
-                    ?
-                    allImageUrls[0]
-                    :
-                    null,
-
-                image_urls:
-                    allImageUrls,
-
-                description:
-                    document
-                        .getElementById("description")
-                        .value
-                        .trim() || null,
-
-                updated_at:
-                    new Date().toISOString()
-
-            };
-
-
-            if(!carData.brand){
-
-                throw new Error(
-                    "Brand is required."
-                );
-
-            }
-
-
-            if(!carData.model){
-
-                throw new Error(
-                    "Model is required."
-                );
-
-            }
-
-
-            if(editingCarId){
-
-                const {
-                    error
-                } =
-                    await supabaseClient
-                        .from("cars")
-                        .update(carData)
-                        .eq(
-                            "id",
-                            editingCarId
-                        );
-
-
-                if(error){
-                    throw error;
-                }
-
-
-                showNotice(
-                    "Car updated successfully.",
-                    "success"
-                );
-
-            }else{
-
-                const {
-                    error
-                } =
-                    await supabaseClient
-                        .from("cars")
-                        .insert([
-                            carData
-                        ]);
-
-
-                if(error){
-                    throw error;
-                }
-
-
-                showNotice(
-                    "Car added successfully.",
-                    "success"
-                );
-
-            }
-
-
-            closeCarModal();
-
-            await loadCars();
-
-        }catch(error){
-
-            console.error(error);
-
-            showNotice(
-                error.message ||
-                "Something went wrong.",
-                "error"
-            );
-
-        }finally{
-
-            saveButton.disabled = false;
-
-            saveButton.textContent =
-                editingCarId
-                ?
-                "Update Car"
-                :
-                "Save Car";
-
-        }
-
-    });
-
-
-/* ------------------------------
-   DELETE CAR
------------------------------- */
-
-async function deleteCar(id){
-
-    const car =
-        cars.find(
-            item => item.id === id
-        );
-
-
-    if(!car){
-        return;
-    }
-
-
-    const confirmed =
-        confirm(
-            `Delete ${car.brand} ${car.model}?`
-        );
-
-
-    if(!confirmed){
-        return;
-    }
-
-
-    try{
-
-        const {
-            error
-        } =
-            await supabaseClient
-                .from("cars")
-                .delete()
-                .eq("id",id);
-
-
-        if(error){
-            throw error;
-        }
-
-
-        showNotice(
-            "Car deleted successfully.",
-            "success"
-        );
-
-
-        await loadCars();
-
-    }catch(error){
-
-        console.error(error);
-
-        showNotice(
-            error.message ||
-            "Unable to delete car.",
-            "error"
-        );
-
-    }
-
-}
-
-
-/* ------------------------------
-   CLOSE MODAL
------------------------------- */
-
-function closeCarModal(){
-
-    document
-        .getElementById("carModal")
-        .classList.remove("show");
-
-    selectedFiles = [];
-
-    editingCarId = null;
-
-}
-
-
-/* ------------------------------
-   ESCAPE HTML
------------------------------- */
+let bikes = [];
+let properties = [];
+let media = [];
+let enquiries = [];
+let sellExchange = [];
+
+let editingVehicleId = null;
+let editingVehicleType = null;
+let editingPropertyId = null;
+
+let existingVehicleImages = [];
+let existingPropertyImages = [];
+
+
+/* =====================================================
+   HELPERS
+===================================================== */
 
 function escapeHtml(value){
 
@@ -2353,57 +2135,3562 @@ function escapeHtml(value){
         .replace(/>/g,"&gt;")
         .replace(/"/g,"&quot;")
         .replace(/'/g,"&#039;");
-
 }
 
 
-/* ------------------------------
-   NUMBER HELPER
------------------------------- */
+function formatMoney(value){
 
-function numberOrNull(value){
-
-    if(
-        value === "" ||
-        value === null ||
-        value === undefined
-    ){
-
-        return null;
-
+    if(value === null || value === undefined || value === ""){
+        return "₹ —";
     }
 
-    const number =
-        Number(value);
+    return "₹" + Number(value).toLocaleString("en-IN");
+}
 
-    return Number.isFinite(number)
-        ?
-        number
-        :
-        null;
+
+function formatDate(value){
+
+    if(!value){
+        return "—";
+    }
+
+    return new Date(value).toLocaleString("en-IN",{
+        day:"2-digit",
+        month:"short",
+        year:"numeric",
+        hour:"2-digit",
+        minute:"2-digit"
+    });
+}
+
+
+function statusClass(status){
+
+    return String(status || "")
+        .toLowerCase()
+        .replace(/\s+/g,"-");
+}
+
+
+function showNotice(message,type="success"){
+
+    const notice = document.getElementById("notice");
+
+    notice.textContent = message;
+    notice.className = "notice " + type;
+
+    clearTimeout(window.noticeTimer);
+
+    window.noticeTimer = setTimeout(function(){
+
+        notice.className = "notice";
+
+    },5000);
+}
+
+
+function closeModal(id){
+
+    document.getElementById(id).classList.remove("show");
 
 }
 
 
-/* ------------------------------
-   LOGOUT
------------------------------- */
+function openModal(id){
+
+    document.getElementById(id).classList.add("show");
+
+}
+
+
+function safeImage(url){
+
+    return url && String(url).trim()
+        ? escapeHtml(url)
+        : "";
+}
+
+
+/* =====================================================
+   AUTH
+===================================================== */
+
+async function checkSession(){
+
+    try{
+
+        const {
+            data,
+            error
+        } = await supabaseClient.auth.getSession();
+
+        if(error){
+
+            console.error(error);
+            window.location.href = "login.html";
+            return false;
+
+        }
+
+        if(!data || !data.session){
+
+            window.location.href = "login.html";
+            return false;
+
+        }
+
+        return true;
+
+    }catch(error){
+
+        console.error(error);
+        window.location.href = "login.html";
+        return false;
+
+    }
+}
+
 
 async function logout(){
 
     await supabaseClient.auth.signOut();
 
-    window.location.href =
-        "login.html";
+    window.location.href = "login.html";
 
 }
 
 
-/* ------------------------------
-   INITIALIZE
------------------------------- */
+/* =====================================================
+   NAVIGATION
+===================================================== */
 
-async function initialize(){
+const pageInfo = {
+
+    overview:{
+        title:"Overview",
+        subtitle:"Manage the complete Wheel 4U platform."
+    },
+
+    cars:{
+        title:"Cars Management",
+        subtitle:"Add and manage Wheel 4U cars."
+    },
+
+    bikes:{
+        title:"Bikes Management",
+        subtitle:"Add and manage Wheel 4U bikes."
+    },
+
+    properties:{
+        title:"Properties Management",
+        subtitle:"Add and manage Wheel 4U properties."
+    },
+
+    media:{
+        title:"Media Management",
+        subtitle:"Manage Wheel 4U images and media."
+    },
+
+    enquiries:{
+        title:"Customer Enquiries",
+        subtitle:"Manage customer enquiries."
+    },
+
+    "sell-exchange":{
+        title:"Sell / Exchange",
+        subtitle:"Manage customer sell and exchange requests."
+    }
+
+};
+
+
+function openSection(section){
+
+    document.querySelectorAll(".section").forEach(function(el){
+
+        el.classList.remove("active");
+
+    });
+
+
+    document
+        .getElementById("section-" + section)
+        .classList.add("active");
+
+
+    document.querySelectorAll(".nav button").forEach(function(button){
+
+        button.classList.remove("active");
+
+        if(button.dataset.section === section){
+
+            button.classList.add("active");
+
+        }
+
+    });
+
+
+    const info = pageInfo[section];
+
+    if(info){
+
+        document.getElementById("pageTitle").textContent = info.title;
+        document.getElementById("pageSubtitle").textContent = info.subtitle;
+
+    }
+
+
+    document
+        .getElementById("sidebar")
+        .classList.remove("open");
+
+
+    if(section === "overview"){
+        loadStats();
+    }
+
+    if(section === "cars"){
+        loadCars();
+    }
+
+    if(section === "bikes"){
+        loadBikes();
+    }
+
+    if(section === "properties"){
+        loadProperties();
+    }
+
+    if(section === "media"){
+        loadMedia();
+    }
+
+    if(section === "enquiries"){
+        loadEnquiries();
+    }
+
+    if(section === "sell-exchange"){
+        loadSellExchange();
+    }
+
+}
+
+
+document.querySelectorAll(".nav button").forEach(function(button){
+
+    button.addEventListener("click",function(){
+
+        openSection(button.dataset.section);
+
+    });
+
+});
+
+
+document
+    .getElementById("mobileMenu")
+    .addEventListener("click",function(){
+
+        document
+            .getElementById("sidebar")
+            .classList.toggle("open");
+
+    });
+
+
+/* =====================================================
+   STATS
+===================================================== */
+
+async function loadStats(){
+
+    try{
+
+        const [
+            carsResult,
+            bikesResult,
+            propertiesResult,
+            mediaResult,
+            enquiriesResult,
+            sellResult
+        ] = await Promise.all([
+
+            supabaseClient
+                .from("cars")
+                .select("id",{count:"exact",head:true}),
+
+            supabaseClient
+                .from("bikes")
+                .select("id",{count:"exact",head:true}),
+
+            supabaseClient
+                .from("properties")
+                .select("id",{count:"exact",head:true}),
+
+            supabaseClient
+                .from("media")
+                .select("id",{count:"exact",head:true}),
+
+            supabaseClient
+                .from("enquiries")
+                .select("id",{count:"exact",head:true}),
+
+            supabaseClient
+                .from("sell_exchange")
+                .select("id",{count:"exact",head:true})
+
+        ]);
+
+
+        document.getElementById("statCars").textContent =
+            carsResult.count || 0;
+
+        document.getElementById("statBikes").textContent =
+            bikesResult.count || 0;
+
+        document.getElementById("statProperties").textContent =
+            propertiesResult.count || 0;
+
+        document.getElementById("statMedia").textContent =
+            mediaResult.count || 0;
+
+        document.getElementById("statEnquiries").textContent =
+            enquiriesResult.count || 0;
+
+        document.getElementById("statSellExchange").textContent =
+            sellResult.count || 0;
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+
+/* =====================================================
+   STORAGE UPLOAD
+===================================================== */
+
+async function uploadImages(files,folder){
+
+    const urls = [];
+    const paths = [];
+
+    if(!files || !files.length){
+
+        return {
+            urls,
+            paths
+        };
+
+    }
+
+
+    for(const file of files){
+
+        if(!file.type.startsWith("image/")){
+
+            throw new Error(
+                "Only image files are allowed."
+            );
+
+        }
+
+
+        const extension =
+            file.name.split(".").pop().toLowerCase();
+
+
+        const safeName =
+            file.name
+                .replace(/\.[^/.]+$/,"")
+                .replace(/[^a-zA-Z0-9-_]/g,"-")
+                .toLowerCase();
+
+
+        const uniqueName =
+            Date.now() +
+            "-" +
+            Math.random().toString(36).substring(2,9) +
+            "-" +
+            safeName +
+            "." +
+            extension;
+
+
+        const path =
+            folder +
+            "/" +
+            uniqueName;
+
+
+        const {
+            error
+        } = await supabaseClient.storage
+            .from("vehicle-images")
+            .upload(
+                path,
+                file,
+                {
+                    cacheControl:"3600",
+                    upsert:false,
+                    contentType:file.type
+                }
+            );
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        const {
+            data
+        } = supabaseClient.storage
+            .from("vehicle-images")
+            .getPublicUrl(path);
+
+
+        urls.push(data.publicUrl);
+        paths.push(path);
+
+    }
+
+
+    return {
+        urls,
+        paths
+    };
+
+}
+
+
+/* =====================================================
+   DELETE STORAGE FILE
+===================================================== */
+
+async function deleteStorageFile(path){
+
+    if(!path){
+        return;
+    }
+
+    try{
+
+        await supabaseClient.storage
+            .from("vehicle-images")
+            .remove([path]);
+
+    }catch(error){
+
+        console.warn(
+            "Storage delete warning:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   VEHICLE MODAL
+===================================================== */
+
+function openVehicleModal(type,id=null){
+
+    editingVehicleId = id;
+    editingVehicleType = type;
+
+    existingVehicleImages = [];
+
+
+    document.getElementById("vehicleForm").reset();
+
+    document.getElementById("vehicleId").value = id || "";
+    document.getElementById("vehicleType").value = type;
+
+
+    document.getElementById("vehicleModalTitle").textContent =
+        id
+            ? "Edit " + (type === "car" ? "Car" : "Bike")
+            : "Add " + (type === "car" ? "Car" : "Bike");
+
+
+    document.getElementById("engineGroup").style.display =
+        type === "bike"
+            ? "flex"
+            : "none";
+
+
+    document.getElementById("existingVehiclePhotos").innerHTML = "";
+    document.getElementById("vehiclePreview").innerHTML = "";
+
+
+    if(id){
+
+        const list =
+            type === "car"
+                ? cars
+                : bikes;
+
+        const item =
+            list.find(function(x){
+                return x.id === id;
+            });
+
+
+        if(item){
+
+            document.getElementById("vehicleBrand").value =
+                item.brand || "";
+
+            document.getElementById("vehicleModel").value =
+                item.model || "";
+
+            document.getElementById("vehicleVariant").value =
+                item.variant || "";
+
+            document.getElementById("vehicleYear").value =
+                item.year || "";
+
+            document.getElementById("vehicleFuel").value =
+                item.fuel || "";
+
+            document.getElementById("vehicleTransmission").value =
+                item.transmission || "";
+
+            document.getElementById("vehicleKm").value =
+                item.kilometres || "";
+
+            document.getElementById("vehicleEngine").value =
+                item.engine_cc || "";
+
+            document.getElementById("vehiclePrice").value =
+                item.price || "";
+
+            document.getElementById("vehicleLocation").value =
+                item.location || "";
+
+            document.getElementById("vehicleStatus").value =
+                item.status || "Available";
+
+            document.getElementById("vehicleDescription").value =
+                item.description || "";
+
+
+            existingVehicleImages =
+                Array.isArray(item.image_urls)
+                    ? [...item.image_urls]
+                    : [];
+
+
+            if(
+                !existingVehicleImages.length &&
+                item.image_url
+            ){
+
+                existingVehicleImages = [
+                    item.image_url
+                ];
+
+            }
+
+
+            renderExistingVehicleImages();
+
+        }
+
+    }
+
+
+    openModal("vehicleModal");
+
+}
+
+
+function renderExistingVehicleImages(){
+
+    const container =
+        document.getElementById("existingVehiclePhotos");
+
+
+    if(!existingVehicleImages.length){
+
+        container.innerHTML = "";
+        return;
+
+    }
+
+
+    container.innerHTML = `
+        <div class="existing-label">
+            Existing photos — new photos will be added to these.
+        </div>
+        <div class="preview-grid">
+            ${existingVehicleImages.map(function(url){
+
+                return `
+                    <div class="preview-item">
+                        <img
+                            src="${safeImage(url)}"
+                            alt="Vehicle photo"
+                        >
+                    </div>
+                `;
+
+            }).join("")}
+        </div>
+    `;
+
+}
+
+
+/* =====================================================
+   VEHICLE PHOTO PREVIEW
+===================================================== */
+
+document
+    .getElementById("vehiclePhotos")
+    .addEventListener("change",function(){
+
+        const container =
+            document.getElementById("vehiclePreview");
+
+        container.innerHTML = "";
+
+
+        Array.from(this.files).forEach(function(file){
+
+            const reader = new FileReader();
+
+            reader.onload = function(event){
+
+                const item =
+                    document.createElement("div");
+
+                item.className =
+                    "preview-item";
+
+                item.innerHTML =
+                    `<img src="${event.target.result}" alt="Preview">`;
+
+                container.appendChild(item);
+
+            };
+
+            reader.readAsDataURL(file);
+
+        });
+
+    });
+
+
+/* =====================================================
+   SAVE VEHICLE
+===================================================== */
+
+document
+    .getElementById("vehicleForm")
+    .addEventListener("submit",async function(event){
+
+        event.preventDefault();
+
+
+        const button =
+            document.getElementById("vehicleSaveButton");
+
+        button.disabled = true;
+        button.textContent = "Saving...";
+
+
+        try{
+
+            const type =
+                document.getElementById("vehicleType").value;
+
+            const id =
+                document.getElementById("vehicleId").value;
+
+
+            const files =
+                document.getElementById("vehiclePhotos").files;
+
+
+            let newImages = [];
+
+            if(files && files.length){
+
+                const result =
+                    await uploadImages(
+                        files,
+                        type === "car"
+                            ? "cars"
+                            : "bikes"
+                    );
+
+                newImages =
+                    result.urls;
+
+            }
+
+
+            const allImages = [
+                ...existingVehicleImages,
+                ...newImages
+            ];
+
+
+            const commonData = {
+
+                brand:
+                    document
+                        .getElementById("vehicleBrand")
+                        .value
+                        .trim(),
+
+                model:
+                    document
+                        .getElementById("vehicleModel")
+                        .value
+                        .trim(),
+
+                variant:
+                    document
+                        .getElementById("vehicleVariant")
+                        .value
+                        .trim() || null,
+
+                year:
+                    Number(
+                        document
+                            .getElementById("vehicleYear")
+                            .value
+                    ) || null,
+
+                fuel:
+                    document
+                        .getElementById("vehicleFuel")
+                        .value || null,
+
+                transmission:
+                    document
+                        .getElementById("vehicleTransmission")
+                        .value || null,
+
+                kilometres:
+                    Number(
+                        document
+                            .getElementById("vehicleKm")
+                            .value
+                    ) || null,
+
+                price:
+                    Number(
+                        document
+                            .getElementById("vehiclePrice")
+                            .value
+                    ) || null,
+
+                location:
+                    document
+                        .getElementById("vehicleLocation")
+                        .value
+                        .trim() || null,
+
+                status:
+                    document
+                        .getElementById("vehicleStatus")
+                        .value,
+
+                image_url:
+                    allImages[0] || null,
+
+                image_urls:
+                    allImages,
+
+                description:
+                    document
+                        .getElementById("vehicleDescription")
+                        .value
+                        .trim() || null,
+
+                updated_at:
+                    new Date().toISOString()
+
+            };
+
+
+            let error = null;
+
+
+            if(type === "car"){
+
+                if(id){
+
+                    const result =
+                        await supabaseClient
+                            .from("cars")
+                            .update(commonData)
+                            .eq("id",id);
+
+                    error = result.error;
+
+                }else{
+
+                    const result =
+                        await supabaseClient
+                            .from("cars")
+                            .insert([commonData]);
+
+                    error = result.error;
+
+                }
+
+            }else{
+
+                const bikeData = {
+
+                    ...commonData,
+
+                    engine_cc:
+                        Number(
+                            document
+                                .getElementById("vehicleEngine")
+                                .value
+                        ) || null
+
+                };
+
+
+                if(id){
+
+                    const result =
+                        await supabaseClient
+                            .from("bikes")
+                            .update(bikeData)
+                            .eq("id",id);
+
+                    error = result.error;
+
+                }else{
+
+                    const result =
+                        await supabaseClient
+                            .from("bikes")
+                            .insert([bikeData]);
+
+                    error = result.error;
+
+                }
+
+            }
+
+
+            if(error){
+
+                throw error;
+
+            }
+
+
+            closeModal("vehicleModal");
+
+            showNotice(
+                type === "car"
+                    ? "Car saved successfully."
+                    : "Bike saved successfully.",
+                "success"
+            );
+
+
+            if(type === "car"){
+
+                await loadCars();
+
+            }else{
+
+                await loadBikes();
+
+            }
+
+
+            await loadStats();
+
+
+        }catch(error){
+
+            console.error(error);
+
+            showNotice(
+                error.message ||
+                "Unable to save vehicle.",
+                "error"
+            );
+
+        }finally{
+
+            button.disabled = false;
+            button.textContent = "Save Vehicle";
+
+        }
+
+    });
+
+
+/* =====================================================
+   LOAD CARS
+===================================================== */
+
+async function loadCars(){
+
+    const grid =
+        document.getElementById("carsGrid");
+
+
+    grid.innerHTML =
+        `<div class="loading">Loading cars...</div>`;
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("cars")
+        .select("*")
+        .order("created_at",{ascending:false});
+
+
+    if(error){
+
+        console.error(error);
+
+        grid.innerHTML =
+            `<div class="empty">
+                <div class="empty-icon">⚠️</div>
+                Unable to load cars.
+            </div>`;
+
+        return;
+
+    }
+
+
+    cars = data || [];
+
+    renderCars();
+
+    document.getElementById("statCars").textContent =
+        cars.length;
+
+}
+
+
+function renderCars(){
+
+    const search =
+        document
+            .getElementById("carSearch")
+            .value
+            .toLowerCase()
+            .trim();
+
+
+    const status =
+        document
+            .getElementById("carStatusFilter")
+            .value;
+
+
+    const filtered =
+        cars.filter(function(car){
+
+            const text =
+                [
+                    car.brand,
+                    car.model,
+                    car.variant,
+                    car.year,
+                    car.location
+                ]
+                .join(" ")
+                .toLowerCase();
+
+
+            return (
+                (!search || text.includes(search)) &&
+                (!status || car.status === status)
+            );
+
+        });
+
+
+    const grid =
+        document.getElementById("carsGrid");
+
+
+    if(!filtered.length){
+
+        grid.innerHTML =
+            `<div class="empty">
+                <div class="empty-icon">🚗</div>
+                No cars found.
+            </div>`;
+
+        return;
+
+    }
+
+
+    grid.innerHTML =
+        filtered.map(function(car){
+
+            const images =
+                Array.isArray(car.image_urls)
+                    ? car.image_urls
+                    : [];
+
+
+            const image =
+                car.image_url ||
+                images[0] ||
+                "";
+
+
+            return `
+                <article class="item-card">
+
+                    ${
+                        image
+                        ?
+                        `<img
+                            class="item-image"
+                            src="${safeImage(image)}"
+                            alt="${escapeHtml(car.brand)} ${escapeHtml(car.model)}"
+                        >`
+                        :
+                        `<div class="item-image placeholder">
+                            🚗
+                        </div>`
+                    }
+
+                    <div class="item-info">
+
+                        <div class="item-title">
+                            ${escapeHtml(car.brand || "")}
+                            ${escapeHtml(car.model || "")}
+                        </div>
+
+                        <div class="item-sub">
+                            ${escapeHtml(car.variant || "No variant")}
+                        </div>
+
+                        <div class="item-details">
+
+                            <div class="detail">
+                                Year
+                                <strong>
+                                    ${escapeHtml(car.year || "—")}
+                                </strong>
+                            </div>
+
+                            <div class="detail">
+                                Fuel
+                                <strong>
+                                    ${escapeHtml(car.fuel || "—")}
+                                </strong>
+                            </div>
+
+                            <div class="detail">
+                                KM
+                                <strong>
+                                    ${car.kilometres
+                                        ? Number(car.kilometres).toLocaleString("en-IN")
+                                        : "—"}
+                                </strong>
+                            </div>
+
+                            <div class="detail">
+                                Location
+                                <strong>
+                                    ${escapeHtml(car.location || "—")}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                        <div class="price">
+                            ${formatMoney(car.price)}
+                        </div>
+
+                        <div class="status ${statusClass(car.status)}">
+                            ${escapeHtml(car.status || "Available")}
+                        </div>
+
+                        <div class="photo-count">
+                            📷 ${images.length || (car.image_url ? 1 : 0)} photo(s)
+                        </div>
+
+                        <div class="card-actions">
+
+                            <button
+                                class="btn btn-dark"
+                                onclick="openVehicleModal('car','${car.id}')"
+                            >
+                                Edit
+                            </button>
+
+                            <button
+                                class="btn btn-danger"
+                                onclick="deleteVehicle('car','${car.id}')"
+                            >
+                                Delete
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+            `;
+
+        }).join("");
+
+}
+
+
+document
+    .getElementById("carSearch")
+    .addEventListener("input",renderCars);
+
+document
+    .getElementById("carStatusFilter")
+    .addEventListener("change",renderCars);
+
+
+/* =====================================================
+   DELETE VEHICLE
+===================================================== */
+
+async function deleteVehicle(type,id){
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to delete this listing?"
+        );
+
+
+    if(!confirmed){
+        return;
+    }
+
+
+    try{
+
+        const list =
+            type === "car"
+                ? cars
+                : bikes;
+
+
+        const item =
+            list.find(function(x){
+                return x.id === id;
+            });
+
+
+        const result =
+            await supabaseClient
+                .from(
+                    type === "car"
+                        ? "cars"
+                        : "bikes"
+                )
+                .delete()
+                .eq("id",id);
+
+
+        if(result.error){
+
+            throw result.error;
+
+        }
+
+
+        if(item){
+
+            const images =
+                Array.isArray(item.image_urls)
+                    ? item.image_urls
+                    : [];
+
+
+            /*
+             * Public URLs are kept in the database.
+             * Storage cleanup is attempted only when
+             * the path can be safely derived.
+             */
+
+            for(const url of images){
+
+                try{
+
+                    const marker =
+                        "/storage/v1/object/public/vehicle-images/";
+
+                    const index =
+                        url.indexOf(marker);
+
+                    if(index !== -1){
+
+                        const path =
+                            decodeURIComponent(
+                                url.substring(
+                                    index + marker.length
+                                )
+                            );
+
+                        await deleteStorageFile(path);
+
+                    }
+
+                }catch(storageError){
+
+                    console.warn(storageError);
+
+                }
+
+            }
+
+        }
+
+
+        showNotice(
+            type === "car"
+                ? "Car deleted successfully."
+                : "Bike deleted successfully.",
+            "success"
+        );
+
+
+        if(type === "car"){
+            await loadCars();
+        }else{
+            await loadBikes();
+        }
+
+
+        await loadStats();
+
+
+    }catch(error){
+
+        console.error(error);
+
+        showNotice(
+            error.message ||
+            "Unable to delete listing.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   LOAD BIKES
+===================================================== */
+
+async function loadBikes(){
+
+    const grid =
+        document.getElementById("bikesGrid");
+
+
+    grid.innerHTML =
+        `<div class="loading">Loading bikes...</div>`;
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("bikes")
+        .select("*")
+        .order("created_at",{ascending:false});
+
+
+    if(error){
+
+        console.error(error);
+
+        grid.innerHTML =
+            `<div class="empty">
+                <div class="empty-icon">⚠️</div>
+                Unable to load bikes.
+            </div>`;
+
+        return;
+
+    }
+
+
+    bikes = data || [];
+
+    renderBikes();
+
+    document.getElementById("statBikes").textContent =
+        bikes.length;
+
+}
+
+
+function renderBikes(){
+
+    const search =
+        document
+            .getElementById("bikeSearch")
+            .value
+            .toLowerCase()
+            .trim();
+
+
+    const status =
+        document
+            .getElementById("bikeStatusFilter")
+            .value;
+
+
+    const filtered =
+        bikes.filter(function(bike){
+
+            const text =
+                [
+                    bike.brand,
+                    bike.model,
+                    bike.variant,
+                    bike.year,
+                    bike.location,
+                    bike.engine_cc
+                ]
+                .join(" ")
+                .toLowerCase();
+
+
+            return (
+                (!search || text.includes(search)) &&
+                (!status || bike.status === status)
+            );
+
+        });
+
+
+    const grid =
+        document.getElementById("bikesGrid");
+
+
+    if(!filtered.length){
+
+        grid.innerHTML =
+            `<div class="empty">
+                <div class="empty-icon">🏍️</div>
+                No bikes found.
+            </div>`;
+
+        return;
+
+    }
+
+
+    grid.innerHTML =
+        filtered.map(function(bike){
+
+            const images =
+                Array.isArray(bike.image_urls)
+                    ? bike.image_urls
+                    : [];
+
+
+            const image =
+                bike.image_url ||
+                images[0] ||
+                "";
+
+
+            return `
+                <article class="item-card">
+
+                    ${
+                        image
+                        ?
+                        `<img
+                            class="item-image"
+                            src="${safeImage(image)}"
+                            alt="${escapeHtml(bike.brand)} ${escapeHtml(bike.model)}"
+                        >`
+                        :
+                        `<div class="item-image placeholder">
+                            🏍️
+                        </div>`
+                    }
+
+                    <div class="item-info">
+
+                        <div class="item-title">
+                            ${escapeHtml(bike.brand || "")}
+                            ${escapeHtml(bike.model || "")}
+                        </div>
+
+                        <div class="item-sub">
+                            ${escapeHtml(bike.variant || "No variant")}
+                        </div>
+
+                        <div class="item-details">
+
+                            <div class="detail">
+                                Year
+                                <strong>
+                                    ${escapeHtml(bike.year || "—")}
+                                </strong>
+                            </div>
+
+                            <div class="detail">
+                                Engine
+                                <strong>
+                                    ${bike.engine_cc
+                                        ? escapeHtml(bike.engine_cc) + " CC"
+                                        : "—"}
+                                </strong>
+                            </div>
+
+                            <div class="detail">
+                                KM
+                                <strong>
+                                    ${bike.kilometres
+                                        ? Number(bike.kilometres).toLocaleString("en-IN")
+                                        : "—"}
+                                </strong>
+                            </div>
+
+                            <div class="detail">
+                                Location
+                                <strong>
+                                    ${escapeHtml(bike.location || "—")}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                        <div class="price">
+                            ${formatMoney(bike.price)}
+                        </div>
+
+                        <div class="status ${statusClass(bike.status)}">
+                            ${escapeHtml(bike.status || "Available")}
+                        </div>
+
+                        <div class="photo-count">
+                            📷 ${images.length || (bike.image_url ? 1 : 0)} photo(s)
+                        </div>
+
+                        <div class="card-actions">
+
+                            <button
+                                class="btn btn-dark"
+                                onclick="openVehicleModal('bike','${bike.id}')"
+                            >
+                                Edit
+                            </button>
+
+                            <button
+                                class="btn btn-danger"
+                                onclick="deleteVehicle('bike','${bike.id}')"
+                            >
+                                Delete
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+            `;
+
+        }).join("");
+
+}
+
+
+document
+    .getElementById("bikeSearch")
+    .addEventListener("input",renderBikes);
+
+document
+    .getElementById("bikeStatusFilter")
+    .addEventListener("change",renderBikes);
+
+
+/* =====================================================
+   PROPERTY MODAL
+===================================================== */
+
+function openPropertyModal(id=null){
+
+    editingPropertyId = id;
+
+    existingPropertyImages = [];
+
+
+    document
+        .getElementById("propertyForm")
+        .reset();
+
+
+    document.getElementById("propertyId").value =
+        id || "";
+
+
+    document.getElementById("propertyModalTitle").textContent =
+        id
+            ? "Edit Property"
+            : "Add Property";
+
+
+    document.getElementById("existingPropertyPhotos").innerHTML =
+        "";
+
+    document.getElementById("propertyPreview").innerHTML =
+        "";
+
+
+    if(id){
+
+        const property =
+            properties.find(function(x){
+                return x.id === id;
+            });
+
+
+        if(property){
+
+            document.getElementById("propertyTitle").value =
+                property.title || "";
+
+            document.getElementById("propertyType").value =
+                property.property_type || "";
+
+            document.getElementById("propertyListingType").value =
+                property.listing_type || "";
+
+            document.getElementById("propertyLocation").value =
+                property.location || "";
+
+            document.getElementById("propertyArea").value =
+                property.area || "";
+
+            document.getElementById("propertyBedrooms").value =
+                property.bedrooms || "";
+
+            document.getElementById("propertyBathrooms").value =
+                property.bathrooms || "";
+
+            document.getElementById("propertyPrice").value =
+                property.price || "";
+
+            document.getElementById("propertyStatus").value =
+                property.status || "Available";
+
+            document.getElementById("propertyDescription").value =
+                property.description || "";
+
+
+            existingPropertyImages =
+                Array.isArray(property.image_urls)
+                    ? [...property.image_urls]
+                    : [];
+
+
+            if(
+                !existingPropertyImages.length &&
+                property.image_url
+            ){
+
+                existingPropertyImages = [
+                    property.image_url
+                ];
+
+            }
+
+
+            renderExistingPropertyImages();
+
+        }
+
+    }
+
+
+    openModal("propertyModal");
+
+}
+
+
+function renderExistingPropertyImages(){
+
+    const container =
+        document.getElementById("existingPropertyPhotos");
+
+
+    if(!existingPropertyImages.length){
+
+        container.innerHTML = "";
+        return;
+
+    }
+
+
+    container.innerHTML = `
+        <div class="existing-label">
+            Existing photos — new photos will be added to these.
+        </div>
+        <div class="preview-grid">
+            ${existingPropertyImages.map(function(url){
+
+                return `
+                    <div class="preview-item">
+                        <img
+                            src="${safeImage(url)}"
+                            alt="Property photo"
+                        >
+                    </div>
+                `;
+
+            }).join("")}
+        </div>
+    `;
+
+}
+
+
+/* =====================================================
+   PROPERTY PHOTO PREVIEW
+===================================================== */
+
+document
+    .getElementById("propertyPhotos")
+    .addEventListener("change",function(){
+
+        const container =
+            document.getElementById("propertyPreview");
+
+        container.innerHTML = "";
+
+
+        Array.from(this.files).forEach(function(file){
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function(event){
+
+                    const item =
+                        document.createElement("div");
+
+                    item.className =
+                        "preview-item";
+
+                    item.innerHTML =
+                        `<img
+                            src="${event.target.result}"
+                            alt="Preview"
+                        >`;
+
+                    container.appendChild(item);
+
+                };
+
+
+            reader.readAsDataURL(file);
+
+        });
+
+    });
+
+
+/* =====================================================
+   SAVE PROPERTY
+===================================================== */
+
+document
+    .getElementById("propertyForm")
+    .addEventListener("submit",async function(event){
+
+        event.preventDefault();
+
+
+        const button =
+            document.getElementById("propertySaveButton");
+
+        button.disabled = true;
+        button.textContent = "Saving...";
+
+
+        try{
+
+            const id =
+                document
+                    .getElementById("propertyId")
+                    .value;
+
+
+            const files =
+                document
+                    .getElementById("propertyPhotos")
+                    .files;
+
+
+            let newImages = [];
+
+
+            if(files && files.length){
+
+                const result =
+                    await uploadImages(
+                        files,
+                        "properties"
+                    );
+
+                newImages =
+                    result.urls;
+
+            }
+
+
+            const allImages = [
+                ...existingPropertyImages,
+                ...newImages
+            ];
+
+
+            const propertyData = {
+
+                title:
+                    document
+                        .getElementById("propertyTitle")
+                        .value
+                        .trim(),
+
+                property_type:
+                    document
+                        .getElementById("propertyType")
+                        .value || null,
+
+                listing_type:
+                    document
+                        .getElementById("propertyListingType")
+                        .value || null,
+
+                location:
+                    document
+                        .getElementById("propertyLocation")
+                        .value
+                        .trim() || null,
+
+                area:
+                    Number(
+                        document
+                            .getElementById("propertyArea")
+                            .value
+                    ) || null,
+
+                bedrooms:
+                    Number(
+                        document
+                            .getElementById("propertyBedrooms")
+                            .value
+                    ) || null,
+
+                bathrooms:
+                    Number(
+                        document
+                            .getElementById("propertyBathrooms")
+                            .value
+                    ) || null,
+
+                price:
+                    Number(
+                        document
+                            .getElementById("propertyPrice")
+                            .value
+                    ) || null,
+
+                status:
+                    document
+                        .getElementById("propertyStatus")
+                        .value,
+
+                image_url:
+                    allImages[0] || null,
+
+                image_urls:
+                    allImages,
+
+                description:
+                    document
+                        .getElementById("propertyDescription")
+                        .value
+                        .trim() || null,
+
+                updated_at:
+                    new Date().toISOString()
+
+            };
+
+
+            let result;
+
+
+            if(id){
+
+                result =
+                    await supabaseClient
+                        .from("properties")
+                        .update(propertyData)
+                        .eq("id",id);
+
+            }else{
+
+                result =
+                    await supabaseClient
+                        .from("properties")
+                        .insert([propertyData]);
+
+            }
+
+
+            if(result.error){
+
+                throw result.error;
+
+            }
+
+
+            closeModal("propertyModal");
+
+
+            showNotice(
+                id
+                    ? "Property updated successfully."
+                    : "Property added successfully.",
+                "success"
+            );
+
+
+            await loadProperties();
+            await loadStats();
+
+
+        }catch(error){
+
+            console.error(error);
+
+            showNotice(
+                error.message ||
+                "Unable to save property.",
+                "error"
+            );
+
+        }finally{
+
+            button.disabled = false;
+            button.textContent = "Save Property";
+
+        }
+
+    });
+
+
+/* =====================================================
+   LOAD PROPERTIES
+===================================================== */
+
+async function loadProperties(){
+
+    const grid =
+        document.getElementById("propertiesGrid");
+
+
+    grid.innerHTML =
+        `<div class="loading">
+            Loading properties...
+        </div>`;
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("properties")
+        .select("*")
+        .order("created_at",{ascending:false});
+
+
+    if(error){
+
+        console.error(error);
+
+        grid.innerHTML =
+            `<div class="empty">
+                <div class="empty-icon">⚠️</div>
+                Unable to load properties.
+            </div>`;
+
+        return;
+
+    }
+
+
+    properties = data || [];
+
+    renderProperties();
+
+    document.getElementById("statProperties").textContent =
+        properties.length;
+
+}
+
+
+function renderProperties(){
+
+    const search =
+        document
+            .getElementById("propertySearch")
+            .value
+            .toLowerCase()
+            .trim();
+
+
+    const status =
+        document
+            .getElementById("propertyStatusFilter")
+            .value;
+
+
+    const filtered =
+        properties.filter(function(property){
+
+            const text =
+                [
+                    property.title,
+                    property.location,
+                    property.property_type,
+                    property.listing_type
+                ]
+                .join(" ")
+                .toLowerCase();
+
+
+            return (
+                (!search || text.includes(search)) &&
+                (!status || property.status === status)
+            );
+
+        });
+
+
+    const grid =
+        document.getElementById("propertiesGrid");
+
+
+    if(!filtered.length){
+
+        grid.innerHTML =
+            `<div class="empty">
+                <div class="empty-icon">🏠</div>
+                No properties found.
+            </div>`;
+
+        return;
+
+    }
+
+
+    grid.innerHTML =
+        filtered.map(function(property){
+
+            const images =
+                Array.isArray(property.image_urls)
+                    ? property.image_urls
+                    : [];
+
+
+            const image =
+                property.image_url ||
+                images[0] ||
+                "";
+
+
+            return `
+                <article class="item-card">
+
+                    ${
+                        image
+                        ?
+                        `<img
+                            class="item-image"
+                            src="${safeImage(image)}"
+                            alt="${escapeHtml(property.title)}"
+                        >`
+                        :
+                        `<div class="item-image placeholder">
+                            🏠
+                        </div>`
+                    }
+
+                    <div class="item-info">
+
+                        <div class="item-title">
+                            ${escapeHtml(property.title || "")}
+                        </div>
+
+                        <div class="item-sub">
+                            ${escapeHtml(property.property_type || "Property")}
+                            ${
+                                property.listing_type
+                                ? " • " + escapeHtml(property.listing_type)
+                                : ""
+                            }
+                        </div>
+
+                        <div class="item-details">
+
+                            <div class="detail">
+                                Location
+                                <strong>
+                                    ${escapeHtml(property.location || "—")}
+                                </strong>
+                            </div>
+
+                            <div class="detail">
+                                Area
+                                <strong>
+                                    ${property.area
+                                        ? escapeHtml(property.area) + " sq.ft"
+                                        : "—"}
+                                </strong>
+                            </div>
+
+                            <div class="detail">
+                                Bedrooms
+                                <strong>
+                                    ${escapeHtml(property.bedrooms || "—")}
+                                </strong>
+                            </div>
+
+                            <div class="detail">
+                                Bathrooms
+                                <strong>
+                                    ${escapeHtml(property.bathrooms || "—")}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                        <div class="price">
+                            ${formatMoney(property.price)}
+                        </div>
+
+                        <div class="status ${statusClass(property.status)}">
+                            ${escapeHtml(property.status || "Available")}
+                        </div>
+
+                        <div class="photo-count">
+                            📷 ${images.length || (property.image_url ? 1 : 0)} photo(s)
+                        </div>
+
+                        <div class="card-actions">
+
+                            <button
+                                class="btn btn-dark"
+                                onclick="openPropertyModal('${property.id}')"
+                            >
+                                Edit
+                            </button>
+
+                            <button
+                                class="btn btn-danger"
+                                onclick="deleteProperty('${property.id}')"
+                            >
+                                Delete
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+            `;
+
+        }).join("");
+
+}
+
+
+async function deleteProperty(id){
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to delete this property?"
+        );
+
+
+    if(!confirmed){
+        return;
+    }
+
+
+    try{
+
+        const property =
+            properties.find(function(x){
+                return x.id === id;
+            });
+
+
+        const {
+            error
+        } = await supabaseClient
+            .from("properties")
+            .delete()
+            .eq("id",id);
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        if(property){
+
+            const images =
+                Array.isArray(property.image_urls)
+                    ? property.image_urls
+                    : [];
+
+
+            for(const url of images){
+
+                try{
+
+                    const marker =
+                        "/storage/v1/object/public/vehicle-images/";
+
+                    const index =
+                        url.indexOf(marker);
+
+                    if(index !== -1){
+
+                        const path =
+                            decodeURIComponent(
+                                url.substring(
+                                    index + marker.length
+                                )
+                            );
+
+                        await deleteStorageFile(path);
+
+                    }
+
+                }catch(error){
+
+                    console.warn(error);
+
+                }
+
+            }
+
+        }
+
+
+        showNotice(
+            "Property deleted successfully.",
+            "success"
+        );
+
+
+        await loadProperties();
+        await loadStats();
+
+
+    }catch(error){
+
+        console.error(error);
+
+        showNotice(
+            error.message ||
+            "Unable to delete property.",
+            "error"
+        );
+
+    }
+
+}
+
+
+document
+    .getElementById("propertySearch")
+    .addEventListener("input",renderProperties);
+
+document
+    .getElementById("propertyStatusFilter")
+    .addEventListener("change",renderProperties);
+
+
+/* =====================================================
+   MEDIA MODAL
+===================================================== */
+
+function openMediaModal(){
+
+    document
+        .getElementById("mediaForm")
+        .reset();
+
+    document
+        .getElementById("mediaPreview")
+        .innerHTML = "";
+
+    openModal("mediaModal");
+
+}
+
+
+/* =====================================================
+   MEDIA PREVIEW
+===================================================== */
+
+document
+    .getElementById("mediaFiles")
+    .addEventListener("change",function(){
+
+        const container =
+            document.getElementById("mediaPreview");
+
+        container.innerHTML = "";
+
+
+        Array.from(this.files).forEach(function(file){
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function(event){
+
+                    const item =
+                        document.createElement("div");
+
+                    item.className =
+                        "preview-item";
+
+                    item.innerHTML =
+                        `<img
+                            src="${event.target.result}"
+                            alt="Preview"
+                        >`;
+
+                    container.appendChild(item);
+
+                };
+
+
+            reader.readAsDataURL(file);
+
+        });
+
+    });
+
+
+/* =====================================================
+   SAVE MEDIA
+===================================================== */
+
+document
+    .getElementById("mediaForm")
+    .addEventListener("submit",async function(event){
+
+        event.preventDefault();
+
+
+        const button =
+            document.getElementById("mediaSaveButton");
+
+        button.disabled = true;
+        button.textContent = "Uploading...";
+
+
+        try{
+
+            const files =
+                document
+                    .getElementById("mediaFiles")
+                    .files;
+
+
+            if(!files.length){
+
+                throw new Error(
+                    "Please select at least one image."
+                );
+
+            }
+
+
+            const title =
+                document
+                    .getElementById("mediaTitle")
+                    .value
+                    .trim();
+
+
+            const category =
+                document
+                    .getElementById("mediaCategory")
+                    .value;
+
+
+            const altText =
+                document
+                    .getElementById("mediaAlt")
+                    .value
+                    .trim() || null;
+
+
+            const result =
+                await uploadImages(
+                    files,
+                    "media"
+                );
+
+
+            for(let i=0;i<result.urls.length;i++){
+
+                const {
+                    error
+                } = await supabaseClient
+                    .from("media")
+                    .insert([{
+
+                        title:
+                            files.length > 1
+                                ? `${title} ${i+1}`
+                                : title,
+
+                        file_url:
+                            result.urls[i],
+
+                        file_path:
+                            result.paths[i],
+
+                        media_type:
+                            "image",
+
+                        category:
+                            category,
+
+                        alt_text:
+                            altText
+
+                    }]);
+
+
+                if(error){
+
+                    throw error;
+
+                }
+
+            }
+
+
+            closeModal("mediaModal");
+
+
+            showNotice(
+                files.length +
+                " media file(s) uploaded successfully.",
+                "success"
+            );
+
+
+            await loadMedia();
+            await loadStats();
+
+
+        }catch(error){
+
+            console.error(error);
+
+            showNotice(
+                error.message ||
+                "Media upload failed.",
+                "error"
+            );
+
+        }finally{
+
+            button.disabled = false;
+            button.textContent = "Upload Media";
+
+        }
+
+    });
+
+
+/* =====================================================
+   LOAD MEDIA
+===================================================== */
+
+async function loadMedia(){
+
+    const grid =
+        document.getElementById("mediaGrid");
+
+
+    grid.innerHTML =
+        `<div class="loading">
+            Loading media...
+        </div>`;
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("media")
+        .select("*")
+        .order("created_at",{ascending:false});
+
+
+    if(error){
+
+        console.error(error);
+
+        grid.innerHTML =
+            `<div class="empty">
+                <div class="empty-icon">⚠️</div>
+                Unable to load media.
+            </div>`;
+
+        return;
+
+    }
+
+
+    media = data || [];
+
+    renderMedia();
+
+    document.getElementById("statMedia").textContent =
+        media.length;
+
+}
+
+
+function renderMedia(){
+
+    const search =
+        document
+            .getElementById("mediaSearch")
+            .value
+            .toLowerCase()
+            .trim();
+
+
+    const category =
+        document
+            .getElementById("mediaCategoryFilter")
+            .value;
+
+
+    const filtered =
+        media.filter(function(item){
+
+            const text =
+                [
+                    item.title,
+                    item.category
+                ]
+                .join(" ")
+                .toLowerCase();
+
+
+            return (
+                (!search || text.includes(search)) &&
+                (!category || item.category === category)
+            );
+
+        });
+
+
+    const grid =
+        document.getElementById("mediaGrid");
+
+
+    if(!filtered.length){
+
+        grid.innerHTML =
+            `<div class="empty">
+                <div class="empty-icon">📸</div>
+                No media found.
+            </div>`;
+
+        return;
+
+    }
+
+
+    grid.innerHTML =
+        filtered.map(function(item){
+
+            return `
+                <div class="media-card">
+
+                    <img
+                        src="${safeImage(item.file_url)}"
+                        alt="${escapeHtml(item.alt_text || item.title)}"
+                    >
+
+                    <div class="media-info">
+
+                        <div class="media-title">
+                            ${escapeHtml(item.title)}
+                        </div>
+
+                        <div class="media-meta">
+                            ${escapeHtml(item.category || "General")}
+                            •
+                            ${formatDate(item.created_at)}
+                        </div>
+
+                        <div class="media-actions">
+
+                            <button
+                                class="btn btn-dark"
+                                onclick="window.open('${safeImage(item.file_url)}','_blank')"
+                            >
+                                View
+                            </button>
+
+                            <button
+                                class="btn btn-danger"
+                                onclick="deleteMedia('${item.id}')"
+                            >
+                                Delete
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+
+        }).join("");
+
+}
+
+
+async function deleteMedia(id){
+
+    const confirmed =
+        confirm(
+            "Delete this media file?"
+        );
+
+
+    if(!confirmed){
+        return;
+    }
+
+
+    try{
+
+        const item =
+            media.find(function(x){
+                return x.id === id;
+            });
+
+
+        if(item && item.file_path){
+
+            await deleteStorageFile(
+                item.file_path
+            );
+
+        }
+
+
+        const {
+            error
+        } = await supabaseClient
+            .from("media")
+            .delete()
+            .eq("id",id);
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        showNotice(
+            "Media deleted successfully.",
+            "success"
+        );
+
+
+        await loadMedia();
+        await loadStats();
+
+
+    }catch(error){
+
+        console.error(error);
+
+        showNotice(
+            error.message ||
+            "Unable to delete media.",
+            "error"
+        );
+
+    }
+
+}
+
+
+document
+    .getElementById("mediaSearch")
+    .addEventListener("input",renderMedia);
+
+document
+    .getElementById("mediaCategoryFilter")
+    .addEventListener("change",renderMedia);
+
+
+/* =====================================================
+   ENQUIRIES
+===================================================== */
+
+async function loadEnquiries(){
+
+    const tbody =
+        document.getElementById("enquiriesTable");
+
+
+    tbody.innerHTML =
+        `<tr>
+            <td colspan="7" class="loading">
+                Loading enquiries...
+            </td>
+        </tr>`;
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("enquiries")
+        .select("*")
+        .order("created_at",{ascending:false});
+
+
+    if(error){
+
+        console.error(error);
+
+        tbody.innerHTML =
+            `<tr>
+                <td colspan="7" class="loading">
+                    Unable to load enquiries.
+                </td>
+            </tr>`;
+
+        return;
+
+    }
+
+
+    enquiries = data || [];
+
+    renderEnquiries();
+
+    document.getElementById("statEnquiries").textContent =
+        enquiries.length;
+
+}
+
+
+function renderEnquiries(){
+
+    const search =
+        document
+            .getElementById("enquirySearch")
+            .value
+            .toLowerCase()
+            .trim();
+
+
+    const status =
+        document
+            .getElementById("enquiryStatusFilter")
+            .value;
+
+
+    const filtered =
+        enquiries.filter(function(item){
+
+            const text =
+                [
+                    item.customer_name,
+                    item.phone,
+                    item.email,
+                    item.message,
+                    item.subject,
+                    item.vehicle_type
+                ]
+                .join(" ")
+                .toLowerCase();
+
+
+            return (
+                (!search || text.includes(search)) &&
+                (!status || item.status === status)
+            );
+
+        });
+
+
+    const tbody =
+        document.getElementById("enquiriesTable");
+
+
+    if(!filtered.length){
+
+        tbody.innerHTML =
+            `<tr>
+                <td colspan="7" class="loading">
+                    No enquiries found.
+                </td>
+            </tr>`;
+
+        return;
+
+    }
+
+
+    tbody.innerHTML =
+        filtered.map(function(item){
+
+            return `
+                <tr>
+
+                    <td>
+                        <strong>
+                            ${escapeHtml(item.customer_name)}
+                        </strong>
+                        <br>
+                        <small style="color:#777">
+                            ${formatDate(item.created_at)}
+                        </small>
+                    </td>
+
+                    <td>
+                        ${escapeHtml(item.phone || "—")}
+                        <br>
+                        <small style="color:#777">
+                            ${escapeHtml(item.email || "")}
+                        </small>
+                    </td>
+
+                    <td>
+                        ${escapeHtml(item.enquiry_type || "General")}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(item.vehicle_type || "—")}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            (item.subject || item.message || "—")
+                                .substring(0,70)
+                        )}
+                    </td>
+
+                    <td>
+
+                        <select
+                            class="filter"
+                            style="min-width:120px;padding:8px"
+                            onchange="updateEnquiryStatus('${item.id}',this.value)"
+                        >
+
+                            <option
+                                value="New"
+                                ${item.status === "New" ? "selected" : ""}
+                            >
+                                New
+                            </option>
+
+                            <option
+                                value="Contacted"
+                                ${item.status === "Contacted" ? "selected" : ""}
+                            >
+                                Contacted
+                            </option>
+
+                            <option
+                                value="Resolved"
+                                ${item.status === "Resolved" ? "selected" : ""}
+                            >
+                                Resolved
+                            </option>
+
+                            <option
+                                value="Cancelled"
+                                ${item.status === "Cancelled" ? "selected" : ""}
+                            >
+                                Cancelled
+                            </option>
+
+                        </select>
+
+                    </td>
+
+                    <td>
+
+                        <div class="table-actions">
+
+                            <button
+                                onclick="viewEnquiry('${item.id}')"
+                            >
+                                View
+                            </button>
+
+                            <button
+                                onclick="deleteEnquiry('${item.id}')"
+                            >
+                                Delete
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+            `;
+
+        }).join("");
+
+}
+
+
+async function updateEnquiryStatus(id,status){
+
+    const {
+        error
+    } = await supabaseClient
+        .from("enquiries")
+        .update({
+            status:status
+        })
+        .eq("id",id);
+
+
+    if(error){
+
+        console.error(error);
+
+        showNotice(
+            error.message ||
+            "Unable to update enquiry.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    showNotice(
+        "Enquiry status updated.",
+        "success"
+    );
+
+
+    await loadEnquiries();
+
+}
+
+
+function viewEnquiry(id){
+
+    const item =
+        enquiries.find(function(x){
+            return x.id === id;
+        });
+
+
+    if(!item){
+        return;
+    }
+
+
+    document.getElementById("enquiryDetails").innerHTML = `
+
+        <div class="detail-box">
+
+            <h3>Customer</h3>
+
+            <div class="detail-list">
+
+                <div class="detail-row">
+                    <span>Name</span>
+                    <strong>
+                        ${escapeHtml(item.customer_name)}
+                    </strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Phone</span>
+                    <strong>
+                        ${escapeHtml(item.phone || "—")}
+                    </strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Email</span>
+                    <strong>
+                        ${escapeHtml(item.email || "—")}
+                    </strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Enquiry Type</span>
+                    <strong>
+                        ${escapeHtml(item.enquiry_type || "General")}
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="detail-box">
+
+            <h3>Request</h3>
+
+            <div class="detail-list">
+
+                <div class="detail-row">
+                    <span>Vehicle Type</span>
+                    <strong>
+                        ${escapeHtml(item.vehicle_type || "—")}
+                    </strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Vehicle ID</span>
+                    <strong>
+                        ${escapeHtml(item.vehicle_id || "—")}
+                    </strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Subject</span>
+                    <strong>
+                        ${escapeHtml(item.subject || "—")}
+                    </strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Created</span>
+                    <strong>
+                        ${formatDate(item.created_at)}
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="detail-box">
+
+            <h3>Message</h3>
+
+            <div class="message-box">
+                ${escapeHtml(item.message || "No message.")}
+            </div>
+
+        </div>
+
+    `;
+
+
+    openModal("enquiryModal");
+
+}
+
+
+async function deleteEnquiry(id){
+
+    if(!confirm("Delete this enquiry?")){
+        return;
+    }
+
+
+    const {
+        error
+    } = await supabaseClient
+        .from("enquiries")
+        .delete()
+        .eq("id",id);
+
+
+    if(error){
+
+        showNotice(
+            error.message ||
+            "Unable to delete enquiry.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    showNotice(
+        "Enquiry deleted.",
+        "success"
+    );
+
+
+    await loadEnquiries();
+    await loadStats();
+
+}
+
+
+document
+    .getElementById("enquirySearch")
+    .addEventListener("input",renderEnquiries);
+
+document
+    .getElementById("enquiryStatusFilter")
+    .addEventListener("change",renderEnquiries);
+
+
+/* =====================================================
+   SELL / EXCHANGE
+===================================================== */
+
+async function loadSellExchange(){
+
+    const tbody =
+        document.getElementById("sellExchangeTable");
+
+
+    tbody.innerHTML =
+        `<tr>
+            <td colspan="8" class="loading">
+                Loading requests...
+            </td>
+        </tr>`;
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("sell_exchange")
+        .select("*")
+        .order("created_at",{ascending:false});
+
+
+    if(error){
+
+        console.error(error);
+
+        tbody.innerHTML =
+            `<tr>
+                <td colspan="8" class="loading">
+                    Unable to load requests.
+                </td>
+            </tr>`;
+
+        return;
+
+    }
+
+
+    sellExchange = data || [];
+
+    renderSellExchange();
+
+    document.getElementById("statSellExchange").textContent =
+        sellExchange.length;
+
+}
+
+
+function renderSellExchange(){
+
+    const search =
+        document
+            .getElementById("sellSearch")
+            .value
+            .toLowerCase()
+            .trim();
+
+
+    const status =
+        document
+            .getElementById("sellStatusFilter")
+            .value;
+
+
+    const filtered =
+        sellExchange.filter(function(item){
+
+            const text =
+                [
+                    item.customer_name,
+                    item.phone,
+                    item.email,
+                    item.brand,
+                    item.model,
+                    item.variant,
+                    item.vehicle_type,
+                    item.exchange_vehicle
+                ]
+                .join(" ")
+                .toLowerCase();
+
+
+            return (
+                (!search || text.includes(search)) &&
+                (!status || item.status === status)
+            );
+
+        });
+
+
+    const tbody =
+        document.getElementById("sellExchangeTable");
+
+
+    if(!filtered.length){
+
+        tbody.innerHTML =
+            `<tr>
+                <td colspan="8" class="loading">
+                    No requests found.
+                </td>
+            </tr>`;
+
+        return;
+
+    }
+
+
+    tbody.innerHTML =
+        filtered.map(function(item){
+
+            const vehicle =
+                [
+                    item.brand,
+                    item.model,
+                    item.variant
+                ]
+                .filter(Boolean)
+                .join(" ");
+
+
+            return `
+                <tr>
+
+                    <td>
+                        <strong>
+                            ${escapeHtml(item.enquiry_type)}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${escapeHtml(item.customer_name)}
+                        <br>
+                        <small style="color:#777">
+                            ${formatDate(item.created_at)}
+                        </small>
+                    </td>
+
+                    <td>
+                        ${escapeHtml(item.phone || "—")}
+                        <br>
+                        <small style="color:#777">
+                            ${escapeHtml(item.email || "")}
+                        </small>
+                    </td>
+
+                    <td>
+                        ${escapeHtml(vehicle || "—")}
+                        <br>
+                        <small style="color:#777">
+                            ${escapeHtml(item.vehicle_type || "")}
+                        </small>
+                    </td>
+
+                    <td>
+                        ${formatMoney(item.expected_price)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(item.exchange_vehicle || "—")}
+                    </td>
+
+                    <td>
+
+                        <select
+                            class="filter"
+                            style="min-width:120px;padding:8px"
+                            onchange="updateSellStatus('${item.id}',this.value)"
+                        >
+
+                            <option
+                                value="New"
+                                ${item.status === "New" ? "selected" : ""}
+                            >
+                                New
+                            </option>
+
+                            <option
+                                value="Contacted"
+                                ${item.status === "Contacted" ? "selected" : ""}
+                            >
+                                Contacted
+                            </option>
+
+                            <option
+                                value="Completed"
+                                ${item.status === "Completed" ? "selected" : ""}
+                            >
+                                Completed
+                            </option>
+
+                            <option
+                                value="Cancelled"
+                                ${item.status === "Cancelled" ? "selected" : ""}
+                            >
+                                Cancelled
+                            </option>
+
+                        </select>
+
+                    </td>
+
+                    <td>
+
+                        <div class="table-actions">
+
+                            <button
+                                onclick="viewSellExchange('${item.id}')"
+                            >
+                                View
+                            </button>
+
+                            <button
+                                onclick="deleteSellExchange('${item.id}')"
+                            >
+                                Delete
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+            `;
+
+        }).join("");
+
+}
+
+
+async function updateSellStatus(id,status){
+
+    const {
+        error
+    } = await supabaseClient
+        .from("sell_exchange")
+        .update({
+            status:status
+        })
+        .eq("id",id);
+
+
+    if(error){
+
+        showNotice(
+            error.message ||
+            "Unable to update request.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    showNotice(
+        "Request status updated.",
+        "success"
+    );
+
+
+    await loadSellExchange();
+
+}
+
+
+function viewSellExchange(id){
+
+    const item =
+        sellExchange.find(function(x){
+            return x.id === id;
+        });
+
+
+    if(!item){
+        return;
+    }
+
+
+    document.getElementById("sellDetails").innerHTML = `
+
+        <div class="detail-box">
+
+            <h3>Customer</h3>
+
+            <div class="detail-list">
+
+                <div class="detail-row">
+                    <span>Name</span>
+                    <strong>
+                        ${escapeHtml(item.customer_name)}
+                    </strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Phone</span>
+                    <strong>
+                        ${escapeHtml(item.phone || "—")}
+                    </strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Email</span>
+                    <strong>
+                        ${escapeHtml(item.email || "—")}
+                    </strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Request</span>
+                    <strong>
+                        ${escapeHtml(item.enquiry_type)}
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="detail-box">
+
+            <h3>Vehicle</h3>
+
+            <div class="detail-list">
+
+                <div class="detail-row">
+                    <span>Vehicle Type</span>
+                    <strong>
+                        ${escapeHtml(item.vehicle_type || "—")}
+                    </strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Brand</span>
+                    <strong>
+                        ${escapeHtml(item.brand || "—")}
+                    </strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Model</span>
+                    <strong>
+                        ${escapeHtml(item.model || "—")}
+                    </strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Variant</span>
+                    <strong>
+                        ${escapeHtml(item.variant || "—")}
+                    </strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Year</span>
+                    <strong>
+                        ${escapeHtml(item.year || "—")}
+                    </strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Kilometres</span>
+                    <strong>
+                        ${item.kilometres
+                            ? Number(item.kilometres).toLocaleString("en-IN")
+                            : "—"}
+                    </strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Expected Price</span>
+                    <strong>
+                        ${formatMoney(item.expected_price)}
+                    </strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Exchange Vehicle</span>
+                    <strong>
+                        ${escapeHtml(item.exchange_vehicle || "—")}
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="detail-box">
+
+            <h3>Message</h3>
+
+            <div class="message-box">
+                ${escapeHtml(item.message || "No message.")}
+            </div>
+
+        </div>
+
+    `;
+
+
+    openModal("sellModal");
+
+}
+
+
+async function deleteSellExchange(id){
+
+    if(!confirm("Delete this sell/exchange request?")){
+        return;
+    }
+
+
+    const {
+        error
+    } = await supabaseClient
+        .from("sell_exchange")
+        .delete()
+        .eq("id",id);
+
+
+    if(error){
+
+        showNotice(
+            error.message ||
+            "Unable to delete request.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    showNotice(
+        "Sell/exchange request deleted.",
+        "success"
+    );
+
+
+    await loadSellExchange();
+    await loadStats();
+
+}
+
+
+document
+    .getElementById("sellSearch")
+    .addEventListener("input",renderSellExchange);
+
+document
+    .getElementById("sellStatusFilter")
+    .addEventListener("change",renderSellExchange);
+
+
+/* =====================================================
+   CLOSE MODALS WHEN CLICKING BACKDROP
+===================================================== */
+
+document.querySelectorAll(".modal").forEach(function(modal){
+
+    modal.addEventListener("click",function(event){
+
+        if(event.target === modal){
+
+            modal.classList.remove("show");
+
+        }
+
+    });
+
+});
+
+
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
+
+(async function(){
 
     const authenticated =
         await checkSession();
@@ -2414,12 +5701,19 @@ async function initialize(){
     }
 
 
-    await loadCars();
+    await Promise.all([
 
-}
+        loadStats(),
+        loadCars(),
+        loadBikes(),
+        loadProperties(),
+        loadMedia(),
+        loadEnquiries(),
+        loadSellExchange()
 
+    ]);
 
-initialize();
+})();
 
 </script>
 
