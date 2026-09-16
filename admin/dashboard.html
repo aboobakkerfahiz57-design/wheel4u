@@ -1,10 +1,13 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Wheel 4U | Admin Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 
 <style>
 *{
@@ -32,9 +35,12 @@ body{
     font-family:Arial,Helvetica,sans-serif;
 }
 
-/* =========================
-   LAYOUT
-========================= */
+button,
+input,
+select,
+textarea{
+    font-family:inherit;
+}
 
 .app{
     display:flex;
@@ -107,7 +113,7 @@ body{
 }
 
 .nav-icon{
-    width:25px;
+    width:28px;
     display:inline-block;
 }
 
@@ -132,10 +138,6 @@ body{
     color:white;
     border-color:var(--red);
 }
-
-/* =========================
-   MAIN
-========================= */
 
 .main{
     margin-left:245px;
@@ -171,10 +173,6 @@ body{
     font-size:12px;
 }
 
-/* =========================
-   SECTIONS
-========================= */
-
 .section{
     display:none;
 }
@@ -182,10 +180,6 @@ body{
 .section.active{
     display:block;
 }
-
-/* =========================
-   STAT CARDS
-========================= */
 
 .stats{
     display:grid;
@@ -224,10 +218,6 @@ body{
     color:var(--yellow);
 }
 
-/* =========================
-   PANEL
-========================= */
-
 .panel{
     background:var(--panel);
     border:1px solid var(--border);
@@ -252,10 +242,6 @@ body{
     color:var(--muted);
     font-size:13px;
 }
-
-/* =========================
-   BUTTONS
-========================= */
 
 .btn{
     border:0;
@@ -292,10 +278,6 @@ body{
     border:1px solid rgba(255,59,32,.2);
 }
 
-/* =========================
-   SEARCH
-========================= */
-
 .toolbar{
     display:flex;
     gap:12px;
@@ -315,10 +297,6 @@ body{
 .search:focus{
     border-color:var(--red);
 }
-
-/* =========================
-   CAR GRID
-========================= */
 
 .car-grid{
     display:grid;
@@ -417,10 +395,6 @@ body{
     flex:1;
 }
 
-/* =========================
-   MODAL
-========================= */
-
 .modal{
     position:fixed;
     inset:0;
@@ -514,24 +488,17 @@ body{
     margin-top:22px;
 }
 
-/* =========================
-   EMPTY
-========================= */
-
 .empty{
     padding:50px 20px;
     text-align:center;
     color:#777;
+    grid-column:1/-1;
 }
 
 .empty-icon{
     font-size:40px;
     margin-bottom:12px;
 }
-
-/* =========================
-   MODULE CARDS
-========================= */
 
 .modules{
     display:grid;
@@ -562,38 +529,27 @@ body{
     line-height:1.6;
 }
 
-/* =========================
-   TABLE
-========================= */
-
-.table-wrap{
-    overflow:auto;
+.notice{
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:18px;
+    font-size:13px;
+    display:none;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
+.notice.success{
+    display:block;
+    background:rgba(32,214,107,.08);
+    border:1px solid rgba(32,214,107,.2);
+    color:var(--green);
 }
 
-th,td{
-    padding:14px 10px;
-    border-bottom:1px solid var(--border);
-    text-align:left;
-    font-size:12px;
+.notice.error{
+    display:block;
+    background:rgba(255,59,32,.08);
+    border:1px solid rgba(255,59,32,.2);
+    color:#ff7564;
 }
-
-th{
-    color:#777;
-    font-weight:600;
-}
-
-td{
-    color:#ddd;
-}
-
-/* =========================
-   MOBILE
-========================= */
 
 .mobile-menu{
     display:none;
@@ -669,30 +625,26 @@ td{
     .toolbar{
         flex-direction:column;
     }
+
+    .admin-status{
+        font-size:9px;
+        padding:8px;
+    }
 }
 </style>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
 </head>
 
 <body>
 
 <div class="app">
 
-<!-- =========================
-     SIDEBAR
-========================= -->
-
 <aside class="sidebar" id="sidebar">
 
     <div class="logo">
-
         <img src="../wheel4u-logo.png" alt="Wheel 4U">
-
         <div class="logo-text">
             WHEEL <span>4U</span>
         </div>
-
     </div>
 
     <nav class="nav">
@@ -735,11 +687,6 @@ td{
 
 </aside>
 
-
-<!-- =========================
-     MAIN
-========================= -->
-
 <main class="main">
 
     <div class="topbar">
@@ -751,13 +698,8 @@ td{
             </button>
 
             <div class="heading">
-
                 <small>WHEEL 4U</small>
-
-                <h1 id="pageTitle">
-                    Dashboard
-                </h1>
-
+                <h1 id="pageTitle">Dashboard</h1>
             </div>
 
         </div>
@@ -768,10 +710,9 @@ td{
 
     </div>
 
+    <div id="notice" class="notice"></div>
 
-    <!-- =========================
-         OVERVIEW
-    ========================= -->
+    <!-- OVERVIEW -->
 
     <section class="section active" id="overview">
 
@@ -799,38 +740,17 @@ td{
 
         </div>
 
-
         <div class="panel">
 
             <div class="panel-header">
 
                 <div>
-                    <h2>Vehicle Inventory</h2>
+                    <h2>Wheel 4U Management</h2>
                     <p class="muted">
-                        Manage Wheel 4U vehicle listings.
+                        Your central vehicle and property administration system.
                     </p>
                 </div>
 
-                <button class="btn btn-red" onclick="openCarModal()">
-                    + Add Vehicle
-                </button>
-
-            </div>
-
-            <div id="overviewCars"></div>
-
-        </div>
-
-
-        <div class="panel">
-
-            <div class="panel-header">
-                <div>
-                    <h2>Management Modules</h2>
-                    <p class="muted">
-                        Wheel 4U admin controls.
-                    </p>
-                </div>
             </div>
 
             <div class="modules">
@@ -839,8 +759,7 @@ td{
                     <div class="module-icon">🚗</div>
                     <h3>Cars</h3>
                     <p>
-                        Manage car inventory, pricing, specifications,
-                        photos and availability.
+                        Add, edit, search and manage vehicle listings.
                     </p>
                 </div>
 
@@ -848,8 +767,7 @@ td{
                     <div class="module-icon">🏍️</div>
                     <h3>Bikes</h3>
                     <p>
-                        Motorcycle inventory management will be connected
-                        to the database in the next phase.
+                        Manage bikes and motorcycle listings.
                     </p>
                 </div>
 
@@ -857,7 +775,7 @@ td{
                     <div class="module-icon">🏠</div>
                     <h3>Properties</h3>
                     <p>
-                        Manage property listings, locations and pricing.
+                        Manage property listings and availability.
                     </p>
                 </div>
 
@@ -865,7 +783,7 @@ td{
                     <div class="module-icon">📸</div>
                     <h3>Media</h3>
                     <p>
-                        Manage vehicle and property photos.
+                        Central media management will be connected next.
                     </p>
                 </div>
 
@@ -873,15 +791,15 @@ td{
                     <div class="module-icon">📋</div>
                     <h3>Enquiries</h3>
                     <p>
-                        Review customer enquiries and follow-ups.
+                        Customer enquiries will be connected to Supabase.
                     </p>
                 </div>
 
                 <div class="module">
-                    <div class="module-icon">🏷️</div>
-                    <h3>Brands</h3>
+                    <div class="module-icon">⚙️</div>
+                    <h3>Database</h3>
                     <p>
-                        Organize vehicle brands, models and variants.
+                        Supabase is the central data source for Wheel 4U.
                     </p>
                 </div>
 
@@ -892,9 +810,7 @@ td{
     </section>
 
 
-    <!-- =========================
-         CARS
-    ========================= -->
+    <!-- CARS -->
 
     <section class="section" id="cars">
 
@@ -921,7 +837,6 @@ td{
             </div>
 
         </div>
-
 
         <div class="panel">
 
@@ -970,34 +885,30 @@ td{
     </section>
 
 
-    <!-- =========================
-         BIKES
-    ========================= -->
+    <!-- BIKES -->
 
     <section class="section" id="bikes">
 
         <div class="panel">
 
             <div class="panel-header">
+
                 <div>
-                    <h2>🏍️ Bikes Management</h2>
+                    <h2>Bikes Management</h2>
                     <p class="muted">
-                        Motorcycle inventory management.
+                        Bike management module.
                     </p>
                 </div>
+
+                <button class="btn btn-red" onclick="showComingSoon('Bikes')">
+                    + Add Bike
+                </button>
+
             </div>
 
             <div class="empty">
-
                 <div class="empty-icon">🏍️</div>
-
-                <h3>Bikes module ready</h3>
-
-                <p style="margin-top:8px;">
-                    Database connection will be added in the next
-                    development phase.
-                </p>
-
+                <p>Bike management will be connected to Supabase next.</p>
             </div>
 
         </div>
@@ -1005,33 +916,30 @@ td{
     </section>
 
 
-    <!-- =========================
-         PROPERTIES
-    ========================= -->
+    <!-- PROPERTIES -->
 
     <section class="section" id="properties">
 
         <div class="panel">
 
             <div class="panel-header">
+
                 <div>
-                    <h2>🏠 Properties Management</h2>
+                    <h2>Properties Management</h2>
                     <p class="muted">
-                        Manage property listings.
+                        Property management module.
                     </p>
                 </div>
+
+                <button class="btn btn-red" onclick="showComingSoon('Properties')">
+                    + Add Property
+                </button>
+
             </div>
 
             <div class="empty">
-
                 <div class="empty-icon">🏠</div>
-
-                <h3>Properties module ready</h3>
-
-                <p style="margin-top:8px;">
-                    Property database functionality will be added next.
-                </p>
-
+                <p>Property management will be connected to Supabase next.</p>
             </div>
 
         </div>
@@ -1039,31 +947,29 @@ td{
     </section>
 
 
-    <!-- =========================
-         MEDIA
-    ========================= -->
+    <!-- MEDIA -->
 
     <section class="section" id="media">
 
         <div class="panel">
 
             <div class="panel-header">
+
                 <div>
-                    <h2>📸 Media Management</h2>
+                    <h2>Media Management</h2>
                     <p class="muted">
-                        Vehicle and property photos.
+                        Vehicle and property image management.
                     </p>
                 </div>
+
             </div>
 
             <div class="empty">
 
                 <div class="empty-icon">📸</div>
 
-                <h3>Media manager</h3>
-
-                <p style="margin-top:8px;">
-                    Image storage and uploads will be connected later.
+                <p>
+                    Supabase Storage image uploads will be connected here.
                 </p>
 
             </div>
@@ -1073,31 +979,29 @@ td{
     </section>
 
 
-    <!-- =========================
-         ENQUIRIES
-    ========================= -->
+    <!-- ENQUIRIES -->
 
     <section class="section" id="enquiries">
 
         <div class="panel">
 
             <div class="panel-header">
+
                 <div>
-                    <h2>📋 Customer Enquiries</h2>
+                    <h2>Customer Enquiries</h2>
                     <p class="muted">
-                        Review customer enquiries.
+                        Customer enquiry management.
                     </p>
                 </div>
+
             </div>
 
             <div class="empty">
 
                 <div class="empty-icon">📋</div>
 
-                <h3>No enquiries yet</h3>
-
-                <p style="margin-top:8px;">
-                    Customer enquiry integration will be added later.
+                <p>
+                    Enquiries will be connected to Supabase next.
                 </p>
 
             </div>
@@ -1111,9 +1015,7 @@ td{
 </div>
 
 
-<!-- =========================
-     ADD / EDIT CAR MODAL
-========================= -->
+<!-- CAR MODAL -->
 
 <div class="modal" id="carModal">
 
@@ -1122,9 +1024,9 @@ td{
         <div class="modal-header">
 
             <div>
-                <h2 id="modalTitle">Add Vehicle</h2>
+                <h2 id="carModalTitle">Add Car</h2>
                 <p class="muted">
-                    Enter vehicle information.
+                    Save vehicle information to Supabase.
                 </p>
             </div>
 
@@ -1134,191 +1036,97 @@ td{
 
         </div>
 
-
         <form id="carForm">
 
-            <input type="hidden" id="editId">
-
+            <input type="hidden" id="carId">
 
             <div class="form-grid">
 
                 <div class="form-group">
                     <label>Brand *</label>
-
-                    <input
-                        id="brand"
-                        required
-                        placeholder="Example: BMW"
-                    >
+                    <input id="brand" required placeholder="BMW">
                 </div>
-
 
                 <div class="form-group">
                     <label>Model *</label>
-
-                    <input
-                        id="model"
-                        required
-                        placeholder="Example: 3 Series"
-                    >
+                    <input id="model" required placeholder="3 Series">
                 </div>
-
 
                 <div class="form-group">
                     <label>Variant</label>
-
-                    <input
-                        id="variant"
-                        placeholder="Example: 320d M Sport"
-                    >
+                    <input id="variant" placeholder="320d M Sport">
                 </div>
-
 
                 <div class="form-group">
-                    <label>Year *</label>
-
-                    <input
-                        id="year"
-                        type="number"
-                        min="1900"
-                        max="2100"
-                        required
-                        placeholder="2023"
-                    >
+                    <label>Year</label>
+                    <input id="year" type="number" placeholder="2024">
                 </div>
-
 
                 <div class="form-group">
                     <label>Fuel</label>
-
                     <select id="fuel">
-
-                        <option value="Petrol">
-                            Petrol
-                        </option>
-
-                        <option value="Diesel">
-                            Diesel
-                        </option>
-
-                        <option value="Electric">
-                            Electric
-                        </option>
-
-                        <option value="Hybrid">
-                            Hybrid
-                        </option>
-
-                        <option value="CNG">
-                            CNG
-                        </option>
-
+                        <option value="">Select fuel</option>
+                        <option value="Petrol">Petrol</option>
+                        <option value="Diesel">Diesel</option>
+                        <option value="Electric">Electric</option>
+                        <option value="Hybrid">Hybrid</option>
+                        <option value="CNG">CNG</option>
                     </select>
-
                 </div>
-
 
                 <div class="form-group">
                     <label>Transmission</label>
-
                     <select id="transmission">
-
-                        <option value="Automatic">
-                            Automatic
-                        </option>
-
-                        <option value="Manual">
-                            Manual
-                        </option>
-
-                        <option value="AMT">
-                            AMT
-                        </option>
-
-                        <option value="CVT">
-                            CVT
-                        </option>
-
+                        <option value="">Select transmission</option>
+                        <option value="Manual">Manual</option>
+                        <option value="Automatic">Automatic</option>
+                        <option value="AMT">AMT</option>
+                        <option value="DCT">DCT</option>
                     </select>
-
                 </div>
-
 
                 <div class="form-group">
                     <label>Kilometres Driven</label>
-
-                    <input
-                        id="km"
-                        type="number"
-                        placeholder="25000"
-                    >
+                    <input id="kilometres" type="number" placeholder="25000">
                 </div>
-
 
                 <div class="form-group">
                     <label>Price (₹)</label>
-
-                    <input
-                        id="price"
-                        type="number"
-                        placeholder="1250000"
-                    >
+                    <input id="price" type="number" step="0.01" placeholder="2500000">
                 </div>
-
 
                 <div class="form-group">
                     <label>Location</label>
-
-                    <input
-                        id="location"
-                        placeholder="Mangalore"
-                    >
+                    <input id="location" placeholder="Mangalore">
                 </div>
-
 
                 <div class="form-group">
                     <label>Status</label>
-
                     <select id="status">
-
-                        <option value="Available">
-                            Available
-                        </option>
-
-                        <option value="Reserved">
-                            Reserved
-                        </option>
-
-                        <option value="Sold">
-                            Sold
-                        </option>
-
+                        <option value="Available">Available</option>
+                        <option value="Reserved">Reserved</option>
+                        <option value="Sold">Sold</option>
                     </select>
-
                 </div>
-
 
                 <div class="form-group full">
                     <label>Vehicle Image URL</label>
-
                     <input
-                        id="image"
-                        placeholder="https://example.com/car.jpg"
+                        id="image_url"
+                        type="url"
+                        placeholder="https://..."
                     >
                 </div>
 
-
                 <div class="form-group full">
                     <label>Description</label>
-
                     <textarea
                         id="description"
-                        placeholder="Enter vehicle description..."
+                        placeholder="Vehicle description..."
                     ></textarea>
                 </div>
 
             </div>
-
 
             <div class="form-actions">
 
@@ -1333,8 +1141,9 @@ td{
                 <button
                     type="submit"
                     class="btn btn-red"
+                    id="saveCarButton"
                 >
-                    Save Vehicle
+                    Save Car
                 </button>
 
             </div>
@@ -1348,103 +1157,733 @@ td{
 
 <script>
 
-/* =========================
-   DATA
-========================= */
+/* =========================================
+   SUPABASE
+========================================= */
 
-let cars = JSON.parse(
-    localStorage.getItem("wheel4u_cars") || "[]"
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
 );
 
 
-/* =========================
-   SAVE DATA
-========================= */
+/* =========================================
+   DATA
+========================================= */
 
-function saveCars(){
+let cars = [];
+let editingCarId = null;
 
-    localStorage.setItem(
-        "wheel4u_cars",
-        JSON.stringify(cars)
-    );
+
+/* =========================================
+   AUTH CHECK
+========================================= */
+
+async function checkAdminSession(){
+
+    const {
+        data,
+        error
+    } = await supabaseClient.auth.getSession();
+
+    if(
+        error ||
+        !data ||
+        !data.session
+    ){
+
+        window.location.href = "login.html";
+
+        return false;
+    }
+
+    return true;
+}
+
+
+/* =========================================
+   LOAD CARS
+========================================= */
+
+async function loadCars(){
+
+    showNotice("Loading cars...", "success");
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("cars")
+        .select("*")
+        .order("created_at", {
+            ascending:false
+        });
+
+    if(error){
+
+        console.error(error);
+
+        cars = [];
+
+        showNotice(
+            "Could not load cars: " + error.message,
+            "error"
+        );
+
+        renderCars();
+
+        return;
+    }
+
+    cars = data || [];
+
+    hideNotice();
+
+    renderCars();
+    updateStats();
+}
+
+
+/* =========================================
+   RENDER CARS
+========================================= */
+
+function renderCars(){
+
+    const grid =
+        document.getElementById("carGrid");
+
+    const search =
+        (
+            document.getElementById("carSearch")?.value
+            || ""
+        )
+        .toLowerCase()
+        .trim();
+
+    const filter =
+        document.getElementById("statusFilter")?.value
+        || "all";
+
+    let filtered = cars.filter(car => {
+
+        const text = [
+
+            car.brand,
+            car.model,
+            car.variant,
+            car.year,
+            car.location,
+            car.fuel,
+            car.transmission
+
+        ]
+        .join(" ")
+        .toLowerCase();
+
+        const matchesSearch =
+            !search ||
+            text.includes(search);
+
+        const matchesStatus =
+            filter === "all" ||
+            car.status === filter;
+
+        return matchesSearch && matchesStatus;
+
+    });
+
+
+    if(!filtered.length){
+
+        grid.innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">🚗</div>
+                <p>No cars found.</p>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    grid.innerHTML = filtered.map(car => {
+
+        const image =
+            car.image_url ||
+            "../wheel4u-home-bg.png";
+
+        const price =
+            car.price !== null &&
+            car.price !== undefined &&
+            car.price !== ""
+            ? "₹" + Number(car.price).toLocaleString("en-IN")
+            : "Price on request";
+
+        const statusClass =
+            String(car.status || "Available")
+            .toLowerCase();
+
+        return `
+
+        <div class="car-card">
+
+            <img
+                class="car-image"
+                src="${escapeHtml(image)}"
+                alt="${escapeHtml(car.brand || "")} ${escapeHtml(car.model || "")}"
+                onerror="this.src='../wheel4u-home-bg.png'"
+            >
+
+            <div class="car-info">
+
+                <div class="car-title">
+                    ${escapeHtml(car.brand || "")}
+                    ${escapeHtml(car.model || "")}
+                </div>
+
+                <div class="car-sub">
+                    ${escapeHtml(car.variant || "Premium Vehicle")}
+                </div>
+
+                <div class="car-details">
+
+                    <div class="detail">
+                        Year
+                        <strong>
+                            ${escapeHtml(car.year || "-")}
+                        </strong>
+                    </div>
+
+                    <div class="detail">
+                        Fuel
+                        <strong>
+                            ${escapeHtml(car.fuel || "-")}
+                        </strong>
+                    </div>
+
+                    <div class="detail">
+                        KM
+                        <strong>
+                            ${
+                                car.kilometres
+                                ? Number(car.kilometres).toLocaleString("en-IN")
+                                : "-"
+                            }
+                        </strong>
+                    </div>
+
+                    <div class="detail">
+                        Location
+                        <strong>
+                            ${escapeHtml(car.location || "-")}
+                        </strong>
+                    </div>
+
+                </div>
+
+                <div class="price">
+                    ${price}
+                </div>
+
+                <div class="status ${statusClass}">
+                    ${escapeHtml(car.status || "Available")}
+                </div>
+
+                <div class="card-actions">
+
+                    <button
+                        class="btn btn-dark"
+                        onclick="editCar('${car.id}')"
+                    >
+                        Edit
+                    </button>
+
+                    <button
+                        class="btn btn-danger"
+                        onclick="deleteCar('${car.id}')"
+                    >
+                        Delete
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        `;
+
+    }).join("");
 
 }
 
 
-/* =========================
-   NAVIGATION
-========================= */
+/* =========================================
+   UPDATE STATISTICS
+========================================= */
 
-const navButtons =
-    document.querySelectorAll(".nav button");
+function updateStats(){
 
-const sections =
-    document.querySelectorAll(".section");
+    const total =
+        cars.length;
 
-const pageTitle =
-    document.getElementById("pageTitle");
+    const available =
+        cars.filter(
+            car => car.status === "Available"
+        ).length;
+
+    const reserved =
+        cars.filter(
+            car => car.status === "Reserved"
+        ).length;
+
+    const sold =
+        cars.filter(
+            car => car.status === "Sold"
+        ).length;
 
 
-navButtons.forEach(button => {
+    document.getElementById("totalCars").textContent =
+        total;
 
-    button.addEventListener("click", () => {
+    document.getElementById("availableCars").textContent =
+        available;
 
-        const sectionName =
-            button.dataset.section;
+    document.getElementById("reservedCars").textContent =
+        reserved;
 
-        navButtons.forEach(btn =>
-            btn.classList.remove("active")
+    document.getElementById("soldCars").textContent =
+        sold;
+
+
+    document.getElementById("carsTotal").textContent =
+        total;
+
+    document.getElementById("carsAvailable").textContent =
+        available;
+
+    document.getElementById("carsReserved").textContent =
+        reserved;
+
+    document.getElementById("carsSold").textContent =
+        sold;
+
+}
+
+
+/* =========================================
+   OPEN ADD CAR
+========================================= */
+
+function openCarModal(){
+
+    editingCarId = null;
+
+    document.getElementById("carForm").reset();
+
+    document.getElementById("carId").value = "";
+
+    document.getElementById("carModalTitle").textContent =
+        "Add Car";
+
+    document.getElementById("saveCarButton").textContent =
+        "Save Car";
+
+    document.getElementById("carModal").classList.add("show");
+
+}
+
+
+/* =========================================
+   CLOSE CAR MODAL
+========================================= */
+
+function closeCarModal(){
+
+    document
+        .getElementById("carModal")
+        .classList.remove("show");
+
+    editingCarId = null;
+
+}
+
+
+/* =========================================
+   EDIT CAR
+========================================= */
+
+function editCar(id){
+
+    const car =
+        cars.find(
+            item => String(item.id) === String(id)
         );
 
-        button.classList.add("active");
+    if(!car){
 
-        sections.forEach(section =>
-            section.classList.remove("active")
+        showNotice(
+            "Car not found.",
+            "error"
         );
 
-        const target =
-            document.getElementById(sectionName);
+        return;
+    }
 
-        if(target){
-            target.classList.add("active");
-        }
+    editingCarId = car.id;
 
-        const titles = {
 
-            overview:"Dashboard",
+    document.getElementById("carId").value =
+        car.id || "";
 
-            cars:"Cars Management",
+    document.getElementById("brand").value =
+        car.brand || "";
 
-            bikes:"Bikes Management",
+    document.getElementById("model").value =
+        car.model || "";
 
-            properties:"Properties Management",
+    document.getElementById("variant").value =
+        car.variant || "";
 
-            media:"Media Management",
+    document.getElementById("year").value =
+        car.year || "";
 
-            enquiries:"Customer Enquiries"
+    document.getElementById("fuel").value =
+        car.fuel || "";
+
+    document.getElementById("transmission").value =
+        car.transmission || "";
+
+    document.getElementById("kilometres").value =
+        car.kilometres || "";
+
+    document.getElementById("price").value =
+        car.price || "";
+
+    document.getElementById("location").value =
+        car.location || "";
+
+    document.getElementById("status").value =
+        car.status || "Available";
+
+    document.getElementById("image_url").value =
+        car.image_url || "";
+
+    document.getElementById("description").value =
+        car.description || "";
+
+
+    document.getElementById("carModalTitle").textContent =
+        "Edit Car";
+
+    document.getElementById("saveCarButton").textContent =
+        "Update Car";
+
+
+    document.getElementById("carModal").classList.add("show");
+
+}
+
+
+/* =========================================
+   SAVE CAR
+========================================= */
+
+document
+    .getElementById("carForm")
+    .addEventListener("submit", async function(event){
+
+        event.preventDefault();
+
+
+        const saveButton =
+            document.getElementById("saveCarButton");
+
+        saveButton.disabled = true;
+
+        saveButton.textContent =
+            editingCarId
+            ? "Updating..."
+            : "Saving...";
+
+
+        const carData = {
+
+            brand:
+                document.getElementById("brand")
+                .value
+                .trim(),
+
+            model:
+                document.getElementById("model")
+                .value
+                .trim(),
+
+            variant:
+                document.getElementById("variant")
+                .value
+                .trim() || null,
+
+            year:
+                numberOrNull(
+                    document.getElementById("year").value
+                ),
+
+            fuel:
+                document.getElementById("fuel").value
+                || null,
+
+            transmission:
+                document.getElementById("transmission").value
+                || null,
+
+            kilometres:
+                numberOrNull(
+                    document.getElementById("kilometres").value
+                ),
+
+            price:
+                numberOrNull(
+                    document.getElementById("price").value
+                ),
+
+            location:
+                document.getElementById("location")
+                .value
+                .trim() || null,
+
+            status:
+                document.getElementById("status").value,
+
+            image_url:
+                document.getElementById("image_url")
+                .value
+                .trim() || null,
+
+            description:
+                document.getElementById("description")
+                .value
+                .trim() || null,
+
+            updated_at:
+                new Date().toISOString()
 
         };
 
-        pageTitle.textContent =
-            titles[sectionName] || "Dashboard";
 
-        document
-            .getElementById("sidebar")
-            .classList.remove("open");
+        if(!carData.brand || !carData.model){
 
-        window.scrollTo({
-            top:0,
-            behavior:"smooth"
+            showNotice(
+                "Brand and Model are required.",
+                "error"
+            );
+
+            saveButton.disabled = false;
+
+            saveButton.textContent =
+                editingCarId
+                ? "Update Car"
+                : "Save Car";
+
+            return;
+        }
+
+
+        let result;
+
+
+        if(editingCarId){
+
+            result =
+                await supabaseClient
+                    .from("cars")
+                    .update(carData)
+                    .eq("id", editingCarId);
+
+        }else{
+
+            result =
+                await supabaseClient
+                    .from("cars")
+                    .insert([carData]);
+
+        }
+
+
+        if(result.error){
+
+            console.error(result.error);
+
+            showNotice(
+                result.error.message,
+                "error"
+            );
+
+            saveButton.disabled = false;
+
+            saveButton.textContent =
+                editingCarId
+                ? "Update Car"
+                : "Save Car";
+
+            return;
+        }
+
+
+        closeCarModal();
+
+        showNotice(
+            editingCarId
+            ? "Car updated successfully."
+            : "Car added successfully.",
+            "success"
+        );
+
+
+        await loadCars();
+
+
+        saveButton.disabled = false;
+
+        saveButton.textContent =
+            "Save Car";
+
+    });
+
+
+/* =========================================
+   DELETE CAR
+========================================= */
+
+async function deleteCar(id){
+
+    const car =
+        cars.find(
+            item => String(item.id) === String(id)
+        );
+
+    if(!car){
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            `Delete ${car.brand} ${car.model}?`
+        );
+
+    if(!confirmed){
+        return;
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("cars")
+            .delete()
+            .eq("id", id);
+
+
+    if(error){
+
+        console.error(error);
+
+        showNotice(
+            "Could not delete car: " + error.message,
+            "error"
+        );
+
+        return;
+    }
+
+
+    showNotice(
+        "Car deleted successfully.",
+        "success"
+    );
+
+
+    await loadCars();
+
+}
+
+
+/* =========================================
+   NAVIGATION
+========================================= */
+
+document
+    .querySelectorAll(".nav button")
+    .forEach(button => {
+
+        button.addEventListener("click", function(){
+
+            const sectionName =
+                this.dataset.section;
+
+
+            document
+                .querySelectorAll(".nav button")
+                .forEach(btn =>
+                    btn.classList.remove("active")
+                );
+
+
+            this.classList.add("active");
+
+
+            document
+                .querySelectorAll(".section")
+                .forEach(section =>
+                    section.classList.remove("active")
+                );
+
+
+            const target =
+                document.getElementById(sectionName);
+
+            if(target){
+                target.classList.add("active");
+            }
+
+
+            const titles = {
+
+                overview:"Dashboard",
+
+                cars:"Cars Management",
+
+                bikes:"Bikes Management",
+
+                properties:"Properties Management",
+
+                media:"Media Management",
+
+                enquiries:"Customer Enquiries"
+
+            };
+
+
+            document.getElementById("pageTitle")
+                .textContent =
+                titles[sectionName] || "Dashboard";
+
+
+            document
+                .getElementById("sidebar")
+                .classList.remove("open");
+
         });
 
     });
 
-});
 
-
-/* =========================
-   MOBILE SIDEBAR
-========================= */
+/* =========================================
+   SIDEBAR
+========================================= */
 
 function toggleSidebar(){
 
@@ -1455,695 +1894,13 @@ function toggleSidebar(){
 }
 
 
-/* =========================
-   MODAL
-========================= */
-
-function openCarModal(id = null){
-
-    const modal =
-        document.getElementById("carModal");
-
-    const form =
-        document.getElementById("carForm");
-
-    form.reset();
-
-    document.getElementById("editId").value = "";
-
-    document.getElementById("modalTitle")
-        .textContent = id
-        ? "Edit Vehicle"
-        : "Add Vehicle";
-
-
-    if(id){
-
-        const car =
-            cars.find(item =>
-                String(item.id) === String(id)
-            );
-
-        if(!car) return;
-
-        document.getElementById("editId").value =
-            car.id;
-
-        document.getElementById("brand").value =
-            car.brand || "";
-
-        document.getElementById("model").value =
-            car.model || "";
-
-        document.getElementById("variant").value =
-            car.variant || "";
-
-        document.getElementById("year").value =
-            car.year || "";
-
-        document.getElementById("fuel").value =
-            car.fuel || "Petrol";
-
-        document.getElementById("transmission").value =
-            car.transmission || "Automatic";
-
-        document.getElementById("km").value =
-            car.km || "";
-
-        document.getElementById("price").value =
-            car.price || "";
-
-        document.getElementById("location").value =
-            car.location || "";
-
-        document.getElementById("status").value =
-            car.status || "Available";
-
-        document.getElementById("image").value =
-            car.image || "";
-
-        document.getElementById("description").value =
-            car.description || "";
-
-    }
-
-    modal.classList.add("show");
-
-}
-
-
-function closeCarModal(){
-
-    document
-        .getElementById("carModal")
-        .classList.remove("show");
-
-}
-
-
-document
-    .getElementById("carModal")
-    .addEventListener("click", function(event){
-
-        if(event.target === this){
-            closeCarModal();
-        }
-
-    });
-
-
-/* =========================
-   FORM SUBMIT
-========================= */
-
-document
-    .getElementById("carForm")
-    .addEventListener("submit", function(event){
-
-        event.preventDefault();
-
-
-        const editId =
-            document.getElementById("editId").value;
-
-
-        const carData = {
-
-            id: editId
-                ? Number(editId)
-                : Date.now(),
-
-            brand:
-                document.getElementById("brand").value.trim(),
-
-            model:
-                document.getElementById("model").value.trim(),
-
-            variant:
-                document.getElementById("variant").value.trim(),
-
-            year:
-                document.getElementById("year").value,
-
-            fuel:
-                document.getElementById("fuel").value,
-
-            transmission:
-                document.getElementById("transmission").value,
-
-            km:
-                document.getElementById("km").value,
-
-            price:
-                document.getElementById("price").value,
-
-            location:
-                document.getElementById("location").value.trim(),
-
-            status:
-                document.getElementById("status").value,
-
-            image:
-                document.getElementById("image").value.trim(),
-
-            description:
-                document.getElementById("description").value.trim(),
-
-            updatedAt:
-                new Date().toISOString()
-
-        };
-
-
-        if(editId){
-
-            const index =
-                cars.findIndex(item =>
-                    String(item.id) === String(editId)
-                );
-
-            if(index !== -1){
-
-                cars[index] = carData;
-
-            }
-
-        }else{
-
-            cars.unshift(carData);
-
-        }
-
-
-        saveCars();
-
-        renderCars();
-
-        updateStats();
-
-        closeCarModal();
-
-
-        alert(
-            editId
-                ? "Vehicle updated successfully."
-                : "Vehicle added successfully."
-        );
-
-    });
-
-
-/* =========================
-   DELETE CAR
-========================= */
-
-function deleteCar(id){
-
-    const car =
-        cars.find(item =>
-            String(item.id) === String(id)
-        );
-
-    if(!car) return;
-
-
-    const confirmed =
-        confirm(
-            `Delete ${car.brand} ${car.model}?`
-        );
-
-
-    if(!confirmed) return;
-
-
-    cars =
-        cars.filter(item =>
-            String(item.id) !== String(id)
-        );
-
-
-    saveCars();
-
-    renderCars();
-
-    updateStats();
-
-}
-
-
-/* =========================
-   STATUS
-========================= */
-
-function changeStatus(id, newStatus){
-
-    const car =
-        cars.find(item =>
-            String(item.id) === String(id)
-        );
-
-    if(!car) return;
-
-    car.status = newStatus;
-
-    saveCars();
-
-    renderCars();
-
-    updateStats();
-
-}
-
-
-/* =========================
-   FORMAT PRICE
-========================= */
-
-function formatPrice(value){
-
-    if(!value) return "Price on request";
-
-    const number =
-        Number(value);
-
-    if(Number.isNaN(number)){
-        return value;
-    }
-
-    return "₹" +
-        number.toLocaleString("en-IN");
-
-}
-
-
-/* =========================
-   ESCAPE HTML
-========================= */
-
-function escapeHTML(value){
-
-    return String(value || "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
-
-}
-
-
-/* =========================
-   RENDER CARS
-========================= */
-
-function renderCars(){
-
-    const grid =
-        document.getElementById("carGrid");
-
-    const overview =
-        document.getElementById("overviewCars");
-
-
-    const search =
-        (
-            document.getElementById("carSearch")?.value
-            || ""
-        )
-        .toLowerCase()
-        .trim();
-
-
-    const filter =
-        document.getElementById("statusFilter")?.value
-        || "all";
-
-
-    const filtered =
-        cars.filter(car => {
-
-            const text = [
-
-                car.brand,
-                car.model,
-                car.variant,
-                car.year,
-                car.location
-
-            ]
-            .join(" ")
-            .toLowerCase();
-
-
-            const matchesSearch =
-                !search ||
-                text.includes(search);
-
-
-            const matchesStatus =
-                filter === "all" ||
-                car.status === filter;
-
-
-            return matchesSearch &&
-                   matchesStatus;
-
-        });
-
-
-    if(filtered.length === 0){
-
-        grid.innerHTML = `
-
-            <div class="empty"
-                 style="grid-column:1/-1;">
-
-                <div class="empty-icon">🚗</div>
-
-                <h3>
-                    No vehicles found
-                </h3>
-
-                <p style="margin-top:8px;">
-                    Add your first vehicle to begin.
-                </p>
-
-                <button
-                    class="btn btn-red"
-                    style="margin-top:18px;"
-                    onclick="openCarModal()"
-                >
-                    + Add Vehicle
-                </button>
-
-            </div>
-
-        `;
-
-    }else{
-
-        grid.innerHTML =
-            filtered
-            .map(car => carCard(car))
-            .join("");
-
-    }
-
-
-    /* Overview: latest 6 */
-
-    const latest =
-        cars.slice(0,6);
-
-
-    if(latest.length === 0){
-
-        overview.innerHTML = `
-
-            <div class="empty">
-
-                <div class="empty-icon">
-                    🚗
-                </div>
-
-                <h3>
-                    No vehicles yet
-                </h3>
-
-                <p style="margin-top:8px;">
-                    Click Add Vehicle to create your
-                    first listing.
-                </p>
-
-            </div>
-
-        `;
-
-    }else{
-
-        overview.innerHTML = `
-
-            <div class="car-grid">
-
-                ${
-                    latest
-                    .map(car => carCard(car))
-                    .join("")
-                }
-
-            </div>
-
-        `;
-
-    }
-
-}
-
-
-/* =========================
-   CAR CARD
-========================= */
-
-function carCard(car){
-
-    const image =
-        car.image ||
-        "../wheel4u-home-bg.png";
-
-
-    const statusClass =
-        String(car.status || "Available")
-            .toLowerCase();
-
-
-    return `
-
-        <article class="car-card">
-
-            <img
-                class="car-image"
-                src="${escapeHTML(image)}"
-                alt="${escapeHTML(car.brand)} ${escapeHTML(car.model)}"
-                onerror="this.src='../wheel4u-home-bg.png'"
-            >
-
-            <div class="car-info">
-
-                <div class="car-title">
-
-                    ${escapeHTML(car.brand)}
-                    ${escapeHTML(car.model)}
-
-                </div>
-
-                <div class="car-sub">
-
-                    ${escapeHTML(car.variant || "Premium Pre-Owned")}
-
-                </div>
-
-
-                <span class="status ${statusClass}">
-
-                    ${escapeHTML(car.status || "Available")}
-
-                </span>
-
-
-                <div class="price">
-
-                    ${formatPrice(car.price)}
-
-                </div>
-
-
-                <div class="car-details">
-
-                    <div class="detail">
-
-                        YEAR
-
-                        <strong>
-                            ${escapeHTML(car.year || "-")}
-                        </strong>
-
-                    </div>
-
-
-                    <div class="detail">
-
-                        KM
-
-                        <strong>
-                            ${
-                                car.km
-                                ? Number(car.km).toLocaleString("en-IN")
-                                : "-"
-                            }
-                        </strong>
-
-                    </div>
-
-
-                    <div class="detail">
-
-                        FUEL
-
-                        <strong>
-                            ${escapeHTML(car.fuel || "-")}
-                        </strong>
-
-                    </div>
-
-
-                    <div class="detail">
-
-                        TRANSMISSION
-
-                        <strong>
-                            ${escapeHTML(car.transmission || "-")}
-                        </strong>
-
-                    </div>
-
-
-                    <div class="detail"
-                         style="grid-column:1/-1;">
-
-                        LOCATION
-
-                        <strong>
-                            ${escapeHTML(car.location || "-")}
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <div class="card-actions">
-
-                    <button
-                        class="btn btn-dark"
-                        onclick="openCarModal(${car.id})"
-                    >
-                        Edit
-                    </button>
-
-                    <button
-                        class="btn btn-danger"
-                        onclick="deleteCar(${car.id})"
-                    >
-                        Delete
-                    </button>
-
-                </div>
-
-
-                <select
-                    class="search"
-                    style="width:100%;margin-top:9px;"
-                    onchange="changeStatus(${car.id},this.value)"
-                >
-
-                    <option
-                        value="Available"
-                        ${car.status === "Available" ? "selected" : ""}
-                    >
-                        🟢 Available
-                    </option>
-
-                    <option
-                        value="Reserved"
-                        ${car.status === "Reserved" ? "selected" : ""}
-                    >
-                        🟡 Reserved
-                    </option>
-
-                    <option
-                        value="Sold"
-                        ${car.status === "Sold" ? "selected" : ""}
-                    >
-                        🔴 Sold
-                    </option>
-
-                </select>
-
-            </div>
-
-        </article>
-
-    `;
-
-}
-
-
-/* =========================
-   STATISTICS
-========================= */
-
-function updateStats(){
-
-    const total =
-        cars.length;
-
-
-    const available =
-        cars.filter(car =>
-            car.status === "Available"
-        ).length;
-
-
-    const reserved =
-        cars.filter(car =>
-            car.status === "Reserved"
-        ).length;
-
-
-    const sold =
-        cars.filter(car =>
-            car.status === "Sold"
-        ).length;
-
-
-    document.getElementById("totalCars")
-        .textContent = total;
-
-    document.getElementById("availableCars")
-        .textContent = available;
-
-    document.getElementById("reservedCars")
-        .textContent = reserved;
-
-    document.getElementById("soldCars")
-        .textContent = sold;
-
-
-    document.getElementById("carsTotal")
-        .textContent = total;
-
-    document.getElementById("carsAvailable")
-        .textContent = available;
-
-    document.getElementById("carsReserved")
-        .textContent = reserved;
-
-    document.getElementById("carsSold")
-        .textContent = sold;
-
-}
-
-
-/* =========================
+/* =========================================
    LOGOUT
-========================= */
+========================================= */
 
-function logout(){
+async function logout(){
 
-    const confirmed =
-        confirm("Are you sure you want to logout?");
-
-    if(!confirmed) return;
+    await supabaseClient.auth.signOut();
 
     window.location.href =
         "login.html";
@@ -2151,13 +1908,95 @@ function logout(){
 }
 
 
-/* =========================
-   INITIALIZE
-========================= */
+/* =========================================
+   HELPERS
+========================================= */
 
-renderCars();
+function numberOrNull(value){
 
-updateStats();
+    if(
+        value === null ||
+        value === undefined ||
+        value === ""
+    ){
+        return null;
+    }
+
+    const number =
+        Number(value);
+
+    return Number.isFinite(number)
+        ? number
+        : null;
+}
+
+
+function escapeHtml(value){
+
+    return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+
+function showNotice(message,type){
+
+    const notice =
+        document.getElementById("notice");
+
+    notice.textContent =
+        message;
+
+    notice.className =
+        "notice " + type;
+
+}
+
+
+function hideNotice(){
+
+    const notice =
+        document.getElementById("notice");
+
+    notice.className =
+        "notice";
+
+    notice.textContent =
+        "";
+
+}
+
+
+function showComingSoon(name){
+
+    showNotice(
+        name + " module will be connected next.",
+        "success"
+    );
+
+}
+
+
+/* =========================================
+   START DASHBOARD
+========================================= */
+
+(async function(){
+
+    const authenticated =
+        await checkAdminSession();
+
+    if(!authenticated){
+        return;
+    }
+
+    await loadCars();
+
+})();
 
 </script>
 
