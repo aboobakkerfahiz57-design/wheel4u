@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -10,6 +10,10 @@
     name="description"
     content="WHEEL 4U — Buy, Sell and Exchange premium pre-owned cars, bikes and properties in Mangalore and Dakshina Kannada."
   >
+
+  <!-- Supabase -->
+  <script src="admin/supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     * {
@@ -717,239 +721,501 @@
     }
 
     /* =========================
-       CTA
+       LIVE MARKETPLACE
     ========================== */
 
-    .cta {
-      padding: 130px 7%;
-      text-align: center;
-      overflow: hidden;
+    .live-section {
+      padding: 110px 5%;
       background:
         radial-gradient(
-          circle at center,
-          rgba(224,0,0,0.14),
-          transparent 45%
+          circle at 10% 20%,
+          rgba(224,0,0,0.08),
+          transparent 30%
         ),
-        #070707;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+        #050505;
     }
 
-    .cta h2 {
-      font-size: clamp(45px, 8vw, 105px);
-      letter-spacing: -5px;
-      line-height: 0.9;
-      text-transform: uppercase;
+    .live-wrap {
+      max-width: 1280px;
+      margin: auto;
     }
 
-    .cta h2 span {
-      color: #e00000;
-    }
-
-    .cta p {
-      color: #888;
-      margin: 25px auto 35px;
-      max-width: 550px;
-      font-size: 13px;
-      line-height: 1.8;
-    }
-
-    /* =========================
-       FOOTER
-    ========================== */
-
-    footer {
-      padding: 55px 7% 30px;
-      background: #030303;
-    }
-
-    .footer-top {
+    .live-head {
       display: flex;
       justify-content: space-between;
-      gap: 40px;
-      align-items: flex-start;
-      padding-bottom: 50px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      align-items: flex-end;
+      gap: 30px;
+      margin-bottom: 35px;
     }
 
-    .footer-logo {
-      width: 130px;
+    .live-head .section-description {
+      margin-top: 0;
     }
 
-    .footer-tagline {
-      margin-top: 15px;
-      color: #666;
-      font-size: 10px;
+    .live-status {
+      font-size: 9px;
       letter-spacing: 2px;
       text-transform: uppercase;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 45px;
-    }
-
-    .footer-links a {
       color: #777;
-      font-size: 10px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      transition: 0.3s;
+      white-space: nowrap;
     }
 
-    .footer-links a:hover {
+    .market-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .market-controls input,
+    .market-controls select,
+    .form-grid input,
+    .form-grid select,
+    .form-grid textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      border-radius: 12px;
+      padding: 13px 14px;
+      outline: none;
+      transition: .25s ease;
+    }
+
+    .market-controls input:focus,
+    .market-controls select:focus,
+    .form-grid input:focus,
+    .form-grid select:focus,
+    .form-grid textarea:focus {
+      border-color: rgba(224,0,0,.7);
+      box-shadow: 0 0 0 3px rgba(224,0,0,.08);
+    }
+
+    .market-controls input {
+      flex: 2 1 280px;
+    }
+
+    .market-controls select {
+      flex: 1 1 190px;
+    }
+
+    .market-controls select option,
+    .form-grid select option {
+      background: #111;
       color: #fff;
     }
 
-    .footer-bottom {
-      padding-top: 25px;
+    .listing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .listing-card {
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 20px;
+      background: linear-gradient(
+        145deg,
+        rgba(35,35,35,.8),
+        rgba(8,8,8,.96)
+      );
+      transition: .35s ease;
+      box-shadow: 0 18px 60px rgba(0,0,0,.18);
+    }
+
+    .listing-card:hover {
+      transform: translateY(-7px);
+      border-color: rgba(224,0,0,.55);
+    }
+
+    .listing-image {
+      width: 100%;
+      aspect-ratio: 16/10;
+      object-fit: cover;
+      display: block;
+      background: #111;
+    }
+
+    .listing-image.placeholder {
+      object-fit: contain;
+      padding: 45px;
+      opacity: .45;
+    }
+
+    .listing-body {
+      padding: 20px;
+    }
+
+    .listing-kicker {
+      color: #e00000;
+      font-size: 8px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .listing-title {
+      font-size: 21px;
+      margin-top: 7px;
+      line-height: 1.15;
+    }
+
+    .listing-variant {
+      color: #888;
+      font-size: 11px;
+      margin-top: 5px;
+    }
+
+    .listing-specs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 15px;
+    }
+
+    .listing-specs span {
+      color: #aaa;
+      border: 1px solid rgba(255,255,255,.09);
+      background: rgba(255,255,255,.025);
+      border-radius: 30px;
+      padding: 6px 9px;
+      font-size: 8px;
+      letter-spacing: .5px;
+    }
+
+    .listing-bottom {
       display: flex;
       justify-content: space-between;
-      color: #444;
+      align-items: center;
+      gap: 15px;
+      margin-top: 18px;
+    }
+
+    .listing-price {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .listing-location {
+      color: #666;
       font-size: 9px;
+      margin-top: 5px;
+    }
+
+    .listing-btn {
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 30px;
+      padding: 9px 13px;
+      font-size: 8px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      background: transparent;
+      color: #fff;
+    }
+
+    .listing-btn:hover {
+      background: #e00000;
+      border-color: #e00000;
+    }
+
+    .empty-state,
+    .loading-state,
+    .error-state {
+      grid-column: 1/-1;
+      padding: 45px 25px;
+      border: 1px dashed rgba(255,255,255,.12);
+      border-radius: 18px;
+      text-align: center;
+      color: #777;
+      font-size: 11px;
+      line-height: 1.8;
+    }
+
+    .error-state {
+      color: #e58b8b;
+      border-color: rgba(224,0,0,.3);
+    }
+
+    .view-more {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    /* =========================
+       MODAL
+    ========================== */
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      background: rgba(0,0,0,.78);
+      backdrop-filter: blur(14px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .listing-modal {
+      width: min(900px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 24px;
+      background: #0a0a0a;
+      box-shadow: 0 30px 100px rgba(0,0,0,.6);
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 3;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.2);
+      background: rgba(0,0,0,.65);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .modal-image {
+      width: 100%;
+      max-height: 440px;
+      object-fit: cover;
+      background: #111;
+    }
+
+    .modal-content {
+      padding: 28px;
+    }
+
+    .modal-content h3 {
+      font-size: clamp(28px, 5vw, 48px);
+      line-height: 1;
+    }
+
+    .modal-description {
+      margin-top: 20px;
+      color: #888;
+      font-size: 12px;
+      line-height: 1.8;
+      white-space: pre-line;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 25px;
+    }
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 3;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.2);
+      background: rgba(0,0,0,.65);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .modal-image {
+      width: 100%;
+      max-height: 440px;
+      object-fit: cover;
+      background: #111;
+    }
+
+    .modal-content {
+      padding: 28px;
+    }
+
+    .modal-content h3 {
+      font-size: clamp(28px, 5vw, 48px);
+      line-height: 1;
+    }
+
+    .modal-description {
+      margin-top: 20px;
+      color: #888;
+      font-size: 12px;
+      line-height: 1.8;
+      white-space: pre-line;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    /* =========================
+       MOBILE MENU
+    ========================== */
+
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      z-index: 2500;
+      background: rgba(5,5,5,.98);
+      display: none;
+      padding: 110px 8%;
+    }
+
+    .mobile-menu.show {
+      display: block;
+    }
+
+    .mobile-menu a {
+      display: block;
+      font-size: 28px;
+      text-transform: uppercase;
+      letter-spacing: -1px;
+      margin-bottom: 22px;
+    }
+
+    .mobile-menu-close {
+      position: absolute;
+      top: 22px;
+      right: 6%;
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 50%;
+      background: transparent;
+      color: #fff;
+      font-size: 25px;
+    }
+
+    /* =========================
+       SELL / EXCHANGE FORM
+    ========================== */
+
+    .form-panel {
+      margin-top: 45px;
+      padding: 28px;
+      border: 1px solid rgba(255,255,255,.11);
+      border-radius: 24px;
+      background: linear-gradient(
+        145deg,
+        rgba(25,25,25,.85),
+        rgba(7,7,7,.95)
+      );
+    }
+
+    .form-title {
+      font-size: 20px;
+      text-transform: uppercase;
       letter-spacing: 1px;
     }
 
-    /* =========================
-       REVEAL ANIMATION
-    ========================== */
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(40px);
-      transition:
-        opacity 0.9s ease,
-        transform 0.9s cubic-bezier(.2,.8,.2,1);
+    .form-note {
+      color: #777;
+      font-size: 10px;
+      line-height: 1.7;
+      margin-top: 8px;
     }
 
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    .form-grid .full {
+      grid-column: 1/-1;
+    }
+
+    .form-grid textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .form-submit-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .form-message {
+      font-size: 10px;
+      color: #777;
+    }
+
+    .form-message.success {
+      color: #72d49a;
+    }
+
+    .form-message.error {
+      color: #e58b8b;
     }
 
     /* =========================
-       MOBILE
+       RESPONSIVE MARKETPLACE
     ========================== */
 
-    @media (max-width: 900px) {
+    @media (max-width: 950px) {
 
-      nav,
-      .header-btn {
-        display: none;
+      .listing-grid {
+        grid-template-columns: repeat(2, minmax(0,1fr));
       }
 
-      .menu-btn {
-        display: block;
+      .live-head {
+        align-items: flex-start;
+        flex-direction: column;
       }
 
-      header {
-        padding: 16px 5%;
-      }
+    }
 
-      .brand-logo {
-        width: 90px;
-      }
+    @media (max-width: 600px) {
 
-      .hero {
-        height: 90vh;
-        min-height: 680px;
-      }
-
-      .hero-bg {
-        background-position: 50% center;
-      }
-
-      .hero-title {
-        font-size: clamp(50px, 15vw, 90px);
-        letter-spacing: -3px;
-      }
-
-      .hero-subtitle {
-        font-size: 10px;
-        letter-spacing: 1.5px;
-      }
-
-      .hero-side {
-        display: none;
-      }
-
-      .quick-section {
-        margin-top: -40px;
-        padding: 0 5% 70px;
-      }
-
-      .quick-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .quick-card {
-        min-height: 170px;
-      }
-
-      .section {
+      .live-section {
         padding: 85px 5%;
       }
 
-      .experience {
-        grid-template-columns: 1fr;
-        gap: 50px;
-      }
-
-      .experience-visual {
-        min-height: 420px;
-      }
-
-      .footer-top {
-        flex-direction: column;
-      }
-
-      .footer-links {
-        flex-wrap: wrap;
-        gap: 20px;
-      }
-
-      .footer-bottom {
-        flex-direction: column;
-        gap: 10px;
-      }
-
-      .cursor,
-      .cursor-dot {
-        display: none;
-      }
-    }
-
-    @media (max-width: 520px) {
-
-      .quick-grid {
+      .listing-grid {
         grid-template-columns: 1fr;
       }
 
-      .hero-actions {
+      .form-panel {
+        padding: 20px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid .full {
+        grid-column: auto;
+      }
+
+      .listing-bottom {
+        align-items: flex-start;
         flex-direction: column;
-        align-items: center;
       }
 
-      .primary-btn,
-      .secondary-btn {
-        width: 220px;
+      .listing-btn {
+        width: 100%;
       }
 
-      .ring {
-        width: 240px;
-        height: 240px;
-      }
-
-      .ring.two {
-        width: 175px;
-        height: 175px;
-      }
-
-      .ring.three {
-        width: 300px;
-        height: 300px;
-      }
     }
+
   </style>
 </head>
 
@@ -960,7 +1226,9 @@
   ========================== -->
 
   <div class="loader" id="loader">
+
     <div class="loader-inner">
+
       <img
         src="wheel4u-logo.png"
         alt="Wheel 4U"
@@ -972,13 +1240,18 @@
       <div class="loader-text">
         ENTER THE EXPERIENCE
       </div>
+
     </div>
+
   </div>
 
 
-  <!-- CUSTOM CURSOR -->
+  <!-- =========================
+       CUSTOM CURSOR
+  ========================== -->
 
   <div class="cursor"></div>
+
   <div class="cursor-dot"></div>
 
 
@@ -989,28 +1262,62 @@
   <header id="header">
 
     <a href="#home">
+
       <img
         src="wheel4u-logo.png"
         alt="Wheel 4U Logo"
         class="brand-logo"
       >
+
     </a>
 
+
     <nav>
-      <a href="#home">Home</a>
-      <a href="#cars">Cars</a>
-      <a href="#bikes">Bikes</a>
-      <a href="#exchange">Sell / Exchange</a>
-      <a href="#properties">Properties</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
+
+      <a href="#home">
+        Home
+      </a>
+
+      <a href="#cars">
+        Cars
+      </a>
+
+      <a href="#bikes">
+        Bikes
+      </a>
+
+      <a href="#exchange">
+        Sell / Exchange
+      </a>
+
+      <a href="#properties">
+        Properties
+      </a>
+
+      <a href="#about">
+        About
+      </a>
+
+      <a href="#contact">
+        Contact
+      </a>
+
     </nav>
 
-    <a href="#contact" class="header-btn">
+
+    <a
+      href="#contact"
+      class="header-btn"
+    >
       Get In Touch
     </a>
 
-    <button class="menu-btn" aria-label="Open Menu">
+
+    <button
+      class="menu-btn"
+      id="menuBtn"
+      aria-label="Open Menu"
+    >
       ☰
     </button>
 
@@ -1018,50 +1325,128 @@
 
 
   <!-- =========================
-       HERO
+       MOBILE MENU
+  ========================== -->
+
+  <div
+    class="mobile-menu"
+    id="mobileMenu"
+  >
+
+    <button
+      class="mobile-menu-close"
+      id="mobileMenuClose"
+      aria-label="Close Menu"
+    >
+      ×
+    </button>
+
+
+    <a href="#home">
+      Home
+    </a>
+
+    <a href="#cars">
+      Cars
+    </a>
+
+    <a href="#bikes">
+      Bikes
+    </a>
+
+    <a href="#exchange">
+      Sell / Exchange
+    </a>
+
+    <a href="#properties">
+      Properties
+    </a>
+
+    <a href="#about">
+      About
+    </a>
+
+    <a href="#contact">
+      Contact
+    </a>
+
+  </div>
+
+
+  <!-- =========================
+       MAIN
   ========================== -->
 
   <main>
 
-    <section class="hero" id="home">
 
-      <div class="hero-bg" id="heroBg"></div>
+    <!-- =========================
+         HERO
+    ========================== -->
+
+    <section
+      class="hero"
+      id="home"
+    >
+
+      <div
+        class="hero-bg"
+        id="heroBg"
+      ></div>
+
 
       <div class="hero-overlay"></div>
 
+
       <div class="hero-grid"></div>
+
 
       <div class="hero-side left">
         Mangalore • Dakshina Kannada
       </div>
 
+
       <div class="hero-side right">
         Drive • Exchange • Invest
       </div>
 
+
       <div class="hero-content">
 
-        <div class="hero-center" id="heroCenter">
+        <div
+          class="hero-center"
+          id="heroCenter"
+        >
 
           <div class="eyebrow">
             Premium Pre-Owned Mobility
           </div>
 
+
           <h1 class="hero-title">
             WHEEL <span>4</span>U
           </h1>
+
 
           <p class="hero-subtitle">
             Cars • Bikes • Sell • Exchange • Properties
           </p>
 
+
           <div class="hero-actions">
 
-            <a href="#cars" class="primary-btn">
+            <a
+              href="#cars"
+              class="primary-btn"
+            >
               Explore Vehicles →
             </a>
 
-            <a href="#exchange" class="secondary-btn">
+
+            <a
+              href="#exchange"
+              class="secondary-btn"
+            >
               Sell / Exchange
             </a>
 
@@ -1071,11 +1456,15 @@
 
       </div>
 
+
       <div class="scroll-indicator">
+
         <div class="scroll-circle"></div>
+
         <div class="scroll-text">
           Scroll
         </div>
+
       </div>
 
     </section>
@@ -1089,59 +1478,120 @@
 
       <div class="quick-grid">
 
-        <a href="#cars" class="quick-card reveal">
-          <div class="quick-number">01</div>
-          <div class="quick-icon">🚗</div>
 
-          <h3>Cars</h3>
+        <a
+          href="#cars"
+          class="quick-card reveal"
+        >
+
+          <div class="quick-number">
+            01
+          </div>
+
+          <div class="quick-icon">
+            🚗
+          </div>
+
+          <h3>
+            Cars
+          </h3>
 
           <p>
-            Discover available pre-owned cars by brand, model and year.
+            Discover available pre-owned cars by brand,
+            model and year.
           </p>
 
-          <div class="quick-arrow">↗</div>
+          <div class="quick-arrow">
+            ↗️
+          </div>
+
         </a>
 
 
-        <a href="#bikes" class="quick-card reveal">
-          <div class="quick-number">02</div>
-          <div class="quick-icon">🏍️</div>
+        <a
+          href="#bikes"
+          class="quick-card reveal"
+        >
 
-          <h3>Bikes</h3>
+          <div class="quick-number">
+            02
+          </div>
+
+          <div class="quick-icon">
+            🏍️
+          </div>
+
+          <h3>
+            Bikes
+          </h3>
 
           <p>
-            Explore quality pre-owned bikes from trusted brands.
+            Explore quality pre-owned bikes from
+            trusted brands.
           </p>
 
-          <div class="quick-arrow">↗</div>
+          <div class="quick-arrow">
+            ↗️
+          </div>
+
         </a>
 
 
-        <a href="#exchange" class="quick-card reveal">
-          <div class="quick-number">03</div>
-          <div class="quick-icon">↔</div>
+        <a
+          href="#exchange"
+          class="quick-card reveal"
+        >
 
-          <h3>Sell / Exchange</h3>
+          <div class="quick-number">
+            03
+          </div>
+
+          <div class="quick-icon">
+            ↔️
+          </div>
+
+          <h3>
+            Sell / Exchange
+          </h3>
 
           <p>
-            Sell or exchange your vehicle with Wheel 4U.
+            Sell or exchange your vehicle with
+            Wheel 4U.
           </p>
 
-          <div class="quick-arrow">↗</div>
+          <div class="quick-arrow">
+            ↗️
+          </div>
+
         </a>
 
 
-        <a href="#properties" class="quick-card reveal">
-          <div class="quick-number">04</div>
-          <div class="quick-icon">⌂</div>
+        <a
+          href="#properties"
+          class="quick-card reveal"
+        >
 
-          <h3>Properties</h3>
+          <div class="quick-number">
+            04
+          </div>
+
+          <div class="quick-icon">
+            ⌂
+          </div>
+
+          <h3>
+            Properties
+          </h3>
 
           <p>
-            Explore selected property opportunities around the region.
+            Explore selected property opportunities
+            around the region.
           </p>
 
-          <div class="quick-arrow">↗</div>
+          <div class="quick-arrow">
+            ↗️
+          </div>
+
         </a>
 
       </div>
@@ -1150,83 +1600,74 @@
 
 
     <!-- =========================
-         CARS PLACEHOLDER
+         LIVE CARS
     ========================== -->
 
-    <section class="section experience" id="cars">
+    <section
+      class="live-section"
+      id="cars"
+    >
 
-      <div class="experience-visual reveal">
-
-        <div class="ring three"></div>
-        <div class="ring"></div>
-        <div class="ring two"></div>
-
-        <div class="visual-center">
-          <strong>CARS</strong>
-          <span>Brand → Model → Vehicle</span>
-        </div>
-
-      </div>
+      <div class="live-wrap">
 
 
-      <div class="reveal">
+        <div class="live-head">
 
-        <div class="section-label">
-          Explore
-        </div>
+          <div>
 
-        <h2 class="section-title">
-          Find Your<br>
-          Next Drive.
-        </h2>
-
-        <p class="section-description">
-          Browse vehicles through a simple journey:
-          choose your preferred brand, discover available
-          models and open the complete vehicle details.
-        </p>
-
-        <div class="experience-points">
-
-          <div class="point">
-            <div class="point-number">01</div>
-
-            <div>
-              <h4>Choose Brand</h4>
-
-              <p>
-                BMW, Audi, Mercedes-Benz, Toyota, Hyundai,
-                Kia, Tata, Mahindra and more.
-              </p>
+            <div class="section-label">
+              Live Inventory
             </div>
+
+            <h2 class="section-title">
+              Cars.
+            </h2>
+
+            <p class="section-description">
+              Cars added from the Wheel 4U Admin Dashboard
+              appear here automatically.
+            </p>
+
           </div>
 
 
-          <div class="point">
-            <div class="point-number">02</div>
-
-            <div>
-              <h4>Choose Model</h4>
-
-              <p>
-                See the models currently available from
-                your selected brand.
-              </p>
-            </div>
+          <div
+            class="live-status"
+            id="carsStatus"
+          >
+            Connecting...
           </div>
 
+        </div>
 
-          <div class="point">
-            <div class="point-number">03</div>
 
-            <div>
-              <h4>View Vehicle</h4>
+        <div class="market-controls">
 
-              <p>
-                Check year, kilometres, fuel, transmission,
-                price, photos and complete details.
-              </p>
-            </div>
+          <input
+            id="carSearch"
+            type="search"
+            placeholder="Search brand, model, variant or location"
+          >
+
+
+          <select id="carBrandFilter">
+
+            <option value="">
+              All Brands
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div
+          class="listing-grid"
+          id="carsGrid"
+        >
+
+          <div class="loading-state">
+            Loading available cars...
           </div>
 
         </div>
@@ -1237,26 +1678,77 @@
 
 
     <!-- =========================
-         BIKES
+         LIVE BIKES
     ========================== -->
 
-    <section class="section" id="bikes">
+    <section
+      class="live-section"
+      id="bikes"
+    >
 
-      <div class="reveal">
+      <div class="live-wrap">
 
-        <div class="section-label">
-          Two Wheels
+
+        <div class="live-head">
+
+          <div>
+
+            <div class="section-label">
+              Two Wheels
+            </div>
+
+            <h2 class="section-title">
+              Bikes.
+            </h2>
+
+            <p class="section-description">
+              Available bikes are pulled live from
+              the Wheel 4U database.
+            </p>
+
+          </div>
+
+
+          <div
+            class="live-status"
+            id="bikesStatus"
+          >
+            Connecting...
+          </div>
+
         </div>
 
-        <h2 class="section-title">
-          Built For<br>
-          The Ride.
-        </h2>
 
-        <p class="section-description">
-          A dedicated bike experience with brand-based
-          discovery and detailed vehicle listings.
-        </p>
+        <div class="market-controls">
+
+          <input
+            id="bikeSearch"
+            type="search"
+            placeholder="Search brand, model, variant or location"
+          >
+
+
+          <select id="bikeBrandFilter">
+
+            <option value="">
+              All Brands
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div
+          class="listing-grid"
+          id="bikesGrid"
+        >
+
+          <div class="loading-state">
+            Loading available bikes...
+          </div>
+
+        </div>
 
       </div>
 
@@ -1267,29 +1759,190 @@
          SELL / EXCHANGE
     ========================== -->
 
-    <section class="section" id="exchange">
+    <section
+      class="section"
+      id="exchange"
+    >
 
       <div class="reveal">
+
 
         <div class="section-label">
           Sell • Exchange
         </div>
+
 
         <h2 class="section-title">
           Your Vehicle.<br>
           Your Next Move.
         </h2>
 
+
         <p class="section-description">
-          Looking to sell or exchange your vehicle?
-          Wheel 4U will make the process simple and direct.
+          Tell Wheel 4U about the vehicle you want
+          to sell or exchange. Your request is sent
+          directly to our database and becomes visible
+          inside the Wheel 4U Admin Dashboard.
         </p>
 
-        <div class="hero-actions" style="justify-content:flex-start;">
 
-          <a href="#contact" class="primary-btn">
-            Start Enquiry →
-          </a>
+        <div class="form-panel">
+
+          <div class="form-title">
+            Send Your Vehicle Details
+          </div>
+
+
+          <div class="form-note">
+            Our team can contact you using the phone
+            or email you provide.
+          </div>
+
+
+          <form id="sellExchangeForm">
+
+            <div class="form-grid">
+
+
+              <select
+                id="seType"
+                required
+              >
+
+                <option value="Sell">
+                  Sell My Vehicle
+                </option>
+
+                <option value="Exchange">
+                  Exchange My Vehicle
+                </option>
+
+              </select>
+
+
+              <select id="seVehicleType">
+
+                <option value="">
+                  Vehicle Type
+                </option>
+
+                <option value="Car">
+                  Car
+                </option>
+
+                <option value="Bike">
+                  Bike
+                </option>
+
+              </select>
+
+
+              <input
+                id="seName"
+                type="text"
+                placeholder="Your Name *"
+                required
+              >
+
+
+              <input
+                id="sePhone"
+                type="tel"
+                placeholder="Phone Number *"
+                required
+              >
+
+
+              <input
+                id="seEmail"
+                type="email"
+                placeholder="Email (optional)"
+              >
+
+
+              <input
+                id="seBrand"
+                type="text"
+                placeholder="Vehicle Brand"
+              >
+
+
+              <input
+                id="seModel"
+                type="text"
+                placeholder="Vehicle Model"
+              >
+
+
+              <input
+                id="seVariant"
+                type="text"
+                placeholder="Variant"
+              >
+
+
+              <input
+                id="seYear"
+                type="number"
+                min="1900"
+                max="2100"
+                placeholder="Year"
+              >
+
+
+              <input
+                id="seKm"
+                type="number"
+                min="0"
+                placeholder="Kilometres"
+              >
+
+
+              <input
+                id="seExpectedPrice"
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="Expected Price (₹)"
+              >
+
+
+              <input
+                id="seExchangeVehicle"
+                type="text"
+                placeholder="Vehicle You Want in Exchange"
+              >
+
+
+              <textarea
+                id="seMessage"
+                class="full"
+                placeholder="Additional details about your vehicle"
+              ></textarea>
+
+
+            </div>
+
+
+            <div class="form-submit-row">
+
+              <button
+                class="primary-btn"
+                type="submit"
+                id="sellExchangeSubmit"
+              >
+                Submit Request →
+              </button>
+
+
+              <div
+                class="form-message"
+                id="sellExchangeMessage"
+              ></div>
+
+            </div>
+
+          </form>
 
         </div>
 
@@ -1299,28 +1952,77 @@
 
 
     <!-- =========================
-         PROPERTIES
+         LIVE PROPERTIES
     ========================== -->
 
-    <section class="section" id="properties">
+    <section
+      class="live-section"
+      id="properties"
+    >
 
-      <div class="reveal">
+      <div class="live-wrap">
 
-        <div class="section-label">
-          Beyond Vehicles
+
+        <div class="live-head">
+
+          <div>
+
+            <div class="section-label">
+              Beyond Vehicles
+            </div>
+
+            <h2 class="section-title">
+              Properties.
+            </h2>
+
+            <p class="section-description">
+              Properties published from the Admin Dashboard
+              appear here automatically.
+            </p>
+
+          </div>
+
+
+          <div
+            class="live-status"
+            id="propertiesStatus"
+          >
+            Connecting...
+          </div>
+
         </div>
 
-        <h2 class="section-title">
-          Drive.<br>
-          Invest.<br>
-          Grow.
-        </h2>
 
-        <p class="section-description">
-          Wheel 4U also connects customers with selected
-          real-estate opportunities around Mangalore and
-          Dakshina Kannada.
-        </p>
+        <div class="market-controls">
+
+          <input
+            id="propertySearch"
+            type="search"
+            placeholder="Search title, type or location"
+          >
+
+
+          <select id="propertyTypeFilter">
+
+            <option value="">
+              All Property Types
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div
+          class="listing-grid"
+          id="propertiesGrid"
+        >
+
+          <div class="loading-state">
+            Loading available properties...
+          </div>
+
+        </div>
 
       </div>
 
@@ -1331,7 +2033,10 @@
          ABOUT
     ========================== -->
 
-    <section class="section" id="about">
+    <section
+      class="section"
+      id="about"
+    >
 
       <div class="reveal">
 
@@ -1339,15 +2044,18 @@
           Wheel 4U
         </div>
 
+
         <h2 class="section-title">
           More Than<br>
           Vehicles.
         </h2>
 
+
         <p class="section-description">
-          A premium local platform designed to connect
-          customers with vehicles, exchanges and property
-          opportunities through a modern digital experience.
+          A premium local platform connecting customers
+          with vehicles, sell/exchange opportunities
+          and selected property listings through a
+          modern digital experience.
         </p>
 
       </div>
@@ -1356,28 +2064,36 @@
 
 
     <!-- =========================
-         CTA
+         CONTACT CTA
     ========================== -->
 
-    <section class="cta" id="contact">
+    <section
+      class="cta"
+      id="contact"
+    >
 
       <div class="reveal">
+
 
         <div class="section-label">
           Start Your Journey
         </div>
+
 
         <h2>
           Let's Find<br>
           <span>Your 4U.</span>
         </h2>
 
+
         <p>
           Have a vehicle in mind, want to sell or exchange,
           or looking for a property? Get in touch with Wheel 4U.
         </p>
 
+
         <div class="hero-actions">
+
 
           <a
             href="tel:7349090793"
@@ -1385,6 +2101,7 @@
           >
             Call Wheel 4U
           </a>
+
 
           <a
             href="https://wa.me/917349090793"
@@ -1394,6 +2111,7 @@
           >
             WhatsApp
           </a>
+
 
         </div>
 
@@ -1412,6 +2130,7 @@
 
     <div class="footer-top">
 
+
       <div>
 
         <img
@@ -1420,27 +2139,47 @@
           class="footer-logo"
         >
 
+
         <div class="footer-tagline">
           More Than Vehicles
         </div>
 
       </div>
 
+
       <div class="footer-links">
-        <a href="#cars">Cars</a>
-        <a href="#bikes">Bikes</a>
-        <a href="#exchange">Exchange</a>
-        <a href="#properties">Properties</a>
-        <a href="#contact">Contact</a>
+
+        <a href="#cars">
+          Cars
+        </a>
+
+        <a href="#bikes">
+          Bikes
+        </a>
+
+        <a href="#exchange">
+          Exchange
+        </a>
+
+        <a href="#properties">
+          Properties
+        </a>
+
+        <a href="#contact">
+          Contact
+        </a>
+
       </div>
 
     </div>
+
 
     <div class="footer-bottom">
 
       <div>
         © 2026 WHEEL 4U. All Rights Reserved.
       </div>
+
 
       <div>
         MANGALORE • DAKSHINA KANNADA
@@ -1452,243 +2191,2653 @@
 
 
   <!-- =========================
-       JAVASCRIPT
+       LISTING DETAIL MODAL
   ========================== -->
 
+  <div
+    class="modal-backdrop"
+    id="listingModal"
+  >
+
+    <div class="listing-modal">
+
+      <button
+        class="modal-close"
+        id="modalClose"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+
+      <div id="modalBody"></div>
+
+    </div>
+
+  </div>
   <script>
 
-    /* =========================
-       LOADER
-    ========================== */
+    /* =========================================================
+       SUPABASE CONNECTION
+    ========================================================== */
 
-    window.addEventListener("load", function () {
+    let supabaseClient = null;
 
-      setTimeout(function () {
+    try {
 
-        document
-          .getElementById("loader")
-          .classList.add("hide");
+      if (
+        typeof SUPABASE_URL !== "undefined" &&
+        typeof SUPABASE_PUBLISHABLE_KEY !== "undefined"
+      ) {
 
-      }, 1200);
+        supabaseClient = window.supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_PUBLISHABLE_KEY
+        );
 
-    });
-
-
-    /* =========================
-       HEADER SCROLL
-    ========================== */
-
-    const header = document.getElementById("header");
-
-    window.addEventListener("scroll", function () {
-
-      if (window.scrollY > 50) {
-        header.classList.add("scrolled");
       } else {
-        header.classList.remove("scrolled");
+
+        console.error(
+          "Supabase configuration was not found."
+        );
+
       }
 
-    });
+    } catch (error) {
+
+      console.error(
+        "Supabase initialization failed:",
+        error
+      );
+
+    }
 
 
-    /* =========================
-       HERO 3D MOUSE MOVEMENT
-    ========================== */
+    /* =========================================================
+       GLOBAL DATA
+    ========================================================== */
 
-    const hero = document.querySelector(".hero");
-    const heroBg = document.getElementById("heroBg");
-    const heroCenter = document.getElementById("heroCenter");
-
-    if (window.innerWidth > 900) {
-
-      hero.addEventListener("mousemove", function (event) {
-
-        const rect = hero.getBoundingClientRect();
-
-        const x =
-          (event.clientX - rect.left) /
-          rect.width -
-          0.5;
-
-        const y =
-          (event.clientY - rect.top) /
-          rect.height -
-          0.5;
-
-        heroBg.style.transform =
-          `scale(1.08) translate(${x * -10}px, ${y * -8}px)`;
-
-        heroCenter.style.transform =
-          `rotateX(${y * -4}deg) rotateY(${x * 5}deg)`;
-
-      });
+    let carsData = [];
+    let bikesData = [];
+    let propertiesData = [];
 
 
-      hero.addEventListener("mouseleave", function () {
+    /* =========================================================
+       HELPERS
+    ========================================================== */
 
-        heroBg.style.transform = "scale(1.04)";
+    function escapeHtml(value) {
 
-        heroCenter.style.transform =
-          "rotateX(0deg) rotateY(0deg)";
+      if (value === null || value === undefined) {
+        return "";
+      }
 
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    function formatPrice(value) {
+
+      if (
+        value === null ||
+        value === undefined ||
+        value === ""
+      ) {
+        return "Price on Request";
+      }
+
+      const number = Number(value);
+
+      if (Number.isNaN(number)) {
+        return escapeHtml(value);
+      }
+
+      return "₹" + number.toLocaleString("en-IN", {
+        maximumFractionDigits: 0
       });
 
     }
 
 
-    /* =========================
-       SCROLL REVEAL
-    ========================== */
+    function formatNumber(value) {
 
-    const reveals =
-      document.querySelectorAll(".reveal");
+      if (
+        value === null ||
+        value === undefined ||
+        value === ""
+      ) {
+        return "";
+      }
 
-    const revealObserver =
-      new IntersectionObserver(
+      const number = Number(value);
 
-        function (entries) {
+      if (Number.isNaN(number)) {
+        return escapeHtml(value);
+      }
 
-          entries.forEach(function (entry) {
+      return number.toLocaleString("en-IN");
 
-            if (entry.isIntersecting) {
+    }
 
-              entry.target.classList.add("visible");
 
-              revealObserver.unobserve(entry.target);
+    function getImage(item) {
 
-            }
+      if (
+        item &&
+        Array.isArray(item.image_urls) &&
+        item.image_urls.length > 0 &&
+        item.image_urls[0]
+      ) {
 
-          });
+        return item.image_urls[0];
 
-        },
+      }
 
-        {
-          threshold: 0.12
+      if (
+        item &&
+        typeof item.image_urls === "string" &&
+        item.image_urls.trim()
+      ) {
+
+        try {
+
+          const parsed =
+            JSON.parse(item.image_urls);
+
+          if (
+            Array.isArray(parsed) &&
+            parsed.length > 0
+          ) {
+            return parsed[0];
+          }
+
+        } catch (error) {
+
+          return item.image_urls;
+
         }
 
+      }
+
+      if (
+        item &&
+        item.image_url
+      ) {
+
+        return item.image_url;
+
+      }
+
+      return "";
+
+    }
+
+
+    function imageMarkup(item, altText) {
+
+      const image = getImage(item);
+
+      if (!image) {
+
+        return `
+          <div
+            class="listing-image"
+            style="
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              color:#555;
+              font-size:11px;
+              letter-spacing:2px;
+              text-transform:uppercase;
+            "
+          >
+            WHEEL 4U
+          </div>
+        `;
+
+      }
+
+      return `
+        <img
+          class="listing-image"
+          src="${escapeHtml(image)}"
+          alt="${escapeHtml(altText)}"
+          loading="lazy"
+          onerror="this.style.display='none';"
+        >
+      `;
+
+    }
+
+
+    function safeText(value) {
+
+      return escapeHtml(
+        value === null ||
+        value === undefined ||
+        value === ""
+          ? "—"
+          : value
       );
 
-    reveals.forEach(function (element) {
-
-      revealObserver.observe(element);
-
-    });
+    }
 
 
-    /* =========================
-       CARD TILT
-    ========================== */
+    /* =========================================================
+       CARS
+    ========================================================== */
 
-    const cards =
-      document.querySelectorAll(".quick-card");
+    async function loadCars() {
 
-    cards.forEach(function (card) {
+      const grid =
+        document.getElementById("carsGrid");
 
-      card.addEventListener("mousemove", function (event) {
+      const status =
+        document.getElementById("carsStatus");
 
-        if (window.innerWidth <= 900) return;
+      if (!grid) return;
 
-        const rect =
-          card.getBoundingClientRect();
 
-        const x =
-          event.clientX - rect.left;
+      if (!supabaseClient) {
 
-        const y =
-          event.clientY - rect.top;
+        grid.innerHTML = `
+          <div class="error-state">
+            Supabase connection is not available.
+          </div>
+        `;
 
-        const rotateY =
-          ((x / rect.width) - 0.5) * 8;
+        if (status) {
+          status.textContent = "Connection error";
+        }
 
-        const rotateX =
-          ((y / rect.height) - 0.5) * -8;
+        return;
 
-        card.style.transform =
-          `translateY(-10px)
-           rotateX(${rotateX}deg)
-           rotateY(${rotateY}deg)`;
+      }
+
+
+      grid.innerHTML = `
+        <div class="loading-state">
+          Loading available cars...
+        </div>
+      `;
+
+
+      const {
+        data,
+        error
+      } = await supabaseClient
+        .from("cars")
+        .select("*")
+        .eq("status", "Available")
+        .order("created_at", {
+          ascending: false
+        });
+
+
+      if (error) {
+
+        console.error(
+          "Cars loading error:",
+          error
+        );
+
+        grid.innerHTML = `
+          <div class="error-state">
+            Unable to load cars right now.<br>
+            Please try again later.
+          </div>
+        `;
+
+        if (status) {
+          status.textContent = "Unable to connect";
+        }
+
+        return;
+
+      }
+
+
+      carsData = data || [];
+
+
+      updateCarBrands(
+        carsData
+      );
+
+      renderCars(
+        carsData
+      );
+
+
+      if (status) {
+
+        status.textContent =
+          `${carsData.length} AVAILABLE`;
+
+      }
+
+    }
+
+
+    function updateCarBrands(cars) {
+
+      const select =
+        document.getElementById(
+          "carBrandFilter"
+        );
+
+      if (!select) return;
+
+
+      const current =
+        select.value;
+
+
+      const brands =
+        [...new Set(
+          cars
+            .map(function(car) {
+              return car.brand;
+            })
+            .filter(Boolean)
+        )]
+        .sort(function(a, b) {
+          return String(a)
+            .localeCompare(String(b));
+        });
+
+
+      select.innerHTML = `
+        <option value="">
+          All Brands
+        </option>
+      `;
+
+
+      brands.forEach(function(brand) {
+
+        const option =
+          document.createElement("option");
+
+        option.value = brand;
+        option.textContent = brand;
+
+        select.appendChild(option);
 
       });
 
 
-      card.addEventListener("mouseleave", function () {
+      if (
+        brands.includes(current)
+      ) {
 
-        card.style.transform = "";
+        select.value = current;
 
-      });
+      }
 
-    });
-
-
-    /* =========================
-       CUSTOM CURSOR
-    ========================== */
-
-    const cursor =
-      document.querySelector(".cursor");
-
-    const cursorDot =
-      document.querySelector(".cursor-dot");
-
-    if (window.innerWidth > 900) {
-
-      document.addEventListener("mousemove", function (event) {
-
-        cursor.style.left =
-          event.clientX + "px";
-
-        cursor.style.top =
-          event.clientY + "px";
-
-        cursorDot.style.left =
-          event.clientX + "px";
-
-        cursorDot.style.top =
-          event.clientY + "px";
-
-      });
+    }
 
 
-      document
-        .querySelectorAll("a, button")
-        .forEach(function (element) {
+    function renderCars(cars) {
 
-          element.addEventListener("mouseenter", function () {
+      const grid =
+        document.getElementById(
+          "carsGrid"
+        );
 
-            document.body.classList.add("cursor-hover");
+      if (!grid) return;
 
-          });
 
-          element.addEventListener("mouseleave", function () {
+      if (!cars.length) {
 
-            document.body.classList.remove("cursor-hover");
+        grid.innerHTML = `
+          <div class="empty-state">
+            No cars are currently available.
+            Please check again soon.
+          </div>
+        `;
 
-          });
+        return;
+
+      }
+
+
+      grid.innerHTML =
+        cars.map(function(car) {
+
+          const title =
+            `${safeText(car.brand)} ${safeText(car.model)}`;
+
+          return `
+
+            <article
+              class="listing-card reveal visible"
+            >
+
+              ${imageMarkup(
+                car,
+                title
+              )}
+
+              <div class="listing-body">
+
+                <div class="listing-kicker">
+                  ${safeText(car.brand)}
+                </div>
+
+                <h3 class="listing-title">
+                  ${safeText(car.model)}
+                </h3>
+
+                <div class="listing-variant">
+                  ${safeText(car.variant)}
+                </div>
+
+
+                <div class="listing-specs">
+
+                  ${
+                    car.year
+                      ? `<span>${safeText(car.year)}</span>`
+                      : ""
+                  }
+
+                  ${
+                    car.fuel
+                      ? `<span>${safeText(car.fuel)}</span>`
+                      : ""
+                  }
+
+                  ${
+                    car.transmission
+                      ? `<span>${safeText(car.transmission)}</span>`
+                      : ""
+                  }
+
+                  ${
+                    car.kilometres !== null &&
+                    car.kilometres !== undefined &&
+                    car.kilometres !== ""
+                      ? `<span>${formatNumber(car.kilometres)} KM</span>`
+                      : ""
+                  }
+
+                </div>
+
+
+                <div class="listing-bottom">
+
+                  <div>
+
+                    <div class="listing-price">
+                      ${formatPrice(car.price)}
+                    </div>
+
+                    <div class="listing-location">
+                      ${
+                        car.location
+                          ? escapeHtml(car.location)
+                          : "Mangalore • Dakshina Kannada"
+                      }
+                    </div>
+
+                  </div>
+
+
+                  <button
+                    class="listing-btn"
+                    type="button"
+                    onclick="openListingModal('car', '${escapeHtml(car.id)}')"
+                  >
+                    View Details
+                  </button>
+
+                </div>
+
+              </div>
+
+            </article>
+
+          `;
+
+        }).join("");
+
+    }
+
+
+    function filterCars() {
+
+      const search =
+        (
+          document.getElementById(
+            "carSearch"
+          )?.value || ""
+        )
+        .trim()
+        .toLowerCase();
+
+
+      const brand =
+        document.getElementById(
+          "carBrandFilter"
+        )?.value || "";
+
+
+      const filtered =
+        carsData.filter(function(car) {
+
+          const searchable = [
+
+            car.brand,
+            car.model,
+            car.variant,
+            car.location,
+            car.fuel,
+            car.transmission,
+            car.year
+
+          ]
+            .filter(function(value) {
+              return value !== null &&
+                     value !== undefined;
+            })
+            .join(" ")
+            .toLowerCase();
+
+
+          const matchesSearch =
+            !search ||
+            searchable.includes(search);
+
+
+          const matchesBrand =
+            !brand ||
+            car.brand === brand;
+
+
+          return (
+            matchesSearch &&
+            matchesBrand
+          );
 
         });
 
+
+      renderCars(filtered);
+
     }
 
 
-    /* =========================
-       PARALLAX SCROLL
-    ========================== */
+    /* =========================================================
+       BIKES
+    ========================================================== */
 
-    window.addEventListener("scroll", function () {
+    async function loadBikes() {
 
-      const scrollY =
-        window.scrollY;
+      const grid =
+        document.getElementById(
+          "bikesGrid"
+        );
 
-      if (scrollY < window.innerHeight) {
+      const status =
+        document.getElementById(
+          "bikesStatus"
+        );
 
-        heroBg.style.backgroundPosition =
-          `center ${50 + scrollY * 0.025}%`;
+      if (!grid) return;
+
+
+      if (!supabaseClient) {
+
+        grid.innerHTML = `
+          <div class="error-state">
+            Supabase connection is not available.
+          </div>
+        `;
+
+        if (status) {
+          status.textContent =
+            "Connection error";
+        }
+
+        return;
 
       }
 
-    });
+
+      grid.innerHTML = `
+        <div class="loading-state">
+          Loading available bikes...
+        </div>
+      `;
+
+
+      const {
+        data,
+        error
+      } = await supabaseClient
+        .from("bikes")
+        .select("*")
+        .eq("status", "Available")
+        .order("created_at", {
+          ascending: false
+        });
+
+
+      if (error) {
+
+        console.error(
+          "Bikes loading error:",
+          error
+        );
+
+        grid.innerHTML = `
+          <div class="error-state">
+            Unable to load bikes right now.<br>
+            Please try again later.
+          </div>
+        `;
+
+        if (status) {
+          status.textContent =
+            "Unable to connect";
+        }
+
+        return;
+
+      }
+
+
+      bikesData = data || [];
+
+
+      updateBikeBrands(
+        bikesData
+      );
+
+      renderBikes(
+        bikesData
+      );
+
+
+      if (status) {
+
+        status.textContent =
+          `${bikesData.length} AVAILABLE`;
+
+      }
+
+    }
+
+
+    function updateBikeBrands(bikes) {
+
+      const select =
+        document.getElementById(
+          "bikeBrandFilter"
+        );
+
+      if (!select) return;
+
+
+      const current =
+        select.value;
+
+
+      const brands =
+        [...new Set(
+          bikes
+            .map(function(bike) {
+              return bike.brand;
+            })
+            .filter(Boolean)
+        )]
+        .sort(function(a, b) {
+          return String(a)
+            .localeCompare(String(b));
+        });
+
+
+      select.innerHTML = `
+        <option value="">
+          All Brands
+        </option>
+      `;
+
+
+      brands.forEach(function(brand) {
+
+        const option =
+          document.createElement("option");
+
+        option.value = brand;
+        option.textContent = brand;
+
+        select.appendChild(option);
+
+      });
+
+
+      if (
+        brands.includes(current)
+      ) {
+
+        select.value = current;
+
+      }
+
+    }
+
+
+    function renderBikes(bikes) {
+
+      const grid =
+        document.getElementById(
+          "bikesGrid"
+        );
+
+      if (!grid) return;
+
+
+      if (!bikes.length) {
+
+        grid.innerHTML = `
+          <div class="empty-state">
+            No bikes are currently available.
+            Please check again soon.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      grid.innerHTML =
+        bikes.map(function(bike) {
+
+          const title =
+            `${safeText(bike.brand)} ${safeText(bike.model)}`;
+
+          return `
+
+            <article
+              class="listing-card reveal visible"
+            >
+
+              ${imageMarkup(
+                bike,
+                title
+              )}
+
+              <div class="listing-body">
+
+                <div class="listing-kicker">
+                  ${safeText(bike.brand)}
+                </div>
+
+                <h3 class="listing-title">
+                  ${safeText(bike.model)}
+                </h3>
+
+                <div class="listing-variant">
+                  ${safeText(bike.variant)}
+                </div>
+
+
+                <div class="listing-specs">
+
+                  ${
+                    bike.year
+                      ? `<span>${safeText(bike.year)}</span>`
+                      : ""
+                  }
+
+                  ${
+                    bike.fuel
+                      ? `<span>${safeText(bike.fuel)}</span>`
+                      : ""
+                  }
+
+                  ${
+                    bike.transmission
+                      ? `<span>${safeText(bike.transmission)}</span>`
+                      : ""
+                  }
+
+                  ${
+                    bike.engine_cc
+                      ? `<span>${formatNumber(bike.engine_cc)} CC</span>`
+                      : ""
+                  }
+
+                  ${
+                    bike.kilometres !== null &&
+                    bike.kilometres !== undefined &&
+                    bike.kilometres !== ""
+                      ? `<span>${formatNumber(bike.kilometres)} KM</span>`
+                      : ""
+                  }
+
+                </div>
+
+
+                <div class="listing-bottom">
+
+                  <div>
+
+                    <div class="listing-price">
+                      ${formatPrice(bike.price)}
+                    </div>
+
+                    <div class="listing-location">
+                      ${
+                        bike.location
+                          ? escapeHtml(bike.location)
+                          : "Mangalore • Dakshina Kannada"
+                      }
+                    </div>
+
+                  </div>
+
+
+                  <button
+                    class="listing-btn"
+                    type="button"
+                    onclick="openListingModal('bike', '${escapeHtml(bike.id)}')"
+                  >
+                    View Details
+                  </button>
+
+                </div>
+
+              </div>
+
+            </article>
+
+          `;
+
+        }).join("");
+
+    }
+
+
+    function filterBikes() {
+
+      const search =
+        (
+          document.getElementById(
+            "bikeSearch"
+          )?.value || ""
+        )
+        .trim()
+        .toLowerCase();
+
+
+      const brand =
+        document.getElementById(
+          "bikeBrandFilter"
+        )?.value || "";
+
+
+      const filtered =
+        bikesData.filter(function(bike) {
+
+          const searchable = [
+
+            bike.brand,
+            bike.model,
+            bike.variant,
+            bike.location,
+            bike.fuel,
+            bike.transmission,
+            bike.year,
+            bike.engine_cc
+
+          ]
+            .filter(function(value) {
+              return value !== null &&
+                     value !== undefined;
+            })
+            .join(" ")
+            .toLowerCase();
+
+
+          const matchesSearch =
+            !search ||
+            searchable.includes(search);
+
+
+          const matchesBrand =
+            !brand ||
+            bike.brand === brand;
+
+
+          return (
+            matchesSearch &&
+            matchesBrand
+          );
+
+        });
+
+
+      renderBikes(filtered);
+
+    }
+
+
+    /* =========================================================
+       PROPERTIES
+    ========================================================== */
+
+    async function loadProperties() {
+
+      const grid =
+        document.getElementById(
+          "propertiesGrid"
+        );
+
+      const status =
+        document.getElementById(
+          "propertiesStatus"
+        );
+
+      if (!grid) return;
+
+
+      if (!supabaseClient) {
+
+        grid.innerHTML = `
+          <div class="error-state">
+            Supabase connection is not available.
+          </div>
+        `;
+
+        if (status) {
+          status.textContent =
+            "Connection error";
+        }
+
+        return;
+
+      }
+
+
+      grid.innerHTML = `
+        <div class="loading-state">
+          Loading available properties...
+        </div>
+      `;
+
+
+      const {
+        data,
+        error
+      } = await supabaseClient
+        .from("properties")
+        .select("*")
+        .eq("status", "Available")
+        .order("created_at", {
+          ascending: false
+        });
+
+
+      if (error) {
+
+        console.error(
+          "Properties loading error:",
+          error
+        );
+
+        grid.innerHTML = `
+          <div class="error-state">
+            Unable to load properties right now.<br>
+            Please try again later.
+          </div>
+        `;
+
+        if (status) {
+          status.textContent =
+            "Unable to connect";
+        }
+
+        return;
+
+      }
+
+
+      propertiesData = data || [];
+
+
+      updatePropertyTypes(
+        propertiesData
+      );
+
+      renderProperties(
+        propertiesData
+      );
+
+
+      if (status) {
+
+        status.textContent =
+          `${propertiesData.length} AVAILABLE`;
+
+      }
+
+    }
+
+
+    function updatePropertyTypes(properties) {
+
+      const select =
+        document.getElementById(
+          "propertyTypeFilter"
+        );
+
+      if (!select) return;
+
+
+      const current =
+        select.value;
+
+
+      const types =
+        [...new Set(
+          properties
+            .map(function(property) {
+              return property.property_type;
+            })
+            .filter(Boolean)
+        )]
+        .sort(function(a, b) {
+          return String(a)
+            .localeCompare(String(b));
+        });
+
+
+      select.innerHTML = `
+        <option value="">
+          All Property Types
+        </option>
+      `;
+
+
+      types.forEach(function(type) {
+
+        const option =
+          document.createElement("option");
+
+        option.value = type;
+        option.textContent = type;
+
+        select.appendChild(option);
+
+      });
+
+
+      if (
+        types.includes(current)
+      ) {
+
+        select.value = current;
+
+      }
+
+    }
+
+
+    function renderProperties(properties) {
+
+      const grid =
+        document.getElementById(
+          "propertiesGrid"
+        );
+
+      if (!grid) return;
+
+
+      if (!properties.length) {
+
+        grid.innerHTML = `
+          <div class="empty-state">
+            No properties are currently available.
+            Please check again soon.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      grid.innerHTML =
+        properties.map(function(property) {
+
+          return `
+
+            <article
+              class="listing-card reveal visible"
+            >
+
+              ${imageMarkup(
+                property,
+                property.title || "Wheel 4U Property"
+              )}
+
+              <div class="listing-body">
+
+                <div class="listing-kicker">
+                  ${
+                    safeText(
+                      property.property_type ||
+                      "Property"
+                    )
+                  }
+                </div>
+
+                <h3 class="listing-title">
+                  ${safeText(property.title)}
+                </h3>
+
+                <div class="listing-variant">
+                  ${
+                    safeText(
+                      property.listing_type
+                    )
+                  }
+                </div>
+
+
+                <div class="listing-specs">
+
+                  ${
+                    property.area
+                      ? `<span>${formatNumber(property.area)} SQ FT</span>`
+                      : ""
+                  }
+
+                  ${
+                    property.bedrooms
+                      ? `<span>${safeText(property.bedrooms)} BED</span>`
+                      : ""
+                  }
+
+                  ${
+                    property.bathrooms
+                      ? `<span>${safeText(property.bathrooms)} BATH</span>`
+                      : ""
+                  }
+
+                </div>
+
+
+                <div class="listing-bottom">
+
+                  <div>
+
+                    <div class="listing-price">
+                      ${formatPrice(property.price)}
+                    </div>
+
+                    <div class="listing-location">
+                      ${
+                        property.location
+                          ? escapeHtml(property.location)
+                          : "Mangalore • Dakshina Kannada"
+                      }
+                    </div>
+
+                  </div>
+
+
+                  <button
+                    class="listing-btn"
+                    type="button"
+                    onclick="openListingModal('property', '${escapeHtml(property.id)}')"
+                  >
+                    View Details
+                  </button>
+
+                </div>
+
+              </div>
+
+            </article>
+
+          `;
+
+        }).join("");
+
+    }
+
+
+    function filterProperties() {
+
+      const search =
+        (
+          document.getElementById(
+            "propertySearch"
+          )?.value || ""
+        )
+        .trim()
+        .toLowerCase();
+
+
+      const type =
+        document.getElementById(
+          "propertyTypeFilter"
+        )?.value || "";
+
+
+      const filtered =
+        propertiesData.filter(function(property) {
+
+          const searchable = [
+
+            property.title,
+            property.property_type,
+            property.listing_type,
+            property.location,
+            property.description
+
+          ]
+            .filter(function(value) {
+              return value !== null &&
+                     value !== undefined;
+            })
+            .join(" ")
+            .toLowerCase();
+
+
+          const matchesSearch =
+            !search ||
+            searchable.includes(search);
+
+
+          const matchesType =
+            !type ||
+            property.property_type === type;
+
+
+          return (
+            matchesSearch &&
+            matchesType
+          );
+
+        });
+
+
+      renderProperties(
+        filtered
+      );
+
+    }
+
+
+    /* =========================================================
+       LISTING MODAL
+    ========================================================== */
+
+    function openListingModal(
+      type,
+      id
+    ) {
+
+      let item = null;
+
+
+      if (type === "car") {
+
+        item =
+          carsData.find(function(car) {
+            return String(car.id) === String(id);
+          });
+
+      }
+
+
+      if (type === "bike") {
+
+        item =
+          bikesData.find(function(bike) {
+            return String(bike.id) === String(id);
+          });
+
+      }
+
+
+      if (type === "property") {
+
+        item =
+          propertiesData.find(function(property) {
+            return String(property.id) === String(id);
+          });
+
+      }
+
+
+      if (!item) return;
+
+
+      const modal =
+        document.getElementById(
+          "listingModal"
+        );
+
+      const body =
+        document.getElementById(
+          "modalBody"
+        );
+
+      if (!modal || !body) return;
+
+
+      const image =
+        getImage(item);
+
+
+      let title = "";
+      let kicker = "";
+      let specs = "";
+
+
+      if (type === "car") {
+
+        title =
+          `${safeText(item.brand)} ${safeText(item.model)}`;
+
+        kicker =
+          "PRE-OWNED CAR";
+
+        specs = `
+
+          ${
+            item.variant
+              ? `<span>Variant: ${safeText(item.variant)}</span>`
+              : ""
+          }
+
+          ${
+            item.year
+              ? `<span>Year: ${safeText(item.year)}</span>`
+              : ""
+          }
+
+          ${
+            item.fuel
+              ? `<span>Fuel: ${safeText(item.fuel)}</span>`
+              : ""
+          }
+
+          ${
+            item.transmission
+              ? `<span>Transmission: ${safeText(item.transmission)}</span>`
+              : ""
+          }
+
+          ${
+            item.kilometres
+              ? `<span>Kilometres: ${formatNumber(item.kilometres)} KM</span>`
+              : ""
+          }
+
+          ${
+            item.location
+              ? `<span>Location: ${safeText(item.location)}</span>`
+              : ""
+          }
+
+        `;
+
+      }
+
+
+      if (type === "bike") {
+
+        title =
+          `${safeText(item.brand)} ${safeText(item.model)}`;
+
+        kicker =
+          "PRE-OWNED BIKE";
+
+        specs = `
+
+          ${
+            item.variant
+              ? `<span>Variant: ${safeText(item.variant)}</span>`
+              : ""
+          }
+
+          ${
+            item.year
+              ? `<span>Year: ${safeText(item.year)}</span>`
+              : ""
+          }
+
+          ${
+            item.fuel
+              ? `<span>Fuel: ${safeText(item.fuel)}</span>`
+              : ""
+          }
+
+          ${
+            item.transmission
+              ? `<span>Transmission: ${safeText(item.transmission)}</span>`
+              : ""
+          }
+
+          ${
+            item.engine_cc
+              ? `<span>Engine: ${formatNumber(item.engine_cc)} CC</span>`
+              : ""
+          }
+
+          ${
+            item.kilometres
+              ? `<span>Kilometres: ${formatNumber(item.kilometres)} KM</span>`
+              : ""
+          }
+
+          ${
+            item.location
+              ? `<span>Location: ${safeText(item.location)}</span>`
+              : ""
+          }
+
+        `;
+
+      }
+
+
+      if (type === "property") {
+
+        title =
+          safeText(item.title);
+
+        kicker =
+          safeText(
+            item.property_type ||
+            "PROPERTY"
+          );
+
+        specs = `
+
+          ${
+            item.listing_type
+              ? `<span>Listing: ${safeText(item.listing_type)}</span>`
+              : ""
+          }
+
+          ${
+            item.area
+              ? `<span>Area: ${formatNumber(item.area)} SQ FT</span>`
+              : ""
+          }
+
+          ${
+            item.bedrooms
+              ? `<span>Bedrooms: ${safeText(item.bedrooms)}</span>`
+              : ""
+          }
+
+          ${
+            item.bathrooms
+              ? `<span>Bathrooms: ${safeText(item.bathrooms)}</span>`
+              : ""
+          }
+
+          ${
+            item.location
+              ? `<span>Location: ${safeText(item.location)}</span>`
+              : ""
+          }
+
+        `;
+
+      }
+
+
+      const imageHtml =
+        image
+          ? `
+            <img
+              src="${escapeHtml(image)}"
+              alt="${escapeHtml(title)}"
+              class="modal-image"
+            >
+          `
+          : `
+            <div
+              class="modal-image"
+              style="
+                height:280px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                color:#555;
+                letter-spacing:3px;
+              "
+            >
+              WHEEL 4U
+            </div>
+          `;
+
+
+      body.innerHTML = `
+
+        ${imageHtml}
+
+        <div class="modal-content">
+
+          <div class="section-label">
+            ${kicker}
+          </div>
+
+          <h3>
+            ${title}
+          </h3>
+
+
+          <div
+            class="listing-specs"
+            style="margin-top:20px;"
+          >
+            ${specs}
+          </div>
+
+
+          <div
+            style="
+              margin-top:20px;
+              font-size:22px;
+              font-weight:700;
+            "
+          >
+            ${formatPrice(item.price)}
+          </div>
+
+
+          ${
+            item.description
+              ? `
+                <div class="modal-description">
+                  ${safeText(item.description)}
+                </div>
+              `
+              : ""
+          }
+
+
+          <div class="modal-actions">
+
+            <a
+              href="tel:7349090793"
+              class="primary-btn"
+            >
+              Call Wheel 4U
+            </a>
+
+
+            <a
+              href="https://wa.me/917349090793?text=${encodeURIComponent(
+                "Hello Wheel 4U, I am interested in " +
+                title +
+                "."
+              )}"
+              class="secondary-btn"
+              target="_blank"
+              rel="noopener"
+            >
+              WhatsApp
+            </a>
+
+          </div>
+
+        </div>
+
+      `;
+
+
+      modal.classList.add("show");
+
+      document.body.style.overflow =
+        "hidden";
+
+    }
+
+
+    function closeListingModal() {
+
+      const modal =
+        document.getElementById(
+          "listingModal"
+        );
+
+      if (!modal) return;
+
+      modal.classList.remove("show");
+
+      document.body.style.overflow = "";
+
+    }
+
+
+    /* =========================================================
+       SELL / EXCHANGE SUBMISSION
+    ========================================================== */
+
+    async function submitSellExchange(event) {
+
+      event.preventDefault();
+
+
+      const form =
+        document.getElementById(
+          "sellExchangeForm"
+        );
+
+      const button =
+        document.getElementById(
+          "sellExchangeSubmit"
+        );
+
+      const message =
+        document.getElementById(
+          "sellExchangeMessage"
+        );
+
+
+      if (!form || !button || !message) {
+        return;
+      }
+
+
+      if (!supabaseClient) {
+
+        message.className =
+          "form-message error";
+
+        message.textContent =
+          "Connection error. Please try again.";
+
+        return;
+
+      }
+
+
+      button.disabled = true;
+
+      button.style.opacity = "0.6";
+
+      button.textContent =
+        "Sending...";
+
+
+      message.className =
+        "form-message";
+
+      message.textContent =
+        "Submitting your request...";
+
+
+      const enquiryType =
+        document.getElementById(
+          "seType"
+        )?.value || "Sell";
+
+
+      const vehicleType =
+        document.getElementById(
+          "seVehicleType"
+        )?.value || null;
+
+
+      const customerName =
+        document.getElementById(
+          "seName"
+        )?.value.trim() || "";
+
+
+      const phone =
+        document.getElementById(
+          "sePhone"
+        )?.value.trim() || "";
+
+
+      const email =
+        document.getElementById(
+          "seEmail"
+        )?.value.trim() || null;
+
+
+      const brand =
+        document.getElementById(
+          "seBrand"
+        )?.value.trim() || null;
+
+
+      const model =
+        document.getElementById(
+          "seModel"
+        )?.value.trim() || null;
+
+
+      const variant =
+        document.getElementById(
+          "seVariant"
+        )?.value.trim() || null;
+
+
+      const yearValue =
+        document.getElementById(
+          "seYear"
+        )?.value;
+
+
+      const kmValue =
+        document.getElementById(
+          "seKm"
+        )?.value;
+
+
+      const expectedPriceValue =
+        document.getElementById(
+          "seExpectedPrice"
+        )?.value;
+
+
+      const exchangeVehicle =
+        document.getElementById(
+          "seExchangeVehicle"
+        )?.value.trim() || null;
+
+
+      const customerMessage =
+        document.getElementById(
+          "seMessage"
+        )?.value.trim() || null;
+
+
+      const payload = {
+
+        enquiry_type:
+          enquiryType,
+
+        customer_name:
+          customerName,
+
+        phone:
+          phone,
+
+        email:
+          email,
+
+        vehicle_type:
+          vehicleType,
+
+        brand:
+          brand,
+
+        model:
+          model,
+
+        variant:
+          variant,
+
+        year:
+          yearValue
+            ? Number(yearValue)
+            : null,
+
+        kilometres:
+          kmValue
+            ? Number(kmValue)
+            : null,
+
+        expected_price:
+          expectedPriceValue
+            ? Number(expectedPriceValue)
+            : null,
+
+        exchange_vehicle:
+          exchangeVehicle,
+
+        message:
+          customerMessage,
+
+        status:
+          "New"
+
+      };
+
+
+      const {
+        error
+      } = await supabaseClient
+        .from("sell_exchange")
+        .insert([payload]);
+
+
+      if (error) {
+
+        console.error(
+          "Sell / Exchange submission error:",
+          error
+        );
+
+
+        message.className =
+          "form-message error";
+
+        message.textContent =
+          "Something went wrong. Please try again or call Wheel 4U.";
+
+
+        button.disabled = false;
+
+        button.style.opacity = "1";
+
+        button.textContent =
+          "Submit Request →";
+
+        return;
+
+      }
+
+
+      message.className =
+        "form-message success";
+
+      message.textContent =
+        "Request submitted successfully. Wheel 4U will contact you.";
+
+
+      form.reset();
+
+
+      button.disabled = false;
+
+      button.style.opacity = "1";
+
+      button.textContent =
+        "Submitted ✓";
+
+
+      setTimeout(function() {
+
+        button.textContent =
+          "Submit Request →";
+
+      }, 3000);
+
+    }
+
+
+    /* =========================================================
+       MOBILE MENU
+    ========================================================== */
+
+    function openMobileMenu() {
+
+      const menu =
+        document.getElementById(
+          "mobileMenu"
+        );
+
+      if (!menu) return;
+
+      menu.classList.add("show");
+
+      document.body.style.overflow =
+        "hidden";
+
+    }
+
+
+    function closeMobileMenu() {
+
+      const menu =
+        document.getElementById(
+          "mobileMenu"
+        );
+
+      if (!menu) return;
+
+      menu.classList.remove("show");
+
+      document.body.style.overflow =
+        "";
+
+    }
+
+
+    /* =========================================================
+       LOADER
+    ========================================================== */
+
+    window.addEventListener(
+      "load",
+      function() {
+
+        setTimeout(
+          function() {
+
+            const loader =
+              document.getElementById(
+                "loader"
+              );
+
+            if (loader) {
+
+              loader.classList.add(
+                "hide"
+              );
+
+            }
+
+          },
+          1200
+        );
+
+      }
+    );
+
+
+    /* =========================================================
+       HEADER SCROLL
+    ========================================================== */
+
+    const header =
+      document.getElementById(
+        "header"
+      );
+
+
+    window.addEventListener(
+      "scroll",
+      function() {
+
+        if (!header) return;
+
+
+        if (window.scrollY > 50) {
+
+          header.classList.add(
+            "scrolled"
+          );
+
+        } else {
+
+          header.classList.remove(
+            "scrolled"
+          );
+
+        }
+
+      }
+    );
+
+
+    /* =========================================================
+       HERO 3D MOUSE MOVEMENT
+    ========================================================== */
+
+    const hero =
+      document.querySelector(
+        ".hero"
+      );
+
+    const heroBg =
+      document.getElementById(
+        "heroBg"
+      );
+
+    const heroCenter =
+      document.getElementById(
+        "heroCenter"
+      );
+
+
+    if (
+      hero &&
+      heroBg &&
+      heroCenter &&
+      window.innerWidth > 900
+    ) {
+
+      hero.addEventListener(
+        "mousemove",
+        function(event) {
+
+          const rect =
+            hero.getBoundingClientRect();
+
+
+          const x =
+            (event.clientX -
+              rect.left) /
+              rect.width -
+            0.5;
+
+
+          const y =
+            (event.clientY -
+              rect.top) /
+              rect.height -
+            0.5;
+
+
+          heroBg.style.transform =
+            `scale(1.08)
+             translate(${x * -10}px, ${y * -8}px)`;
+
+
+          heroCenter.style.transform =
+            `rotateX(${y * -4}deg)
+             rotateY(${x * 5}deg)`;
+
+        }
+      );
+
+
+      hero.addEventListener(
+        "mouseleave",
+        function() {
+
+          heroBg.style.transform =
+            "scale(1.04)";
+
+
+          heroCenter.style.transform =
+            "rotateX(0deg) rotateY(0deg)";
+
+        }
+      );
+
+    }
+
+
+    /* =========================================================
+       SCROLL REVEAL
+    ========================================================== */
+
+    const reveals =
+      document.querySelectorAll(
+        ".reveal"
+      );
+
+
+    if (
+      "IntersectionObserver"
+      in window
+    ) {
+
+      const revealObserver =
+        new IntersectionObserver(
+
+          function(entries) {
+
+            entries.forEach(
+              function(entry) {
+
+                if (
+                  entry.isIntersecting
+                ) {
+
+                  entry.target.classList.add(
+                    "visible"
+                  );
+
+                  revealObserver.unobserve(
+                    entry.target
+                  );
+
+                }
+
+              }
+            );
+
+          },
+
+          {
+            threshold: 0.12
+          }
+
+        );
+
+
+      reveals.forEach(
+        function(element) {
+
+          revealObserver.observe(
+            element
+          );
+
+        }
+      );
+
+    } else {
+
+      reveals.forEach(
+        function(element) {
+
+          element.classList.add(
+            "visible"
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =========================================================
+       CARD TILT
+    ========================================================== */
+
+    function enableCardTilt() {
+
+      const cards =
+        document.querySelectorAll(
+          ".quick-card"
+        );
+
+
+      cards.forEach(
+        function(card) {
+
+          card.addEventListener(
+            "mousemove",
+            function(event) {
+
+              if (
+                window.innerWidth <= 900
+              ) {
+                return;
+              }
+
+
+              const rect =
+                card.getBoundingClientRect();
+
+
+              const x =
+                event.clientX -
+                rect.left;
+
+
+              const y =
+                event.clientY -
+                rect.top;
+
+
+              const rotateY =
+                (
+                  (x / rect.width) -
+                  0.5
+                ) * 8;
+
+
+              const rotateX =
+                (
+                  (y / rect.height) -
+                  0.5
+                ) * -8;
+
+
+              card.style.transform =
+                `translateY(-10px)
+                 rotateX(${rotateX}deg)
+                 rotateY(${rotateY}deg)`;
+
+            }
+          );
+
+
+          card.addEventListener(
+            "mouseleave",
+            function() {
+
+              card.style.transform =
+                "";
+
+            }
+          );
+
+        }
+      );
+
+    }
+
+
+    enableCardTilt();
+
+
+    /* =========================================================
+       CUSTOM CURSOR
+    ========================================================== */
+
+    const cursor =
+      document.querySelector(
+        ".cursor"
+      );
+
+    const cursorDot =
+      document.querySelector(
+        ".cursor-dot"
+      );
+
+
+    if (
+      cursor &&
+      cursorDot &&
+      window.innerWidth > 900
+    ) {
+
+      document.addEventListener(
+        "mousemove",
+        function(event) {
+
+          cursor.style.left =
+            event.clientX + "px";
+
+
+          cursor.style.top =
+            event.clientY + "px";
+
+
+          cursorDot.style.left =
+            event.clientX + "px";
+
+
+          cursorDot.style.top =
+            event.clientY + "px";
+
+        }
+      );
+
+
+      document
+        .querySelectorAll(
+          "a, button, input, select, textarea"
+        )
+        .forEach(
+          function(element) {
+
+            element.addEventListener(
+              "mouseenter",
+              function() {
+
+                document.body.classList.add(
+                  "cursor-hover"
+                );
+
+              }
+            );
+
+
+            element.addEventListener(
+              "mouseleave",
+              function() {
+
+                document.body.classList.remove(
+                  "cursor-hover"
+                );
+
+              }
+            );
+
+          }
+        );
+
+    }
+
+
+    /* =========================================================
+       PARALLAX SCROLL
+    ========================================================== */
+
+    window.addEventListener(
+      "scroll",
+      function() {
+
+        if (!heroBg) return;
+
+
+        const scrollY =
+          window.scrollY;
+
+
+        if (
+          scrollY <
+          window.innerHeight
+        ) {
+
+          heroBg.style.backgroundPosition =
+            `center ${
+              50 +
+              scrollY * 0.025
+            }%`;
+
+        }
+
+      }
+    );
+
+
+    /* =========================================================
+       EVENT LISTENERS
+    ========================================================== */
+
+    const menuBtn =
+      document.getElementById(
+        "menuBtn"
+      );
+
+
+    const mobileMenuClose =
+      document.getElementById(
+        "mobileMenuClose"
+      );
+
+
+    if (menuBtn) {
+
+      menuBtn.addEventListener(
+        "click",
+        openMobileMenu
+      );
+
+    }
+
+
+    if (mobileMenuClose) {
+
+      mobileMenuClose.addEventListener(
+        "click",
+        closeMobileMenu
+      );
+
+    }
+
+
+    document
+      .querySelectorAll(
+        "#mobileMenu a"
+      )
+      .forEach(
+        function(link) {
+
+          link.addEventListener(
+            "click",
+            closeMobileMenu
+          );
+
+        }
+      );
+
+
+    const modalClose =
+      document.getElementById(
+        "modalClose"
+      );
+
+
+    if (modalClose) {
+
+      modalClose.addEventListener(
+        "click",
+        closeListingModal
+      );
+
+    }
+
+
+    const listingModal =
+      document.getElementById(
+        "listingModal"
+      );
+
+
+    if (listingModal) {
+
+      listingModal.addEventListener(
+        "click",
+        function(event) {
+
+          if (
+            event.target ===
+            listingModal
+          ) {
+
+            closeListingModal();
+
+          }
+
+        }
+      );
+
+    }
+
+
+    document.addEventListener(
+      "keydown",
+      function(event) {
+
+        if (
+          event.key === "Escape"
+        ) {
+
+          closeListingModal();
+
+          closeMobileMenu();
+
+        }
+
+      }
+    );
+
+
+    /* =========================================================
+       FILTER LISTENERS
+    ========================================================== */
+
+    const carSearch =
+      document.getElementById(
+        "carSearch"
+      );
+
+
+    const carBrandFilter =
+      document.getElementById(
+        "carBrandFilter"
+      );
+
+
+    const bikeSearch =
+      document.getElementById(
+        "bikeSearch"
+      );
+
+
+    const bikeBrandFilter =
+      document.getElementById(
+        "bikeBrandFilter"
+      );
+
+
+    const propertySearch =
+      document.getElementById(
+        "propertySearch"
+      );
+
+
+    const propertyTypeFilter =
+      document.getElementById(
+        "propertyTypeFilter"
+      );
+
+
+    if (carSearch) {
+
+      carSearch.addEventListener(
+        "input",
+        filterCars
+      );
+
+    }
+
+
+    if (carBrandFilter) {
+
+      carBrandFilter.addEventListener(
+        "change",
+        filterCars
+      );
+
+    }
+
+
+    if (bikeSearch) {
+
+      bikeSearch.addEventListener(
+        "input",
+        filterBikes
+      );
+
+    }
+
+
+    if (bikeBrandFilter) {
+
+      bikeBrandFilter.addEventListener(
+        "change",
+        filterBikes
+      );
+
+    }
+
+
+    if (propertySearch) {
+
+      propertySearch.addEventListener(
+        "input",
+        filterProperties
+      );
+
+    }
+
+
+    if (propertyTypeFilter) {
+
+      propertyTypeFilter.addEventListener(
+        "change",
+        filterProperties
+      );
+
+    }
+
+
+    /* =========================================================
+       SELL / EXCHANGE FORM LISTENER
+    ========================================================== */
+
+    const sellExchangeForm =
+      document.getElementById(
+        "sellExchangeForm"
+      );
+
+
+    if (sellExchangeForm) {
+
+      sellExchangeForm.addEventListener(
+        "submit",
+        submitSellExchange
+      );
+
+    }
+
+
+    /* =========================================================
+       INITIAL DATABASE LOAD
+    ========================================================== */
+
+    async function initializeWheel4U() {
+
+      await Promise.all([
+        loadCars(),
+        loadBikes(),
+        loadProperties()
+      ]);
+
+    }
+
+
+    initializeWheel4U();
+
+
+    /* =========================================================
+       REAL-TIME UPDATES
+       When admin adds/updates/deletes a listing,
+       the public website can refresh automatically.
+    ========================================================== */
+
+    if (supabaseClient) {
+
+      supabaseClient
+        .channel("wheel4u-public-listings")
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "cars"
+          },
+          function() {
+
+            loadCars();
+
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "bikes"
+          },
+          function() {
+
+            loadBikes();
+
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "properties"
+          },
+          function() {
+
+            loadProperties();
+
+          }
+        )
+        .subscribe();
+
+    }
+
 
   </script>
-
-</body>
+  </body>
 </html>
