@@ -1215,7 +1215,301 @@
       }
 
     }
+/* =========================================================
+   CONTACT CTA — PREMIUM WHEEL 4U
+========================================================= */
 
+.cta {
+  position: relative;
+  min-height: 620px;
+  padding: 140px 7%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 50% 45%,
+      rgba(224, 0, 0, 0.10),
+      transparent 32%
+    ),
+    #050505;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  text-align: center;
+}
+
+.cta::before {
+  content: "";
+  position: absolute;
+  width: 620px;
+  height: 620px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 50%;
+  box-shadow:
+    0 0 80px rgba(224,0,0,0.05),
+    inset 0 0 80px rgba(255,255,255,0.02);
+  pointer-events: none;
+}
+
+.cta::after {
+  content: "";
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px dashed rgba(255,255,255,0.08);
+  border-radius: 50%;
+  animation: ctaRingRotate 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes ctaRingRotate {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.cta .reveal {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 950px;
+  margin: 0 auto;
+}
+
+.cta .section-label {
+  color: #e00000;
+  font-size: 9px;
+  letter-spacing: 7px;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+
+.cta h2 {
+  position: relative;
+  font-size: clamp(48px, 8vw, 105px);
+  line-height: 0.92;
+  letter-spacing: -5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  text-shadow:
+    0 20px 60px rgba(0,0,0,0.8),
+    0 0 50px rgba(224,0,0,0.08);
+}
+
+.cta h2 span {
+  color: #e00000;
+}
+
+.cta p {
+  max-width: 650px;
+  margin: 28px auto 0;
+  color: #888;
+  font-size: 13px;
+  line-height: 1.8;
+  letter-spacing: 0.5px;
+}
+
+.cta .hero-actions {
+  position: relative;
+  z-index: 5;
+  margin-top: 38px;
+}
+
+.cta .primary-btn,
+.cta .secondary-btn {
+  min-width: 175px;
+  text-align: center;
+}
+
+
+/* =========================================================
+   FOOTER — PREMIUM
+========================================================= */
+
+footer {
+  position: relative;
+  padding: 55px 7% 25px;
+  background: #030303;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.footer-top {
+  max-width: 1280px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.footer-logo {
+  width: 90px;
+  height: auto;
+  display: block;
+}
+
+.footer-tagline {
+  margin-top: 12px;
+  color: #666;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 25px;
+}
+
+.footer-links a {
+  color: #777;
+  font-size: 9px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  transition: 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #e00000;
+}
+
+.footer-bottom {
+  max-width: 1280px;
+  margin: 40px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  color: #444;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   CTA + FOOTER MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .cta {
+    min-height: 560px;
+    padding: 110px 6%;
+  }
+
+  .cta::before {
+    width: 430px;
+    height: 430px;
+  }
+
+  .cta::after {
+    width: 300px;
+    height: 300px;
+  }
+
+  .cta h2 {
+    font-size: clamp(43px, 14vw, 72px);
+    letter-spacing: -3px;
+  }
+
+  .cta p {
+    font-size: 11px;
+    line-height: 1.7;
+  }
+
+  .cta .hero-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cta .primary-btn,
+  .cta .secondary-btn {
+    width: min(280px, 100%);
+  }
+
+  footer {
+    padding: 45px 6% 22px;
+  }
+
+  .footer-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .footer-links {
+    justify-content: flex-start;
+    gap: 15px 22px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.7;
+  }
+}
+
+
+/* =========================================================
+   HERO MOBILE PROTECTION
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .hero {
+    min-height: 100svh;
+    height: 100svh;
+  }
+
+  .hero-bg {
+    inset: 0;
+    background-size: cover;
+    background-position: center center;
+    transform: scale(1.02);
+  }
+
+  .hero:hover .hero-bg {
+    transform: scale(1.04);
+  }
+
+  .hero-content {
+    min-height: 100svh;
+    padding: 100px 20px 80px;
+  }
+
+  .hero-title {
+    font-size: clamp(48px, 15vw, 82px);
+    letter-spacing: -3px;
+  }
+
+  .hero-subtitle {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+  }
+
+  .hero-side {
+    display: none;
+  }
+
+  .scroll-indicator {
+    bottom: 20px;
+  }
+}
   </style>
 </head>
 
